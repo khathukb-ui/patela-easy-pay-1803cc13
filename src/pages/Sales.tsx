@@ -35,21 +35,21 @@ export default function Sales() {
   return (
     <div className="min-h-screen bg-background pb-24">
       {/* Header */}
-      <header className="bg-card border-b border-border px-6 py-4 patela-shadow-sm">
+      <header className="bg-primary px-6 py-4 patela-shadow-md">
         <div className="flex items-center justify-between mb-4">
-          <h1 className="text-2xl font-bold text-foreground">{t("salesHistory")}</h1>
+          <h1 className="text-2xl font-bold text-primary-foreground">{t("salesHistory")}</h1>
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon">
+            <Button variant="ghost" size="icon" className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10">
               <Filter className="h-5 w-5" />
             </Button>
-            <Button variant="ghost" size="icon">
+            <Button variant="ghost" size="icon" className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10">
               <Download className="h-5 w-5" />
             </Button>
           </div>
         </div>
         
         {/* Date Selector */}
-        <Button variant="outline" className="w-full justify-start gap-2">
+        <Button variant="outline" className="w-full justify-start gap-2 bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/20">
           <Calendar className="h-4 w-4" />
           {t("today")}, {new Date().toLocaleDateString("en-ZA", { day: "numeric", month: "short" })}
         </Button>
@@ -57,9 +57,9 @@ export default function Sales() {
 
       <main className="px-6 py-4">
         {/* Summary */}
-        <div className="bg-primary/5 rounded-xl p-4 mb-6 border border-primary/10">
-          <p className="text-sm text-muted-foreground mb-1">{t("todaySales")}</p>
-          <p className="text-3xl font-bold text-primary">R{totalToday.toFixed(2)}</p>
+        <div className="bg-accent/10 rounded-xl p-4 mb-6 border border-accent/20">
+          <p className="text-sm text-primary mb-1">{t("todaySales")}</p>
+          <p className="text-3xl font-bold text-accent">R{totalToday.toFixed(2)}</p>
           <p className="text-sm text-muted-foreground">{sales.filter(s => s.status === "success").length} {t("numberOfSales").toLowerCase()}</p>
         </div>
 

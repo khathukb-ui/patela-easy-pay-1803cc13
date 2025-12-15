@@ -86,9 +86,9 @@ export default function BankCardScan() {
         </div>
 
         {/* Card Icon */}
-        <div className="flex items-center gap-3 p-4 bg-card rounded-2xl patela-shadow-sm mb-4 w-full max-w-sm">
-          <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-            <CreditCard className="h-6 w-6 text-primary" />
+        <div className="flex items-center gap-3 p-4 bg-card rounded-2xl patela-shadow-sm mb-4 w-full max-w-sm border border-primary/10">
+          <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center">
+            <CreditCard className="h-6 w-6 text-accent" />
           </div>
           <div>
             <p className="font-semibold text-foreground">Position your card</p>
@@ -101,7 +101,7 @@ export default function BankCardScan() {
       <div className="p-6 space-y-3">
         <Button 
           size="xl" 
-          className="w-full patela-gradient-primary text-lg font-bold h-16 rounded-2xl patela-shadow-md"
+          className="w-full bg-accent text-accent-foreground text-lg font-bold h-16 rounded-2xl patela-shadow-accent hover:bg-accent/90"
           onClick={handleStartScan}
           disabled={isScanning}
         >
@@ -121,7 +121,7 @@ export default function BankCardScan() {
         <Button 
           variant="ghost" 
           size="lg"
-          className="w-full text-base h-14"
+          className="w-full text-base h-14 text-primary hover:bg-primary/5"
           onClick={() => navigate("/bank/manual")}
         >
           {t("enterManually")}

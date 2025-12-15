@@ -17,7 +17,7 @@ export default function BankLinkingStart() {
 
       {/* Content */}
       <div className="flex-1 flex flex-col items-center justify-center px-6 pb-8">
-        <div className="w-20 h-20 rounded-full patela-gradient-primary flex items-center justify-center mb-6 patela-shadow-md animate-fade-in">
+        <div className="w-20 h-20 rounded-full bg-primary flex items-center justify-center mb-6 patela-shadow-primary animate-fade-in">
           <Building2 className="h-10 w-10 text-primary-foreground" />
         </div>
 
@@ -31,9 +31,9 @@ export default function BankLinkingStart() {
 
         {/* Benefits */}
         <div className="w-full max-w-sm space-y-4 mb-8">
-          <div className="flex items-center gap-4 p-4 bg-card rounded-2xl patela-shadow-sm">
-            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-              <CreditCard className="h-6 w-6 text-primary" />
+          <div className="flex items-center gap-4 p-4 bg-card rounded-2xl patela-shadow-sm border border-primary/10">
+            <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center">
+              <CreditCard className="h-6 w-6 text-accent" />
             </div>
             <div>
               <p className="font-semibold text-foreground">{t("scanBankCard")}</p>
@@ -41,7 +41,7 @@ export default function BankLinkingStart() {
             </div>
           </div>
 
-          <div className="flex items-center gap-4 p-4 bg-card rounded-2xl patela-shadow-sm">
+          <div className="flex items-center gap-4 p-4 bg-card rounded-2xl patela-shadow-sm border border-primary/10">
             <div className="w-12 h-12 rounded-full bg-success/10 flex items-center justify-center">
               <Shield className="h-6 w-6 text-success" />
             </div>
@@ -57,7 +57,7 @@ export default function BankLinkingStart() {
       <div className="p-6 space-y-3">
         <Button 
           size="xl" 
-          className="w-full patela-gradient-primary text-lg font-bold h-16 rounded-2xl patela-shadow-md"
+          className="w-full bg-accent text-accent-foreground text-lg font-bold h-16 rounded-2xl patela-shadow-accent hover:bg-accent/90"
           onClick={() => navigate("/bank/scan")}
         >
           <CreditCard className="mr-3 h-6 w-6" />
@@ -68,7 +68,7 @@ export default function BankLinkingStart() {
         <Button 
           variant="outline" 
           size="lg"
-          className="w-full text-base h-14 rounded-2xl"
+          className="w-full text-base h-14 rounded-2xl border-primary/20 hover:bg-primary/5"
           onClick={() => navigate("/bank/manual")}
         >
           {t("enterManually")}
