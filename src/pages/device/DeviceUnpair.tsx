@@ -31,7 +31,7 @@ export default function DeviceUnpair() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen patela-app-bg flex flex-col">
       {/* Header */}
       <div className="p-4 pt-8 flex items-center">
         <button 

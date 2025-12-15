@@ -62,7 +62,7 @@ export default function Payment() {
 
   if (step === "processing") {
     return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6">
+      <div className="min-h-screen patela-app-bg flex flex-col items-center justify-center px-6">
         <div className="flex flex-col items-center text-center space-y-8 animate-patela-fade-in">
           <div className="h-32 w-32 rounded-full bg-primary flex items-center justify-center animate-patela-pulse patela-shadow-primary">
             <CreditCard className="h-16 w-16 text-primary-foreground" />
@@ -92,7 +92,7 @@ export default function Payment() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen patela-app-bg flex flex-col">
       <OfflineBanner isOffline={isOffline} />
 
       {/* Header */}

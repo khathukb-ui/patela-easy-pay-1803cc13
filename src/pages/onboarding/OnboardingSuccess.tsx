@@ -8,7 +8,7 @@ export default function OnboardingSuccess() {
   const { t } = useLanguage();
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6 py-12">
+    <div className="min-h-screen patela-app-bg flex flex-col items-center justify-center px-6 py-12">
       <div className="flex flex-col items-center text-center space-y-8 max-w-md animate-patela-bounce-in">
         {/* Success Icon */}
         <div className="h-28 w-28 rounded-full patela-gradient-success flex items-center justify-center patela-shadow-success">

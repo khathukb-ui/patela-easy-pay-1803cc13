@@ -33,7 +33,7 @@ export default function Sales() {
     .reduce((sum, s) => sum + s.amount, 0);
 
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div className="min-h-screen patela-app-bg pb-24">
       {/* Header */}
       <header className="bg-primary px-6 py-4 patela-shadow-md">
         <div className="flex items-center justify-between mb-4">

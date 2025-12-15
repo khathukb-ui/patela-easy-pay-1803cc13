@@ -32,7 +32,7 @@ export default function DeviceFound() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6">
+    <div className="min-h-screen patela-app-bg flex flex-col items-center justify-center px-6">
       <div className="flex flex-col items-center text-center animate-fade-in">
         {/* Device Visual */}
         <div className="relative mb-8">

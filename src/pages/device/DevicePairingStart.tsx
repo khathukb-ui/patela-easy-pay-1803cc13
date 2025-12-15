@@ -9,7 +9,7 @@ export default function DevicePairingStart() {
   const { t } = useLanguage();
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen patela-app-bg flex flex-col">
       {/* Header */}
       <div className="p-4 pt-8">
         <div className="flex items-center justify-center gap-2 py-4">

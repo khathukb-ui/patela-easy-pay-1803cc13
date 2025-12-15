@@ -8,7 +8,7 @@ export default function BankPending() {
   const { t } = useLanguage();
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6">
+    <div className="min-h-screen patela-app-bg flex flex-col items-center justify-center px-6">
       <div className="flex flex-col items-center text-center animate-fade-in">
         <div className="w-24 h-24 rounded-full bg-accent/10 flex items-center justify-center mb-6">
           <Clock className="h-12 w-12 text-accent" />
