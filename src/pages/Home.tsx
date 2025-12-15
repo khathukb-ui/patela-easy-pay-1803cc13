@@ -5,9 +5,11 @@ import { OfflineBanner } from "@/components/patela/OfflineBanner";
 import { TodayStats } from "@/components/patela/TodayStats";
 import { Button } from "@/components/ui/button";
 import { CreditCard, QrCode, Smartphone, Battery, Wifi, WifiOff } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Home() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [isOffline, setIsOffline] = useState(false);
   const [queuedCount] = useState(isOffline ? 3 : 0);
 
@@ -22,7 +24,7 @@ export default function Home() {
   const deviceStatus = {
     connected: true,
     battery: 85,
-    name: "Patela-7823",
+    name: "Patela Pro",
   };
 
   return (
@@ -73,7 +75,7 @@ export default function Home() {
             onClick={() => navigate("/payment")}
           >
             <CreditCard className="h-8 w-8 mr-3" />
-            Take Payment
+            {t("takePayment")}
           </Button>
         </div>
 
@@ -93,7 +95,7 @@ export default function Home() {
             onClick={() => navigate("/sales")}
           >
             <CreditCard className="h-6 w-6 text-primary" />
-            <span className="text-sm font-medium">Recent Sales</span>
+            <span className="text-sm font-medium">{t("salesHistory")}</span>
           </Button>
         </div>
 

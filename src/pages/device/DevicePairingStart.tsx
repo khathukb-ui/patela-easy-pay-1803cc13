@@ -1,9 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Smartphone, QrCode, Bluetooth, Shield, ArrowRight } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function DevicePairingStart() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -23,11 +25,11 @@ export default function DevicePairingStart() {
         </div>
 
         <h1 className="text-2xl font-bold text-foreground text-center mb-3">
-          Pair Your Patela Device
+          {t("pairDevice")}
         </h1>
         
         <p className="text-muted-foreground text-center text-lg mb-8 max-w-xs">
-          Connect your card machine to start accepting payments
+          {t("pairDeviceDesc")}
         </p>
 
         {/* Pairing Methods */}
@@ -37,7 +39,7 @@ export default function DevicePairingStart() {
               <QrCode className="h-6 w-6 text-primary" />
             </div>
             <div>
-              <p className="font-semibold text-foreground">QR Code Scan</p>
+              <p className="font-semibold text-foreground">{t("scanQrCode")}</p>
               <p className="text-sm text-muted-foreground">Fast & easy pairing</p>
             </div>
           </div>
@@ -48,7 +50,7 @@ export default function DevicePairingStart() {
             </div>
             <div>
               <p className="font-semibold text-foreground">Bluetooth</p>
-              <p className="text-sm text-muted-foreground">If QR code doesn't work</p>
+              <p className="text-sm text-muted-foreground">If QR code does not work</p>
             </div>
           </div>
 
@@ -72,7 +74,7 @@ export default function DevicePairingStart() {
           onClick={() => navigate("/device/qr")}
         >
           <QrCode className="mr-3 h-6 w-6" />
-          Scan QR Code
+          {t("scanQrCode")}
           <ArrowRight className="ml-auto h-5 w-5" />
         </Button>
         
@@ -83,7 +85,7 @@ export default function DevicePairingStart() {
           onClick={() => navigate("/device/bluetooth")}
         >
           <Bluetooth className="mr-2 h-5 w-5" />
-          Use Bluetooth Instead
+          {t("useBluetooth")}
         </Button>
       </div>
     </div>

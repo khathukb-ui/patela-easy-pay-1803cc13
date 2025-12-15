@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { LanguageProvider } from "@/contexts/LanguageContext";
 
 // Pages
 import Index from "./pages/Index";
@@ -47,56 +48,58 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          {/* Landing */}
-          <Route path="/" element={<Index />} />
-          
-          {/* Onboarding */}
-          <Route path="/onboarding/language" element={<LanguageSelection />} />
-          <Route path="/onboarding/phone" element={<PhoneVerification />} />
-          <Route path="/onboarding/pin" element={<CreatePin />} />
-          <Route path="/onboarding/success" element={<OnboardingSuccess />} />
-          
-          {/* Bank Linking */}
-          <Route path="/bank/start" element={<BankLinkingStart />} />
-          <Route path="/bank/scan" element={<BankCardScan />} />
-          <Route path="/bank/manual" element={<BankManualEntry />} />
-          <Route path="/bank/confirm" element={<BankConfirm />} />
-          <Route path="/bank/verify" element={<BankVerify />} />
-          <Route path="/bank/upload" element={<BankUploadProof />} />
-          <Route path="/bank/pending" element={<BankPending />} />
-          <Route path="/bank/success" element={<BankSuccess />} />
-          
-          {/* Device Pairing */}
-          <Route path="/device/start" element={<DevicePairingStart />} />
-          <Route path="/device/qr" element={<DeviceQRScan />} />
-          <Route path="/device/bluetooth" element={<DeviceBluetooth />} />
-          <Route path="/device/confirm-bluetooth" element={<DeviceConfirmBluetooth />} />
-          <Route path="/device/found" element={<DeviceFound />} />
-          <Route path="/device/success" element={<DeviceSuccess />} />
-          <Route path="/device/manage" element={<DeviceManagement />} />
-          <Route path="/device/unpair" element={<DeviceUnpair />} />
-          <Route path="/device/unpair-success" element={<DeviceUnpairSuccess />} />
-          <Route path="/device/transfer" element={<DeviceTransfer />} />
-          
-          {/* Main App */}
-          <Route path="/home" element={<Home />} />
-          <Route path="/payment" element={<Payment />} />
-          <Route path="/payment/success" element={<PaymentSuccess />} />
-          <Route path="/payment/failed" element={<PaymentFailed />} />
-          <Route path="/sales" element={<Sales />} />
-          <Route path="/account" element={<Account />} />
-          <Route path="/help" element={<Help />} />
-          
-          {/* 404 */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
+    <LanguageProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            {/* Landing */}
+            <Route path="/" element={<Index />} />
+            
+            {/* Onboarding */}
+            <Route path="/onboarding/language" element={<LanguageSelection />} />
+            <Route path="/onboarding/phone" element={<PhoneVerification />} />
+            <Route path="/onboarding/pin" element={<CreatePin />} />
+            <Route path="/onboarding/success" element={<OnboardingSuccess />} />
+            
+            {/* Bank Linking */}
+            <Route path="/bank/start" element={<BankLinkingStart />} />
+            <Route path="/bank/scan" element={<BankCardScan />} />
+            <Route path="/bank/manual" element={<BankManualEntry />} />
+            <Route path="/bank/confirm" element={<BankConfirm />} />
+            <Route path="/bank/verify" element={<BankVerify />} />
+            <Route path="/bank/upload" element={<BankUploadProof />} />
+            <Route path="/bank/pending" element={<BankPending />} />
+            <Route path="/bank/success" element={<BankSuccess />} />
+            
+            {/* Device Pairing */}
+            <Route path="/device/start" element={<DevicePairingStart />} />
+            <Route path="/device/qr" element={<DeviceQRScan />} />
+            <Route path="/device/bluetooth" element={<DeviceBluetooth />} />
+            <Route path="/device/confirm-bluetooth" element={<DeviceConfirmBluetooth />} />
+            <Route path="/device/found" element={<DeviceFound />} />
+            <Route path="/device/success" element={<DeviceSuccess />} />
+            <Route path="/device/manage" element={<DeviceManagement />} />
+            <Route path="/device/unpair" element={<DeviceUnpair />} />
+            <Route path="/device/unpair-success" element={<DeviceUnpairSuccess />} />
+            <Route path="/device/transfer" element={<DeviceTransfer />} />
+            
+            {/* Main App */}
+            <Route path="/home" element={<Home />} />
+            <Route path="/payment" element={<Payment />} />
+            <Route path="/payment/success" element={<PaymentSuccess />} />
+            <Route path="/payment/failed" element={<PaymentFailed />} />
+            <Route path="/sales" element={<Sales />} />
+            <Route path="/account" element={<Account />} />
+            <Route path="/help" element={<Help />} />
+            
+            {/* 404 */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </LanguageProvider>
   </QueryClientProvider>
 );
 

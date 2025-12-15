@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { 
@@ -9,12 +8,13 @@ import {
   RefreshCw, 
   Unlink, 
   Share2,
-  CheckCircle2,
   AlertTriangle
 } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function DeviceManagement() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   
   // Mock device data
   const device = {
@@ -36,7 +36,7 @@ export default function DeviceManagement() {
           <ArrowLeft className="h-5 w-5 text-foreground" />
         </button>
         <h1 className="flex-1 text-center text-lg font-bold text-foreground pr-10">
-          Device Management
+          {t("deviceManagement")}
         </h1>
       </div>
 
@@ -59,7 +59,7 @@ export default function DeviceManagement() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <Battery className="h-5 w-5 text-muted-foreground" />
-                <span className="text-muted-foreground">Battery</span>
+                <span className="text-muted-foreground">{t("battery")}</span>
               </div>
               <span className={`font-bold ${device.battery > 20 ? "text-success" : "text-destructive"}`}>
                 {device.battery}%
@@ -69,18 +69,18 @@ export default function DeviceManagement() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <Wifi className="h-5 w-5 text-muted-foreground" />
-                <span className="text-muted-foreground">Status</span>
+                <span className="text-muted-foreground">{t("status")}</span>
               </div>
               <span className={`flex items-center gap-2 font-bold ${device.connected ? "text-success" : "text-destructive"}`}>
                 <span className={`w-2 h-2 rounded-full ${device.connected ? "bg-success" : "bg-destructive"}`} />
-                {device.connected ? "Connected" : "Disconnected"}
+                {device.connected ? t("connected") : "Disconnected"}
               </span>
             </div>
 
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <RefreshCw className="h-5 w-5 text-muted-foreground" />
-                <span className="text-muted-foreground">Last Sync</span>
+                <span className="text-muted-foreground">{t("lastSync")}</span>
               </div>
               <span className="font-medium text-foreground">{device.lastSync}</span>
             </div>
@@ -104,8 +104,8 @@ export default function DeviceManagement() {
               <Share2 className="h-6 w-6 text-accent" />
             </div>
             <div className="flex-1 text-left">
-              <p className="font-semibold text-foreground">Transfer Device</p>
-              <p className="text-sm text-muted-foreground">Move to another account</p>
+              <p className="font-semibold text-foreground">{t("transferDevice")}</p>
+              <p className="text-sm text-muted-foreground">{t("transferDesc")}</p>
             </div>
           </button>
 
@@ -118,8 +118,8 @@ export default function DeviceManagement() {
               <Unlink className="h-6 w-6 text-destructive" />
             </div>
             <div className="flex-1 text-left">
-              <p className="font-semibold text-destructive">Unpair Device</p>
-              <p className="text-sm text-muted-foreground">Disconnect from your account</p>
+              <p className="font-semibold text-destructive">{t("unpairDevice")}</p>
+              <p className="text-sm text-muted-foreground">{t("unpairDesc")}</p>
             </div>
           </button>
         </div>
@@ -129,7 +129,7 @@ export default function DeviceManagement() {
           <div className="flex items-start gap-3">
             <AlertTriangle className="h-5 w-5 text-accent flex-shrink-0 mt-0.5" />
             <div>
-              <p className="font-semibold text-foreground text-sm">Device cannot process payments while:</p>
+              <p className="font-semibold text-foreground text-sm">{t("warning")}:</p>
               <ul className="text-sm text-muted-foreground mt-1 space-y-1">
                 <li>• Transfer is pending</li>
                 <li>• Device is being unpaired</li>
