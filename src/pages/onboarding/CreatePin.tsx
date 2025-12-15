@@ -59,7 +59,7 @@ export default function CreatePin() {
         </button>
 
         <div className="text-center mb-8 animate-patela-slide-up">
-          <div className="h-20 w-20 mx-auto mb-4 rounded-full patela-gradient-primary flex items-center justify-center">
+          <div className="h-20 w-20 mx-auto mb-4 rounded-full bg-primary flex items-center justify-center patela-shadow-primary">
             {step === "create" ? (
               <Lock className="h-10 w-10 text-primary-foreground" />
             ) : (

@@ -72,7 +72,7 @@ export default function BankManualEntry() {
             </label>
             <button
               onClick={() => setShowBankList(!showBankList)}
-              className="w-full flex items-center justify-between p-4 bg-card border border-border rounded-2xl text-left"
+              className="w-full flex items-center justify-between p-4 bg-card border border-primary/10 rounded-2xl text-left hover:bg-primary/5 transition-colors"
             >
               {selectedBankData ? (
                 <div className="flex items-center gap-3">
@@ -91,7 +91,7 @@ export default function BankManualEntry() {
             </button>
             
             {showBankList && (
-              <div className="mt-2 bg-card border border-border rounded-2xl overflow-hidden">
+              <div className="mt-2 bg-card border border-primary/10 rounded-2xl overflow-hidden">
                 {BANKS.map((bank) => (
                   <button
                     key={bank.id}
@@ -136,7 +136,7 @@ export default function BankManualEntry() {
             </label>
             <button
               onClick={() => setShowAccountTypes(!showAccountTypes)}
-              className="w-full flex items-center justify-between p-4 bg-card border border-border rounded-2xl text-left"
+              className="w-full flex items-center justify-between p-4 bg-card border border-primary/10 rounded-2xl text-left hover:bg-primary/5 transition-colors"
             >
               {accountType ? (
                 <span className="font-medium text-foreground">{accountType}</span>
@@ -147,7 +147,7 @@ export default function BankManualEntry() {
             </button>
             
             {showAccountTypes && (
-              <div className="mt-2 bg-card border border-border rounded-2xl overflow-hidden">
+              <div className="mt-2 bg-card border border-primary/10 rounded-2xl overflow-hidden">
                 {ACCOUNT_TYPES.map((type) => (
                   <button
                     key={type}
@@ -170,7 +170,7 @@ export default function BankManualEntry() {
       <div className="p-6">
         <Button 
           size="xl" 
-          className="w-full patela-gradient-primary text-lg font-bold h-16 rounded-2xl patela-shadow-md"
+          className="w-full bg-accent text-accent-foreground text-lg font-bold h-16 rounded-2xl patela-shadow-accent hover:bg-accent/90"
           onClick={handleContinue}
           disabled={!isValid}
         >

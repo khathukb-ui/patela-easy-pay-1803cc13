@@ -27,18 +27,18 @@ function HelpItem({ icon: Icon, label, description, onClick, variant = "default"
       onClick={onClick}
       className={`w-full flex items-center gap-4 p-4 rounded-xl border transition-colors text-left ${
         variant === "highlight" 
-          ? "bg-primary/5 border-primary/20 hover:bg-primary/10" 
-          : "bg-card border-border hover:bg-secondary/50"
+          ? "bg-accent/10 border-accent/20 hover:bg-accent/20" 
+          : "bg-card border-primary/10 hover:bg-primary/5"
       }`}
     >
-      <div className={`h-10 w-10 rounded-xl ${variant === "highlight" ? "patela-gradient-primary" : "bg-secondary"} flex items-center justify-center`}>
-        <Icon className={`h-5 w-5 ${variant === "highlight" ? "text-primary-foreground" : "text-foreground"}`} />
+      <div className={`h-10 w-10 rounded-xl ${variant === "highlight" ? "bg-accent" : "bg-primary/10"} flex items-center justify-center`}>
+        <Icon className={`h-5 w-5 ${variant === "highlight" ? "text-accent-foreground" : "text-primary"}`} />
       </div>
       <div className="flex-1">
         <p className="font-medium text-foreground">{label}</p>
         {description && <p className="text-sm text-muted-foreground">{description}</p>}
       </div>
-      <ChevronRight className="h-5 w-5 text-muted-foreground" />
+      <ChevronRight className="h-5 w-5 text-primary/50" />
     </button>
   );
 }
@@ -57,19 +57,19 @@ export default function Help() {
   return (
     <div className="min-h-screen bg-background pb-24">
       {/* Header */}
-      <header className="bg-card border-b border-border px-6 py-6 patela-shadow-sm">
-        <h1 className="text-2xl font-bold text-foreground">{t("helpSupport")}</h1>
-        <p className="text-muted-foreground">{t("contactUs")}</p>
+      <header className="bg-primary px-6 py-6 patela-shadow-md">
+        <h1 className="text-2xl font-bold text-primary-foreground">{t("helpSupport")}</h1>
+        <p className="text-primary-foreground/70">{t("contactUs")}</p>
       </header>
 
       <main className="px-6 py-6 space-y-6">
         {/* Quick Contact */}
         <div className="grid grid-cols-2 gap-3">
-          <Button variant="outline" className="h-auto py-4 flex-col gap-2">
-            <Phone className="h-6 w-6 text-primary" />
+          <Button variant="outline" className="h-auto py-4 flex-col gap-2 border-primary/20 hover:bg-accent/10 hover:border-accent/30">
+            <Phone className="h-6 w-6 text-accent" />
             <span className="font-medium">{t("callSupport")}</span>
           </Button>
-          <Button variant="outline" className="h-auto py-4 flex-col gap-2">
+          <Button variant="outline" className="h-auto py-4 flex-col gap-2 border-primary/20 hover:bg-success/10 hover:border-success/30">
             <MessageCircle className="h-6 w-6 text-success" />
             <span className="font-medium">{t("whatsappSupport")}</span>
           </Button>
@@ -77,7 +77,7 @@ export default function Help() {
 
         {/* Learn */}
         <div>
-          <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3">
+          <h2 className="text-sm font-semibold text-primary uppercase tracking-wide mb-3">
             {t("learnPatela")}
           </h2>
           <div className="space-y-2">
@@ -97,10 +97,10 @@ export default function Help() {
 
         {/* Device Diagnostics */}
         <div>
-          <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3">
+          <h2 className="text-sm font-semibold text-primary uppercase tracking-wide mb-3">
             {t("deviceDiagnostics")}
           </h2>
-          <div className="bg-card rounded-xl border border-border p-4 space-y-4">
+          <div className="bg-card rounded-xl border border-primary/10 p-4 space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Smartphone className="h-4 w-4" />

@@ -26,8 +26,8 @@ export default function BankSuccess() {
         </p>
 
         {/* Summary Card */}
-        <div className="w-full max-w-sm bg-card rounded-3xl patela-shadow-md overflow-hidden mb-8">
-          <div className="patela-gradient-primary p-5">
+        <div className="w-full max-w-sm bg-card rounded-3xl patela-shadow-md overflow-hidden mb-8 border border-primary/10">
+          <div className="bg-primary p-5">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
                 <CreditCard className="h-6 w-6 text-primary-foreground" />
@@ -53,14 +53,14 @@ export default function BankSuccess() {
         <div className="w-full max-w-sm mb-8">
           <h3 className="font-semibold text-foreground mb-3 text-left">{t("next")}:</h3>
           <div className="space-y-3">
-            <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-xl">
-              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
+            <div className="flex items-center gap-3 p-3 bg-accent/10 rounded-xl">
+              <div className="w-8 h-8 rounded-full bg-accent flex items-center justify-center text-accent-foreground font-bold text-sm">
                 1
               </div>
               <span className="text-foreground">{t("pairDevice")}</span>
             </div>
-            <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-xl">
-              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
+            <div className="flex items-center gap-3 p-3 bg-accent/10 rounded-xl">
+              <div className="w-8 h-8 rounded-full bg-accent flex items-center justify-center text-accent-foreground font-bold text-sm">
                 2
               </div>
               <span className="text-foreground">{t("takePayment")}</span>
@@ -71,7 +71,7 @@ export default function BankSuccess() {
         <div className="w-full max-w-sm space-y-3">
           <Button 
             size="xl" 
-            className="w-full patela-gradient-primary text-lg font-bold h-16 rounded-2xl patela-shadow-md"
+            className="w-full bg-accent text-accent-foreground text-lg font-bold h-16 rounded-2xl patela-shadow-accent hover:bg-accent/90"
             onClick={() => navigate("/device/start")}
           >
             {t("pairDevice")}
@@ -81,7 +81,7 @@ export default function BankSuccess() {
           <Button 
             variant="outline" 
             size="lg"
-            className="w-full h-14 rounded-2xl"
+            className="w-full h-14 rounded-2xl border-primary/20 hover:bg-primary/5"
             onClick={() => navigate("/home")}
           >
             <Home className="mr-2 h-5 w-5" />

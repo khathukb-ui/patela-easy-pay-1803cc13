@@ -10,10 +10,10 @@ interface TodayStatsProps {
 
 export function TodayStats({ totalSales, salesCount, refundsTotal, netAmount }: TodayStatsProps) {
   return (
-    <div className="bg-card rounded-2xl p-5 patela-shadow-md border border-border/50 animate-patela-slide-up">
+    <div className="bg-card rounded-2xl p-5 patela-shadow-md border border-primary/10 animate-patela-slide-up">
       <div className="flex items-center gap-2 mb-4">
-        <TrendingUp className="h-5 w-5 text-primary" />
-        <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+        <TrendingUp className="h-5 w-5 text-accent" />
+        <h2 className="text-sm font-semibold text-primary uppercase tracking-wide">
           Today's Summary
         </h2>
       </div>

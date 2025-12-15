@@ -64,7 +64,7 @@ export default function Payment() {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6">
         <div className="flex flex-col items-center text-center space-y-8 animate-patela-fade-in">
-          <div className="h-32 w-32 rounded-full patela-gradient-primary flex items-center justify-center animate-patela-pulse">
+          <div className="h-32 w-32 rounded-full bg-primary flex items-center justify-center animate-patela-pulse patela-shadow-primary">
             <CreditCard className="h-16 w-16 text-primary-foreground" />
           </div>
           

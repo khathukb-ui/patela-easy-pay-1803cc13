@@ -16,12 +16,12 @@ const buttonVariants = cva(
         ghost: "hover:bg-secondary hover:text-secondary-foreground",
         link: "text-primary underline-offset-4 hover:underline",
         // Patela-specific variants
-        accent: "patela-gradient-accent text-accent-foreground patela-shadow-accent hover:opacity-95 hover:patela-shadow-lg",
+        accent: "bg-accent text-accent-foreground patela-shadow-accent hover:bg-accent/90 hover:patela-shadow-lg",
         success: "patela-gradient-success text-success-foreground patela-shadow-success hover:opacity-95",
         danger: "patela-gradient-danger text-destructive-foreground hover:opacity-95",
-        hero: "patela-gradient-accent text-accent-foreground patela-shadow-accent text-lg font-bold hover:opacity-95 hover:patela-shadow-lg",
+        hero: "bg-accent text-accent-foreground patela-shadow-accent text-lg font-bold hover:bg-accent/90 hover:patela-shadow-lg",
         keypad: "bg-card text-foreground border-2 border-border hover:bg-secondary hover:border-primary/20 patela-shadow-sm text-2xl font-bold",
-        quickAmount: "bg-secondary text-secondary-foreground border-2 border-transparent hover:border-primary/30 hover:bg-primary/10 font-bold",
+        quickAmount: "bg-primary/10 text-primary border-2 border-transparent hover:border-accent/30 hover:bg-accent/10 font-bold",
       },
       size: {
         default: "h-12 px-6 py-3",

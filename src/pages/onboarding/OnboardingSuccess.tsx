@@ -25,10 +25,10 @@ export default function OnboardingSuccess() {
 
         {/* Next Steps */}
         <div className="w-full space-y-4 pt-4">
-          <div className="bg-card rounded-2xl p-5 border border-border patela-shadow-sm text-left">
+          <div className="bg-card rounded-2xl p-5 border border-primary/10 patela-shadow-sm text-left">
             <div className="flex items-start gap-4">
-              <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                <CreditCard className="h-6 w-6 text-primary" />
+              <div className="h-12 w-12 rounded-xl bg-accent/10 flex items-center justify-center flex-shrink-0">
+                <CreditCard className="h-6 w-6 text-accent" />
               </div>
               <div>
                 <h3 className="font-semibold text-foreground mb-1">{t("linkBank")}</h3>
@@ -39,10 +39,10 @@ export default function OnboardingSuccess() {
             </div>
           </div>
 
-          <div className="bg-card rounded-2xl p-5 border border-border patela-shadow-sm text-left">
+          <div className="bg-card rounded-2xl p-5 border border-primary/10 patela-shadow-sm text-left">
             <div className="flex items-start gap-4">
-              <div className="h-12 w-12 rounded-xl bg-accent/10 flex items-center justify-center flex-shrink-0">
-                <Smartphone className="h-6 w-6 text-accent" />
+              <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                <Smartphone className="h-6 w-6 text-primary" />
               </div>
               <div>
                 <h3 className="font-semibold text-foreground mb-1">{t("pairDevice")}</h3>
@@ -69,7 +69,7 @@ export default function OnboardingSuccess() {
           <Button
             variant="outline"
             size="lg"
-            className="w-full"
+            className="w-full border-primary/20 hover:bg-primary/5"
             onClick={() => navigate("/home")}
           >
             {t("home")}
