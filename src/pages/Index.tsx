@@ -183,8 +183,8 @@ export default function Index() {
       {/* Hero Section */}
       <section className="relative min-h-screen flex flex-col pt-16">
         <div 
-          className="absolute inset-0 bg-cover bg-right bg-no-repeat"
-          style={{ backgroundImage: `url(${patelaHeroBg})` }}
+          className="absolute inset-0 bg-cover bg-no-repeat"
+          style={{ backgroundImage: `url(${patelaHeroBg})`, backgroundPosition: '100% center' }}
         />
         <div className="absolute inset-0 bg-gradient-to-br from-primary/98 via-primary/90 to-primary/95" />
         
