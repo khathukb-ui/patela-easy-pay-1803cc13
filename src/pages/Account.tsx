@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { BottomNav } from "@/components/patela/BottomNav";
 import { Button } from "@/components/ui/button";
 import { 
@@ -40,6 +41,8 @@ function SettingsItem({ icon: Icon, label, description, onClick, danger }: Setti
 }
 
 export default function Account() {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen bg-background pb-24">
       {/* Header */}
@@ -84,7 +87,8 @@ export default function Account() {
             <SettingsItem
               icon={Smartphone}
               label="Patela Device"
-              description="Patela-7823 • Connected"
+              description="Patela Pro • Connected"
+              onClick={() => navigate("/device/manage")}
             />
           </div>
         </div>
