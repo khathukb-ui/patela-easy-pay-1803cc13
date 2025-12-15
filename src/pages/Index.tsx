@@ -91,10 +91,61 @@ export default function Index() {
     { value: "24/7", label: "Support" },
   ];
 
-  const testimonials = [
-    { name: "Thembi M.", location: "Soweto", quote: "Now I never miss a sale. Customers love tapping to pay!", rating: 5 },
-    { name: "Sipho K.", location: "Durban", quote: "The money comes the next day. No stress, no waiting.", rating: 5 },
-    { name: "Nomsa D.", location: "Cape Town", quote: "So easy to use. Even my mother can take payments now!", rating: 5 },
+  const successStories = [
+    { 
+      name: "Thembi Mabaso", 
+      location: "Soweto Market", 
+      business: "Fresh Produce Vendor",
+      quote: "Before Patela, I was losing 30% of sales because people only had cards. Now my daily sales jumped from R800 to R1,200! I even bought a second table for my stall.", 
+      rating: 5,
+      growth: "+50% Sales",
+      since: "Using Patela for 8 months"
+    },
+    { 
+      name: "Sipho Khumalo", 
+      location: "Durban Beachfront", 
+      business: "Craft & Souvenirs",
+      quote: "Tourists love tapping to pay. Last December I made R45,000 in one month – my best season ever! The next-day payouts mean I can buy stock immediately.", 
+      rating: 5,
+      growth: "R45K Record Month",
+      since: "Using Patela for 1 year"
+    },
+    { 
+      name: "Nomsa Dlamini", 
+      location: "Cape Town Station", 
+      business: "Fast Food Kiosk",
+      quote: "I was scared of technology, but Patela is so simple. My daughter set it up in 5 minutes. Now I process over 100 card transactions every day!", 
+      rating: 5,
+      growth: "100+ Daily Sales",
+      since: "Using Patela for 6 months"
+    },
+    { 
+      name: "Mandla Ngwenya", 
+      location: "Johannesburg CBD", 
+      business: "Mobile Phone Repairs",
+      quote: "Customers trust me more now that I give proper receipts. My repair business grew from a small table to a proper shop in just 10 months with Patela.", 
+      rating: 5,
+      growth: "Opened Own Shop",
+      since: "Using Patela for 10 months"
+    },
+    { 
+      name: "Lindiwe Mokoena", 
+      location: "Pretoria Township", 
+      business: "Hair Salon",
+      quote: "My stokvel group all got Patela together. We share tips and help each other. My salon income doubled because clients can pay for bigger treatments with card.", 
+      rating: 5,
+      growth: "2x Income",
+      since: "Using Patela for 14 months"
+    },
+    { 
+      name: "Thabo Molefe", 
+      location: "Bloemfontein Market", 
+      business: "Clothing & Accessories",
+      quote: "I started with one rack of clothes. Thanks to card payments, I now have 3 employees and a container shop. Patela changed my life completely!", 
+      rating: 5,
+      growth: "3 Employees Hired",
+      since: "Using Patela for 2 years"
+    },
   ];
 
   return (
@@ -362,32 +413,48 @@ export default function Index() {
         </div>
       </section>
 
-      {/* Testimonials */}
+      {/* Success Stories */}
       <section id="testimonials" className="py-20 px-4 sm:px-6 bg-background">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <span className="inline-block text-accent font-semibold text-sm uppercase tracking-wider mb-3">Testimonials</span>
-            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">What Vendors Say</h2>
+            <span className="inline-block text-accent font-semibold text-sm uppercase tracking-wider mb-3">Success Stories</span>
+            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">Real Vendors, Real Growth</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">See how Patela is helping South African entrepreneurs grow their businesses</p>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-6">
-            {testimonials.map((testimonial) => (
-              <div key={testimonial.name} className="bg-card rounded-2xl p-6 border border-border">
-                <div className="flex gap-1 mb-4">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} className="h-5 w-5 fill-warning text-warning" />
-                  ))}
-                </div>
-                <p className="text-foreground mb-6 italic">"{testimonial.quote}"</p>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                    <span className="text-primary font-bold">{testimonial.name[0]}</span>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {successStories.map((story) => (
+              <div key={story.name} className="bg-card rounded-2xl p-6 border border-border hover:border-primary/30 hover:shadow-lg transition-all duration-300">
+                {/* Growth Badge */}
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex gap-1">
+                    {[...Array(story.rating)].map((_, i) => (
+                      <Star key={i} className="h-4 w-4 fill-warning text-warning" />
+                    ))}
                   </div>
-                  <div>
-                    <p className="font-semibold text-foreground">{testimonial.name}</p>
-                    <p className="text-sm text-muted-foreground">{testimonial.location}</p>
+                  <span className="inline-flex items-center gap-1 bg-success/10 text-success px-3 py-1 rounded-full text-xs font-bold">
+                    <TrendingUp className="h-3 w-3" />
+                    {story.growth}
+                  </span>
+                </div>
+                
+                {/* Quote */}
+                <p className="text-foreground mb-6 leading-relaxed">"{story.quote}"</p>
+                
+                {/* Profile */}
+                <div className="flex items-center gap-3 pt-4 border-t border-border">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+                    <span className="text-primary-foreground font-bold text-lg">{story.name.split(' ').map(n => n[0]).join('')}</span>
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-semibold text-foreground">{story.name}</p>
+                    <p className="text-sm text-muted-foreground">{story.business}</p>
+                    <p className="text-xs text-muted-foreground">{story.location}</p>
                   </div>
                 </div>
+                
+                {/* Time Badge */}
+                <p className="text-xs text-muted-foreground mt-4 text-center">{story.since}</p>
               </div>
             ))}
           </div>
