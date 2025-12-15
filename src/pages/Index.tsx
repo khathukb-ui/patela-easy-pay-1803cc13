@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Shield, Wifi, Smartphone } from "lucide-react";
 import { PatelaLogo } from "@/components/patela/PatelaLogo";
 import patelaHeroBg from "@/assets/patela-hero-bg.jpg";
-import patelaDeviceBox from "@/assets/patela-device-box.jpg";
 
 export default function Index() {
   const navigate = useNavigate();
@@ -27,22 +26,9 @@ export default function Index() {
           </div>
 
           {/* Tagline */}
-          <p className="text-xl text-primary-foreground/90 mb-6 animate-patela-slide-up" style={{ animationDelay: "0.1s" }}>
-            Get paid. Stay paid.
+          <p className="text-xl text-primary-foreground/90 mb-8 font-bold uppercase tracking-wide animate-patela-slide-up" style={{ animationDelay: "0.1s" }}>
+            Built for the Hustle.
           </p>
-
-          {/* Device Image */}
-          <div className="relative w-48 h-48 mb-6 animate-patela-fade-in" style={{ animationDelay: "0.15s" }}>
-            <div className="absolute inset-0 rounded-3xl overflow-hidden shadow-2xl border-4 border-primary-foreground/20">
-              <img 
-                src={patelaDeviceBox} 
-                alt="Patela payment device" 
-                className="w-full h-full object-cover"
-              />
-            </div>
-            {/* Glow effect */}
-            <div className="absolute -inset-4 rounded-3xl bg-accent/20 blur-2xl -z-10" />
-          </div>
 
           {/* Features */}
           <div className="w-full max-w-sm space-y-3 animate-patela-fade-in" style={{ animationDelay: "0.2s" }}>
