@@ -1,9 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Check, CreditCard, Smartphone, ArrowRight } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function OnboardingSuccess() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6 py-12">
@@ -15,9 +17,9 @@ export default function OnboardingSuccess() {
 
         {/* Title */}
         <div className="space-y-2">
-          <h1 className="text-4xl font-bold text-foreground">You're Ready!</h1>
+          <h1 className="text-4xl font-bold text-foreground">{t("allSet")}</h1>
           <p className="text-muted-foreground text-lg">
-            Your Patela account is set up
+            {t("accountReady")}
           </p>
         </div>
 
@@ -29,9 +31,9 @@ export default function OnboardingSuccess() {
                 <CreditCard className="h-6 w-6 text-primary" />
               </div>
               <div>
-                <h3 className="font-semibold text-foreground mb-1">Link Your Bank</h3>
+                <h3 className="font-semibold text-foreground mb-1">{t("linkBank")}</h3>
                 <p className="text-sm text-muted-foreground">
-                  Add your bank account to receive your money
+                  {t("linkBankDesc")}
                 </p>
               </div>
             </div>
@@ -43,9 +45,9 @@ export default function OnboardingSuccess() {
                 <Smartphone className="h-6 w-6 text-accent" />
               </div>
               <div>
-                <h3 className="font-semibold text-foreground mb-1">Pair Your Device</h3>
+                <h3 className="font-semibold text-foreground mb-1">{t("pairDevice")}</h3>
                 <p className="text-sm text-muted-foreground">
-                  Connect your Patela card machine
+                  {t("pairDeviceDesc")}
                 </p>
               </div>
             </div>
@@ -58,9 +60,9 @@ export default function OnboardingSuccess() {
             variant="hero"
             size="xl"
             className="w-full"
-            onClick={() => navigate("/home")}
+            onClick={() => navigate("/bank/start")}
           >
-            Go to Home
+            {t("linkBank")}
             <ArrowRight className="ml-2 h-5 w-5" />
           </Button>
           
@@ -70,7 +72,7 @@ export default function OnboardingSuccess() {
             className="w-full"
             onClick={() => navigate("/home")}
           >
-            Set up later
+            {t("home")}
           </Button>
         </div>
       </div>

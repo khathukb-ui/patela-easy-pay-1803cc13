@@ -11,6 +11,7 @@ import {
   Battery,
   RefreshCw
 } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface HelpItemProps {
   icon: typeof Phone;
@@ -30,8 +31,8 @@ function HelpItem({ icon: Icon, label, description, onClick, variant = "default"
           : "bg-card border-border hover:bg-secondary/50"
       }`}
     >
-      <div className={`h-10 w-10 rounded-xl ${variant === "highlight" ? 'patela-gradient-primary' : 'bg-secondary'} flex items-center justify-center`}>
-        <Icon className={`h-5 w-5 ${variant === "highlight" ? 'text-primary-foreground' : 'text-foreground'}`} />
+      <div className={`h-10 w-10 rounded-xl ${variant === "highlight" ? "patela-gradient-primary" : "bg-secondary"} flex items-center justify-center`}>
+        <Icon className={`h-5 w-5 ${variant === "highlight" ? "text-primary-foreground" : "text-foreground"}`} />
       </div>
       <div className="flex-1">
         <p className="font-medium text-foreground">{label}</p>
@@ -43,9 +44,11 @@ function HelpItem({ icon: Icon, label, description, onClick, variant = "default"
 }
 
 export default function Help() {
+  const { t } = useLanguage();
+
   // Mock device diagnostics
   const diagnostics = {
-    deviceId: "PAT-7823-ZA",
+    deviceId: "PTL-2024-7842",
     battery: 85,
     signal: "Strong",
     lastSync: "2 minutes ago",
@@ -55,8 +58,8 @@ export default function Help() {
     <div className="min-h-screen bg-background pb-24">
       {/* Header */}
       <header className="bg-card border-b border-border px-6 py-6 patela-shadow-sm">
-        <h1 className="text-2xl font-bold text-foreground">Help & Support</h1>
-        <p className="text-muted-foreground">We're here to help you</p>
+        <h1 className="text-2xl font-bold text-foreground">{t("helpSupport")}</h1>
+        <p className="text-muted-foreground">{t("contactUs")}</p>
       </header>
 
       <main className="px-6 py-6 space-y-6">
@@ -64,29 +67,29 @@ export default function Help() {
         <div className="grid grid-cols-2 gap-3">
           <Button variant="outline" className="h-auto py-4 flex-col gap-2">
             <Phone className="h-6 w-6 text-primary" />
-            <span className="font-medium">Call Us</span>
+            <span className="font-medium">{t("callSupport")}</span>
           </Button>
           <Button variant="outline" className="h-auto py-4 flex-col gap-2">
             <MessageCircle className="h-6 w-6 text-success" />
-            <span className="font-medium">WhatsApp</span>
+            <span className="font-medium">{t("whatsappSupport")}</span>
           </Button>
         </div>
 
         {/* Learn */}
         <div>
           <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3">
-            Learn How
+            {t("learnPatela")}
           </h2>
           <div className="space-y-2">
             <HelpItem
               icon={PlayCircle}
-              label="Watch: How to Take Payment"
+              label={t("howToGetPaid")}
               description="2 min video"
               variant="highlight"
             />
             <HelpItem
               icon={BookOpen}
-              label="Practice Mode"
+              label={t("practiceMode")}
               description="Try a test payment"
             />
           </div>
@@ -95,20 +98,20 @@ export default function Help() {
         {/* Device Diagnostics */}
         <div>
           <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3">
-            Device Status
+            {t("deviceDiagnostics")}
           </h2>
           <div className="bg-card rounded-xl border border-border p-4 space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Smartphone className="h-4 w-4" />
-                <span className="text-sm">Device ID</span>
+                <span className="text-sm">{t("device")} ID</span>
               </div>
               <span className="text-sm font-mono text-foreground">{diagnostics.deviceId}</span>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Battery className="h-4 w-4" />
-                <span className="text-sm">Battery</span>
+                <span className="text-sm">{t("battery")}</span>
               </div>
               <span className="text-sm font-medium text-success">{diagnostics.battery}%</span>
             </div>
@@ -122,13 +125,13 @@ export default function Help() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-muted-foreground">
                 <RefreshCw className="h-4 w-4" />
-                <span className="text-sm">Last Sync</span>
+                <span className="text-sm">{t("lastSync")}</span>
               </div>
               <span className="text-sm text-foreground">{diagnostics.lastSync}</span>
             </div>
 
             <Button variant="outline" className="w-full mt-2">
-              Share Diagnostics with Support
+              {t("shareDiagnostics")}
             </Button>
           </div>
         </div>

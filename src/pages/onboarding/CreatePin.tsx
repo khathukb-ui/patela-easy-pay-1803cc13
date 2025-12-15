@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { PinInput } from "@/components/patela/PinInput";
 import { ProgressSteps } from "@/components/patela/ProgressSteps";
 import { ArrowLeft, Lock, Shield } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 type Step = "create" | "confirm";
 
@@ -12,6 +13,7 @@ export default function CreatePin() {
   const [confirmPin, setConfirmPin] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   const handlePinChange = (value: string) => {
     setError("");
@@ -27,7 +29,7 @@ export default function CreatePin() {
           // Success - navigate to next step
           setTimeout(() => navigate("/onboarding/success"), 300);
         } else {
-          setError("PINs don't match. Try again.");
+          setError(t("pinMismatch"));
           setConfirmPin("");
         }
       }
@@ -53,7 +55,7 @@ export default function CreatePin() {
           className="flex items-center gap-2 text-muted-foreground mb-6 hover:text-foreground transition-colors"
         >
           <ArrowLeft className="h-5 w-5" />
-          Back
+          {t("back")}
         </button>
 
         <div className="text-center mb-8 animate-patela-slide-up">
@@ -65,12 +67,10 @@ export default function CreatePin() {
             )}
           </div>
           <h1 className="text-3xl font-bold text-foreground mb-2">
-            {step === "create" ? "Create Your PIN" : "Confirm Your PIN"}
+            {step === "create" ? t("createPin") : t("confirmPin")}
           </h1>
           <p className="text-muted-foreground text-lg">
-            {step === "create"
-              ? "This PIN keeps your money safe"
-              : "Enter the same PIN again"}
+            {step === "create" ? t("createPinDesc") : t("confirmPinDesc")}
           </p>
         </div>
 
@@ -84,7 +84,7 @@ export default function CreatePin() {
 
         <div className="pt-6 text-center">
           <p className="text-sm text-muted-foreground">
-            You'll need this PIN for refunds and changes
+            {t("createPinDesc")}
           </p>
         </div>
       </div>

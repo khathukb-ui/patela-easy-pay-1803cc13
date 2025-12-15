@@ -1,9 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, Home, CreditCard, ArrowRight } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function BankSuccess() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6">
@@ -17,10 +19,10 @@ export default function BankSuccess() {
         </div>
 
         <h1 className="text-3xl font-bold text-foreground mb-2">
-          You're All Set!
+          {t("allSet")}
         </h1>
         <p className="text-muted-foreground mb-8 max-w-xs text-lg">
-          Your bank account is linked and verified. You can now receive payments!
+          {t("verified")}! {t("accountReady")}
         </p>
 
         {/* Summary Card */}
@@ -31,17 +33,17 @@ export default function BankSuccess() {
                 <CreditCard className="h-6 w-6 text-primary-foreground" />
               </div>
               <div className="text-left">
-                <p className="text-primary-foreground/80 text-sm">Linked Account</p>
+                <p className="text-primary-foreground/80 text-sm">{t("bankAccount")}</p>
                 <p className="text-primary-foreground font-bold text-lg">FNB ****4521</p>
               </div>
             </div>
           </div>
           <div className="p-5">
             <div className="flex items-center justify-between">
-              <span className="text-muted-foreground">Status</span>
+              <span className="text-muted-foreground">{t("status")}</span>
               <span className="flex items-center gap-2 text-success font-semibold">
                 <CheckCircle2 className="h-4 w-4" />
-                Verified
+                {t("verified")}
               </span>
             </div>
           </div>
@@ -49,19 +51,19 @@ export default function BankSuccess() {
 
         {/* What's Next */}
         <div className="w-full max-w-sm mb-8">
-          <h3 className="font-semibold text-foreground mb-3 text-left">What's next?</h3>
+          <h3 className="font-semibold text-foreground mb-3 text-left">{t("next")}:</h3>
           <div className="space-y-3">
             <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-xl">
               <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
                 1
               </div>
-              <span className="text-foreground">Pair your Patela device</span>
+              <span className="text-foreground">{t("pairDevice")}</span>
             </div>
             <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-xl">
               <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
                 2
               </div>
-              <span className="text-foreground">Start taking payments</span>
+              <span className="text-foreground">{t("takePayment")}</span>
             </div>
           </div>
         </div>
@@ -70,11 +72,20 @@ export default function BankSuccess() {
           <Button 
             size="xl" 
             className="w-full patela-gradient-primary text-lg font-bold h-16 rounded-2xl patela-shadow-md"
+            onClick={() => navigate("/device/start")}
+          >
+            {t("pairDevice")}
+            <ArrowRight className="ml-auto h-5 w-5" />
+          </Button>
+          
+          <Button 
+            variant="outline" 
+            size="lg"
+            className="w-full h-14 rounded-2xl"
             onClick={() => navigate("/home")}
           >
-            <Home className="mr-3 h-5 w-5" />
-            Go to Home
-            <ArrowRight className="ml-auto h-5 w-5" />
+            <Home className="mr-2 h-5 w-5" />
+            {t("home")}
           </Button>
         </div>
       </div>

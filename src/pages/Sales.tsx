@@ -3,6 +3,7 @@ import { BottomNav } from "@/components/patela/BottomNav";
 import { SaleItem, SaleStatus } from "@/components/patela/SaleItem";
 import { Button } from "@/components/ui/button";
 import { Calendar, Download, Filter } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface Sale {
   id: string;
@@ -25,6 +26,7 @@ const mockSales: Sale[] = [
 
 export default function Sales() {
   const [sales] = useState<Sale[]>(mockSales);
+  const { t } = useLanguage();
 
   const totalToday = sales
     .filter((s) => s.status === "success")
@@ -35,7 +37,7 @@ export default function Sales() {
       {/* Header */}
       <header className="bg-card border-b border-border px-6 py-4 patela-shadow-sm">
         <div className="flex items-center justify-between mb-4">
-          <h1 className="text-2xl font-bold text-foreground">Sales History</h1>
+          <h1 className="text-2xl font-bold text-foreground">{t("salesHistory")}</h1>
           <div className="flex items-center gap-2">
             <Button variant="ghost" size="icon">
               <Filter className="h-5 w-5" />
@@ -49,16 +51,16 @@ export default function Sales() {
         {/* Date Selector */}
         <Button variant="outline" className="w-full justify-start gap-2">
           <Calendar className="h-4 w-4" />
-          Today, {new Date().toLocaleDateString("en-ZA", { day: "numeric", month: "short" })}
+          {t("today")}, {new Date().toLocaleDateString("en-ZA", { day: "numeric", month: "short" })}
         </Button>
       </header>
 
       <main className="px-6 py-4">
         {/* Summary */}
         <div className="bg-primary/5 rounded-xl p-4 mb-6 border border-primary/10">
-          <p className="text-sm text-muted-foreground mb-1">Today's Total</p>
+          <p className="text-sm text-muted-foreground mb-1">{t("todaySales")}</p>
           <p className="text-3xl font-bold text-primary">R{totalToday.toFixed(2)}</p>
-          <p className="text-sm text-muted-foreground">{sales.filter(s => s.status === "success").length} successful transactions</p>
+          <p className="text-sm text-muted-foreground">{sales.filter(s => s.status === "success").length} {t("numberOfSales").toLowerCase()}</p>
         </div>
 
         {/* Sales List */}

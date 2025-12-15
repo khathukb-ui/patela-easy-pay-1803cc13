@@ -3,9 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ProgressSteps } from "@/components/patela/ProgressSteps";
 import { Camera, CreditCard, X, Flashlight, RotateCcw } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function BankCardScan() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [isScanning, setIsScanning] = useState(false);
   const [flashOn, setFlashOn] = useState(false);
 
@@ -41,7 +43,7 @@ export default function BankCardScan() {
       {/* Scan Area */}
       <div className="flex-1 flex flex-col items-center justify-center px-6">
         <h1 className="text-xl font-bold text-foreground text-center mb-2">
-          Scan Your Bank Card
+          {t("scanBankCard")}
         </h1>
         <p className="text-muted-foreground text-center mb-6">
           Hold your card inside the frame
@@ -54,7 +56,7 @@ export default function BankCardScan() {
             {isScanning ? (
               <div className="flex flex-col items-center">
                 <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4" />
-                <p className="text-foreground font-medium">Scanning...</p>
+                <p className="text-foreground font-medium">{t("loading")}</p>
               </div>
             ) : (
               <Camera className="h-16 w-16 text-muted-foreground/50" />
@@ -106,7 +108,7 @@ export default function BankCardScan() {
           {isScanning ? (
             <>
               <RotateCcw className="mr-3 h-6 w-6 animate-spin" />
-              Scanning Card...
+              {t("loading")}
             </>
           ) : (
             <>
@@ -122,7 +124,7 @@ export default function BankCardScan() {
           className="w-full text-base h-14"
           onClick={() => navigate("/bank/manual")}
         >
-          Enter Details Manually Instead
+          {t("enterManually")}
         </Button>
       </div>
     </div>

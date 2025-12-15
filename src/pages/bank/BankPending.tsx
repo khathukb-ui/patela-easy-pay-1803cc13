@@ -1,9 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Clock, Bell, MessageCircle } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function BankPending() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6">
@@ -13,10 +15,10 @@ export default function BankPending() {
         </div>
 
         <h1 className="text-2xl font-bold text-foreground mb-2">
-          Under Review
+          {t("underReview")}
         </h1>
         <p className="text-muted-foreground mb-8 max-w-xs">
-          We're reviewing your bank details. This usually takes less than 24 hours.
+          {t("verifying")}
         </p>
 
         {/* Status Timeline */}
@@ -27,7 +29,7 @@ export default function BankPending() {
                 <span className="text-success-foreground text-sm">✓</span>
               </div>
               <div className="flex-1">
-                <p className="font-medium text-foreground">Documents Received</p>
+                <p className="font-medium text-foreground">{t("done")}</p>
                 <p className="text-sm text-muted-foreground">Just now</p>
               </div>
             </div>
@@ -37,7 +39,7 @@ export default function BankPending() {
                 <span className="text-accent-foreground text-sm">2</span>
               </div>
               <div className="flex-1">
-                <p className="font-medium text-foreground">Being Reviewed</p>
+                <p className="font-medium text-foreground">{t("verifying")}</p>
                 <p className="text-sm text-muted-foreground">In progress</p>
               </div>
             </div>
@@ -47,7 +49,7 @@ export default function BankPending() {
                 <span className="text-muted-foreground text-sm">3</span>
               </div>
               <div className="flex-1">
-                <p className="font-medium text-muted-foreground">Verified</p>
+                <p className="font-medium text-muted-foreground">{t("verified")}</p>
                 <p className="text-sm text-muted-foreground">Pending</p>
               </div>
             </div>
@@ -58,7 +60,7 @@ export default function BankPending() {
         <div className="w-full max-w-sm flex items-center gap-3 p-4 bg-primary/5 rounded-2xl mb-8">
           <Bell className="h-5 w-5 text-primary flex-shrink-0" />
           <p className="text-sm text-foreground">
-            We'll notify you by SMS when your account is verified
+            {t("notifications")}
           </p>
         </div>
 
@@ -68,7 +70,7 @@ export default function BankPending() {
             className="w-full patela-gradient-primary text-lg font-bold h-16 rounded-2xl patela-shadow-md"
             onClick={() => navigate("/home")}
           >
-            Go to Home
+            {t("home")}
           </Button>
 
           <Button 
@@ -78,7 +80,7 @@ export default function BankPending() {
             onClick={() => navigate("/help")}
           >
             <MessageCircle className="mr-2 h-5 w-5" />
-            Contact Support
+            {t("helpSupport")}
           </Button>
         </div>
       </div>

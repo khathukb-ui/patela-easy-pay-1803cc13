@@ -2,9 +2,11 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Upload, FileText, Camera, CheckCircle2, X } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function BankUploadProof() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [uploadedFile, setUploadedFile] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
 
@@ -32,14 +34,14 @@ export default function BankUploadProof() {
           <ArrowLeft className="h-5 w-5 text-foreground" />
         </button>
         <h1 className="flex-1 text-center text-lg font-bold text-foreground pr-10">
-          Upload Proof
+          {t("uploadProof")}
         </h1>
       </div>
 
       {/* Content */}
       <div className="flex-1 px-6 py-4">
         <p className="text-muted-foreground mb-6">
-          Upload a bank statement or proof of account ownership. This will be reviewed within 24 hours.
+          {t("uploadProof")}
         </p>
 
         {/* Upload Options */}
@@ -77,7 +79,7 @@ export default function BankUploadProof() {
         {isUploading && (
           <div className="flex flex-col items-center justify-center py-16">
             <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4" />
-            <p className="text-foreground font-medium">Uploading...</p>
+            <p className="text-foreground font-medium">{t("loading")}</p>
           </div>
         )}
 
@@ -90,7 +92,7 @@ export default function BankUploadProof() {
               </div>
               <div className="flex-1">
                 <p className="font-semibold text-foreground">{uploadedFile}</p>
-                <p className="text-sm text-success">Uploaded successfully</p>
+                <p className="text-sm text-success">{t("success")}</p>
               </div>
               <button 
                 onClick={() => setUploadedFile(null)}
@@ -131,7 +133,7 @@ export default function BankUploadProof() {
           disabled={!uploadedFile}
         >
           <Upload className="mr-3 h-5 w-5" />
-          Submit for Review
+          {t("confirm")}
         </Button>
       </div>
     </div>

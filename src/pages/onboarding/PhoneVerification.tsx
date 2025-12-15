@@ -6,6 +6,7 @@ import { ProgressSteps } from "@/components/patela/ProgressSteps";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, ArrowLeft, Loader2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 type Step = "phone" | "otp";
 
@@ -16,10 +17,11 @@ export default function PhoneVerification() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   const handleSendOtp = async () => {
     if (phone.length < 9) {
-      setError("Please enter a valid phone number");
+      setError(t("wrongCode"));
       return;
     }
     
@@ -39,7 +41,7 @@ export default function PhoneVerification() {
 
   const handleVerifyOtp = async () => {
     if (otp.length < 6) {
-      setError("Please enter the complete code");
+      setError(t("wrongCode"));
       return;
     }
 
@@ -54,7 +56,7 @@ export default function PhoneVerification() {
       navigate("/onboarding/pin");
     } else {
       setIsLoading(false);
-      setError("Wrong code. Please try again.");
+      setError(t("wrongCode"));
     }
   };
 
@@ -82,16 +84,16 @@ export default function PhoneVerification() {
               className="flex items-center gap-2 text-muted-foreground mb-6 hover:text-foreground transition-colors"
             >
               <ArrowLeft className="h-5 w-5" />
-              Back
+              {t("back")}
             </button>
 
             <div className="text-center mb-8 animate-patela-slide-up">
               <div className="text-6xl mb-4">📱</div>
               <h1 className="text-3xl font-bold text-foreground mb-2">
-                Your Phone Number
+                {t("enterPhone")}
               </h1>
               <p className="text-muted-foreground text-lg">
-                We'll send you a code to verify
+                {t("enterPhoneDesc")}
               </p>
             </div>
 
@@ -118,11 +120,11 @@ export default function PhoneVerification() {
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                    Sending...
+                    {t("loading")}
                   </>
                 ) : (
                   <>
-                    Send Code
+                    {t("sendCode")}
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </>
                 )}
@@ -140,16 +142,16 @@ export default function PhoneVerification() {
               className="flex items-center gap-2 text-muted-foreground mb-6 hover:text-foreground transition-colors"
             >
               <ArrowLeft className="h-5 w-5" />
-              Change number
+              {t("back")}
             </button>
 
             <div className="text-center mb-8 animate-patela-slide-up">
               <div className="text-6xl mb-4">✉️</div>
               <h1 className="text-3xl font-bold text-foreground mb-2">
-                Enter the Code
+                {t("verifyPhone")}
               </h1>
               <p className="text-muted-foreground text-lg">
-                Sent to +27 {phone}
+                {t("enterOtp")} +27 {phone}
               </p>
             </div>
 
@@ -169,7 +171,7 @@ export default function PhoneVerification() {
                 disabled={isLoading}
                 className="mt-6 text-primary font-medium hover:underline disabled:opacity-50 text-center"
               >
-                Didn't get a code? Resend
+                {t("resendCode")}
               </button>
             </div>
 
@@ -184,11 +186,11 @@ export default function PhoneVerification() {
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                    Verifying...
+                    {t("loading")}
                   </>
                 ) : (
                   <>
-                    Verify
+                    {t("confirm")}
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </>
                 )}
