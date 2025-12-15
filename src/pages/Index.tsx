@@ -171,9 +171,8 @@ export default function Index() {
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                   <Button
-                    variant="outline"
                     size="xl"
-                    className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 font-semibold"
+                    className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 font-semibold"
                   >
                     <Play className="mr-2 h-5 w-5" />
                     Watch Demo
