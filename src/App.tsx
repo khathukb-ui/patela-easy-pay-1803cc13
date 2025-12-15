@@ -21,6 +21,16 @@ import PhoneVerification from "./pages/onboarding/PhoneVerification";
 import CreatePin from "./pages/onboarding/CreatePin";
 import OnboardingSuccess from "./pages/onboarding/OnboardingSuccess";
 
+// Bank Linking
+import BankLinkingStart from "./pages/bank/BankLinkingStart";
+import BankCardScan from "./pages/bank/BankCardScan";
+import BankManualEntry from "./pages/bank/BankManualEntry";
+import BankConfirm from "./pages/bank/BankConfirm";
+import BankVerify from "./pages/bank/BankVerify";
+import BankUploadProof from "./pages/bank/BankUploadProof";
+import BankPending from "./pages/bank/BankPending";
+import BankSuccess from "./pages/bank/BankSuccess";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -38,6 +48,16 @@ const App = () => (
           <Route path="/onboarding/phone" element={<PhoneVerification />} />
           <Route path="/onboarding/pin" element={<CreatePin />} />
           <Route path="/onboarding/success" element={<OnboardingSuccess />} />
+          
+          {/* Bank Linking */}
+          <Route path="/bank/start" element={<BankLinkingStart />} />
+          <Route path="/bank/scan" element={<BankCardScan />} />
+          <Route path="/bank/manual" element={<BankManualEntry />} />
+          <Route path="/bank/confirm" element={<BankConfirm />} />
+          <Route path="/bank/verify" element={<BankVerify />} />
+          <Route path="/bank/upload" element={<BankUploadProof />} />
+          <Route path="/bank/pending" element={<BankPending />} />
+          <Route path="/bank/success" element={<BankSuccess />} />
           
           {/* Main App */}
           <Route path="/home" element={<Home />} />
