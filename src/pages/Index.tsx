@@ -186,7 +186,7 @@ export default function Index() {
           className="absolute inset-0 bg-cover bg-no-repeat"
           style={{ backgroundImage: `url(${patelaHeroBg})`, backgroundPosition: '100% center' }}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary/95 to-primary/70" />
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/95 via-primary/85 to-primary/60" />
         
         {/* Decorative elements */}
         <div className="absolute top-1/4 left-10 w-72 h-72 bg-accent/10 rounded-full blur-3xl" />
