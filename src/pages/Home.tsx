@@ -5,7 +5,20 @@ import { OfflineBanner } from "@/components/patela/OfflineBanner";
 import { TodayStats } from "@/components/patela/TodayStats";
 import { PatelaLogo } from "@/components/patela/PatelaLogo";
 import { Button } from "@/components/ui/button";
-import { CreditCard, QrCode, Smartphone, Battery, Wifi, WifiOff } from "lucide-react";
+import { 
+  CreditCard, 
+  QrCode, 
+  Smartphone, 
+  Battery, 
+  Wifi, 
+  WifiOff, 
+  Zap, 
+  ChevronRight,
+  Nfc,
+  Store,
+  Banknote,
+  Gift
+} from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Home() {
@@ -27,6 +40,13 @@ export default function Home() {
     battery: 85,
     name: "Patela Pro",
   };
+
+  const quickServices = [
+    { icon: Nfc, label: "Tap to Pay", desc: "Contactless" },
+    { icon: Banknote, label: "Payouts", desc: "Next day" },
+    { icon: Store, label: "My Sales", desc: "View all" },
+    { icon: Gift, label: "Rewards", desc: "Coming soon" },
+  ];
 
   return (
     <div className="min-h-screen bg-background pb-24">
@@ -101,8 +121,61 @@ export default function Home() {
         </div>
 
         {/* Today's Summary */}
-        <div style={{ animationDelay: "0.2s" }}>
+        <div className="animate-patela-slide-up" style={{ animationDelay: "0.2s" }}>
           <TodayStats {...todayStats} />
+        </div>
+
+        {/* Quick Services */}
+        <div className="animate-patela-slide-up" style={{ animationDelay: "0.25s" }}>
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-sm font-semibold text-primary uppercase tracking-wide">Services</h2>
+          </div>
+          <div className="grid grid-cols-4 gap-3">
+            {quickServices.map((service) => (
+              <button 
+                key={service.label}
+                className="flex flex-col items-center p-3 bg-card rounded-xl border border-primary/10 hover:bg-accent/5 hover:border-accent/30 transition-colors"
+              >
+                <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center mb-2">
+                  <service.icon className="h-5 w-5 text-accent" />
+                </div>
+                <span className="text-xs font-medium text-foreground">{service.label}</span>
+                <span className="text-[10px] text-muted-foreground">{service.desc}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Upgrade Banner */}
+        <div className="animate-patela-slide-up" style={{ animationDelay: "0.3s" }}>
+          <button 
+            className="w-full bg-gradient-to-r from-primary to-primary/80 rounded-2xl p-4 flex items-center gap-4 text-left"
+            onClick={() => navigate("/")}
+          >
+            <div className="w-12 h-12 rounded-xl bg-accent flex items-center justify-center flex-shrink-0">
+              <Zap className="h-6 w-6 text-accent-foreground" />
+            </div>
+            <div className="flex-1">
+              <p className="font-semibold text-primary-foreground">Upgrade to Patela Pro</p>
+              <p className="text-sm text-primary-foreground/70">Get a printer & larger screen</p>
+            </div>
+            <ChevronRight className="h-5 w-5 text-primary-foreground/50" />
+          </button>
+        </div>
+
+        {/* Payout Info */}
+        <div className="animate-patela-slide-up" style={{ animationDelay: "0.35s" }}>
+          <div className="bg-success/10 rounded-2xl p-4 border border-success/20">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-success/20 flex items-center justify-center">
+                <Banknote className="h-5 w-5 text-success" />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm text-muted-foreground">Next payout</p>
+                <p className="font-bold text-foreground">R2,400.00 <span className="text-sm font-normal text-success">Tomorrow</span></p>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Demo Toggle for Offline */}
