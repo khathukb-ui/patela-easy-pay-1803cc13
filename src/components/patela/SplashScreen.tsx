@@ -51,10 +51,10 @@ export function SplashScreen({ onComplete, duration = 2000 }: SplashScreenProps)
 
         {/* Tagline */}
         <p 
-          className="mt-4 text-primary-foreground/80 text-lg font-medium animate-patela-fade-in"
+          className="mt-4 text-primary-foreground/80 text-lg font-bold uppercase tracking-wide animate-patela-fade-in"
           style={{ animationDelay: "0.5s" }}
         >
-          Get paid. Stay paid.
+          Built for the Hustle.
         </p>
 
         {/* Loading indicator */}
