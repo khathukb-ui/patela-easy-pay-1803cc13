@@ -192,6 +192,17 @@
     pointer-events: none;
   }
 
+  /* Animated grain texture overlay */
+  .patela-app-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    opacity: 0.025;
+    pointer-events: none;
+    animation: grain 8s steps(10) infinite;
+  }
+
   .dark .patela-app-bg {
     background: 
       linear-gradient(135deg, hsl(261 51% 12%) 0%, hsl(261 40% 10%) 50%, hsl(261 45% 8%) 100%);
@@ -201,6 +212,10 @@
     background-image: 
       radial-gradient(circle at 100% 0%, hsl(var(--primary) / 0.15) 0%, transparent 40%),
       radial-gradient(circle at 0% 100%, hsl(var(--accent) / 0.08) 0%, transparent 40%);
+  }
+
+  .dark .patela-app-bg::after {
+    opacity: 0.04;
   }
 }
 
@@ -229,6 +244,19 @@
 @keyframes patela-fade-in {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+
+@keyframes grain {
+  0%, 100% { transform: translate(0, 0); }
+  10% { transform: translate(-2%, -2%); }
+  20% { transform: translate(2%, 2%); }
+  30% { transform: translate(-1%, 1%); }
+  40% { transform: translate(1%, -1%); }
+  50% { transform: translate(-2%, 2%); }
+  60% { transform: translate(2%, -2%); }
+  70% { transform: translate(-1%, -1%); }
+  80% { transform: translate(1%, 1%); }
+  90% { transform: translate(-2%, -1%); }
 }
 
 .animate-patela-pulse {
