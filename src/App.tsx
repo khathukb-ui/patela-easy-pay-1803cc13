@@ -3,8 +3,23 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+// Pages
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import Home from "./pages/Home";
+import Payment from "./pages/Payment";
+import PaymentSuccess from "./pages/PaymentSuccess";
+import PaymentFailed from "./pages/PaymentFailed";
+import Sales from "./pages/Sales";
+import Account from "./pages/Account";
+import Help from "./pages/Help";
+
+// Onboarding
+import LanguageSelection from "./pages/onboarding/LanguageSelection";
+import PhoneVerification from "./pages/onboarding/PhoneVerification";
+import CreatePin from "./pages/onboarding/CreatePin";
+import OnboardingSuccess from "./pages/onboarding/OnboardingSuccess";
 
 const queryClient = new QueryClient();
 
@@ -15,8 +30,25 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
+          {/* Landing */}
           <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          
+          {/* Onboarding */}
+          <Route path="/onboarding/language" element={<LanguageSelection />} />
+          <Route path="/onboarding/phone" element={<PhoneVerification />} />
+          <Route path="/onboarding/pin" element={<CreatePin />} />
+          <Route path="/onboarding/success" element={<OnboardingSuccess />} />
+          
+          {/* Main App */}
+          <Route path="/home" element={<Home />} />
+          <Route path="/payment" element={<Payment />} />
+          <Route path="/payment/success" element={<PaymentSuccess />} />
+          <Route path="/payment/failed" element={<PaymentFailed />} />
+          <Route path="/sales" element={<Sales />} />
+          <Route path="/account" element={<Account />} />
+          <Route path="/help" element={<Help />} />
+          
+          {/* 404 */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
