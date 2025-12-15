@@ -38,7 +38,7 @@ export default function CreatePin() {
 
   return (
     <div className="min-h-screen patela-app-bg flex flex-col">
-      <ProgressSteps currentStep={3} totalSteps={5} />
+      <ProgressSteps currentStep={4} totalSteps={5} />
 
       <div className="flex-1 flex flex-col px-6 py-8">
         <button
@@ -49,7 +49,7 @@ export default function CreatePin() {
               setPin("");
               setError("");
             } else {
-              navigate("/onboarding/phone");
+              navigate("/onboarding/details");
             }
           }}
           className="flex items-center gap-2 text-muted-foreground mb-6 hover:text-foreground transition-colors"

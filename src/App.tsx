@@ -22,6 +22,7 @@ import Help from "./pages/Help";
 // Onboarding
 import LanguageSelection from "./pages/onboarding/LanguageSelection";
 import PhoneVerification from "./pages/onboarding/PhoneVerification";
+import PersonalDetails from "./pages/onboarding/PersonalDetails";
 import CreatePin from "./pages/onboarding/CreatePin";
 import OnboardingSuccess from "./pages/onboarding/OnboardingSuccess";
 
@@ -81,6 +82,7 @@ function AppContent() {
           {/* Onboarding */}
           <Route path="/onboarding/language" element={<LanguageSelection />} />
           <Route path="/onboarding/phone" element={<PhoneVerification />} />
+          <Route path="/onboarding/details" element={<PersonalDetails />} />
           <Route path="/onboarding/pin" element={<CreatePin />} />
           <Route path="/onboarding/success" element={<OnboardingSuccess />} />
           

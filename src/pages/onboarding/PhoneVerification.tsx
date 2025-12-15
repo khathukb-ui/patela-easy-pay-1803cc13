@@ -53,7 +53,7 @@ export default function PhoneVerification() {
 
     if (otp === "123456") {
       setIsLoading(false);
-      navigate("/onboarding/pin");
+      navigate("/onboarding/details");
     } else {
       setIsLoading(false);
       setError(t("wrongCode"));
