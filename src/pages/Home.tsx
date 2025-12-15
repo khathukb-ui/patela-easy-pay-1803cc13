@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { BottomNav } from "@/components/patela/BottomNav";
 import { OfflineBanner } from "@/components/patela/OfflineBanner";
 import { TodayStats } from "@/components/patela/TodayStats";
+import { PatelaLogo } from "@/components/patela/PatelaLogo";
 import { Button } from "@/components/ui/button";
 import { CreditCard, QrCode, Smartphone, Battery, Wifi, WifiOff } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -35,9 +36,7 @@ export default function Home() {
       <header className="bg-primary px-6 py-4 patela-shadow-md">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-primary-foreground">
-              patela<span className="text-accent">.</span>
-            </h1>
+            <PatelaLogo size="md" variant="light" />
             <p className="text-sm text-primary-foreground/70">
               {new Date().toLocaleDateString("en-ZA", {
                 weekday: "long",

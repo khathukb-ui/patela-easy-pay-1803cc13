@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Shield, Wifi, Smartphone } from "lucide-react";
+import { PatelaLogo } from "@/components/patela/PatelaLogo";
 import patelaHeroBg from "@/assets/patela-hero-bg.jpg";
 
 export default function Index() {
@@ -21,9 +22,7 @@ export default function Index() {
         <div className="flex-1 flex flex-col items-center justify-center px-6 py-12 text-center">
           {/* Logo Text */}
           <div className="mb-4 animate-patela-bounce-in">
-            <h1 className="text-5xl font-bold text-primary-foreground tracking-tight">
-              patela<span className="text-accent">.</span>
-            </h1>
+            <PatelaLogo size="xl" variant="light" />
           </div>
 
           {/* Tagline */}
