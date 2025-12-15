@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { BottomNav } from "@/components/patela/BottomNav";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { 
   User, 
   Smartphone, 
@@ -9,7 +10,8 @@ import {
   ChevronRight,
   LogOut,
   Building2,
-  Wallet
+  Wallet,
+  Palette
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
@@ -100,6 +102,17 @@ export default function Account() {
             {t("settings")}
           </h2>
           <div className="space-y-2">
+            {/* Theme Toggle */}
+            <div className="w-full flex items-center gap-4 p-4 bg-card rounded-xl border border-primary/10">
+              <div className="h-10 w-10 rounded-xl bg-accent/10 flex items-center justify-center">
+                <Palette className="h-5 w-5 text-accent" />
+              </div>
+              <div className="flex-1">
+                <p className="font-medium text-foreground">Appearance</p>
+                <p className="text-sm text-muted-foreground">Switch theme</p>
+              </div>
+              <ThemeToggle showLabel={false} />
+            </div>
             <SettingsItem icon={Bell} label={t("notifications")} />
             <SettingsItem icon={Shield} label={t("securityPin")} />
             <SettingsItem 
