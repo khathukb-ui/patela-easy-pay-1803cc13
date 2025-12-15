@@ -174,18 +174,33 @@
     box-shadow: var(--patela-shadow-primary);
   }
 
-  /* Patela App Background with subtle pattern */
+  /* Patela App Background - matching landing page style but lighter */
   .patela-app-bg {
-    background-color: hsl(var(--background));
+    background: 
+      linear-gradient(135deg, hsl(261 51% 95%) 0%, hsl(261 30% 98%) 50%, hsl(191 50% 97%) 100%);
+    position: relative;
+  }
+
+  .patela-app-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
     background-image: 
-      radial-gradient(circle at 100% 0%, hsl(var(--primary) / 0.03) 0%, transparent 50%),
-      radial-gradient(circle at 0% 100%, hsl(var(--accent) / 0.03) 0%, transparent 50%);
+      radial-gradient(circle at 100% 0%, hsl(var(--primary) / 0.08) 0%, transparent 40%),
+      radial-gradient(circle at 0% 100%, hsl(var(--accent) / 0.06) 0%, transparent 40%),
+      radial-gradient(circle at 50% 50%, hsl(var(--primary) / 0.02) 0%, transparent 60%);
+    pointer-events: none;
   }
 
   .dark .patela-app-bg {
+    background: 
+      linear-gradient(135deg, hsl(261 51% 12%) 0%, hsl(261 40% 10%) 50%, hsl(261 45% 8%) 100%);
+  }
+
+  .dark .patela-app-bg::before {
     background-image: 
-      radial-gradient(circle at 100% 0%, hsl(var(--primary) / 0.08) 0%, transparent 50%),
-      radial-gradient(circle at 0% 100%, hsl(var(--accent) / 0.05) 0%, transparent 50%);
+      radial-gradient(circle at 100% 0%, hsl(var(--primary) / 0.15) 0%, transparent 40%),
+      radial-gradient(circle at 0% 100%, hsl(var(--accent) / 0.08) 0%, transparent 40%);
   }
 }
 
