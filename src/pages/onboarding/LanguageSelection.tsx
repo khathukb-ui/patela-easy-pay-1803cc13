@@ -10,7 +10,7 @@ export default function LanguageSelection() {
   const { language, setLanguage, t } = useLanguage();
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen patela-app-bg flex flex-col">
       <ProgressSteps currentStep={1} totalSteps={5} />
       
       <div className="flex-1 flex flex-col px-6 py-8">

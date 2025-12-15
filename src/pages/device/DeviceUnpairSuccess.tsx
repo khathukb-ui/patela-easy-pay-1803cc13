@@ -6,7 +6,7 @@ export default function DeviceUnpairSuccess() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6">
+    <div className="min-h-screen patela-app-bg flex flex-col items-center justify-center px-6">
       <div className="flex flex-col items-center text-center animate-fade-in">
         <div className="relative mb-6">
           <div className="w-24 h-24 rounded-full bg-success/10 flex items-center justify-center">

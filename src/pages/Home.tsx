@@ -49,7 +49,7 @@ export default function Home() {
   ];
 
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div className="min-h-screen patela-app-bg pb-24">
       <OfflineBanner isOffline={isOffline} queuedCount={queuedCount} />
 
       {/* Header */}
