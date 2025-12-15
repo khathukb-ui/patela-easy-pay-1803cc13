@@ -2,10 +2,12 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ProgressSteps } from "@/components/patela/ProgressSteps";
 import { ArrowLeft, ArrowRight, Building2, CreditCard, CheckCircle2, Pencil } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function BankConfirm() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useLanguage();
   const { bankName, accountNumber, accountType, scanned } = location.state || {
     bankName: "FNB",
     accountNumber: "****4521",
@@ -38,7 +40,7 @@ export default function BankConfirm() {
         </div>
         
         <h1 className="text-2xl font-bold text-foreground mb-2">
-          Confirm Your Bank
+          {t("confirmBank")}
         </h1>
         <p className="text-muted-foreground mb-6">
           Please check these details are correct
@@ -59,7 +61,7 @@ export default function BankConfirm() {
             <div className="flex items-center justify-between py-3 border-b border-border">
               <div className="flex items-center gap-3">
                 <CreditCard className="h-5 w-5 text-muted-foreground" />
-                <span className="text-muted-foreground">Account Number</span>
+                <span className="text-muted-foreground">{t("accountNumber")}</span>
               </div>
               <span className="font-bold text-foreground text-lg">{accountNumber}</span>
             </div>
@@ -67,7 +69,7 @@ export default function BankConfirm() {
             <div className="flex items-center justify-between py-3">
               <div className="flex items-center gap-3">
                 <CheckCircle2 className="h-5 w-5 text-muted-foreground" />
-                <span className="text-muted-foreground">Account Type</span>
+                <span className="text-muted-foreground">{t("accountType")}</span>
               </div>
               <span className="font-bold text-foreground">{accountType}</span>
             </div>
@@ -80,7 +82,7 @@ export default function BankConfirm() {
           className="flex items-center justify-center gap-2 w-full py-3 text-primary font-medium"
         >
           <Pencil className="h-4 w-4" />
-          Edit Details
+          {t("edit")}
         </button>
       </div>
 
@@ -91,12 +93,12 @@ export default function BankConfirm() {
           className="w-full patela-gradient-primary text-lg font-bold h-16 rounded-2xl patela-shadow-md"
           onClick={() => navigate("/bank/verify")}
         >
-          Verify Account
+          {t("verifyAccount")}
           <ArrowRight className="ml-3 h-5 w-5" />
         </Button>
         
         <p className="text-center text-sm text-muted-foreground">
-          We'll verify your account instantly
+          {t("verifying")}
         </p>
       </div>
     </div>

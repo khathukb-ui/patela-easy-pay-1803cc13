@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ProgressSteps } from "@/components/patela/ProgressSteps";
-import { ArrowLeft, ArrowRight, Building2, ChevronDown } from "lucide-react";
+import { ArrowLeft, ArrowRight, ChevronDown } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const BANKS = [
   { id: "fnb", name: "FNB", color: "#009639" },
@@ -18,6 +19,7 @@ const ACCOUNT_TYPES = ["Cheque Account", "Savings Account", "Transmission Accoun
 
 export default function BankManualEntry() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [selectedBank, setSelectedBank] = useState<string | null>(null);
   const [accountNumber, setAccountNumber] = useState("");
   const [accountType, setAccountType] = useState("");
@@ -56,17 +58,17 @@ export default function BankManualEntry() {
       {/* Content */}
       <div className="flex-1 px-6 py-4">
         <h1 className="text-2xl font-bold text-foreground mb-2">
-          Enter Bank Details
+          {t("enterManually")}
         </h1>
         <p className="text-muted-foreground mb-6">
-          This is where your money will be paid
+          {t("linkBankDesc")}
         </p>
 
         <div className="space-y-4">
           {/* Bank Selection */}
           <div>
             <label className="block text-sm font-medium text-foreground mb-2">
-              Select Your Bank
+              {t("bankName")}
             </label>
             <button
               onClick={() => setShowBankList(!showBankList)}
@@ -115,12 +117,12 @@ export default function BankManualEntry() {
           {/* Account Number */}
           <div>
             <label className="block text-sm font-medium text-foreground mb-2">
-              Account Number
+              {t("accountNumber")}
             </label>
             <Input
               type="tel"
               inputMode="numeric"
-              placeholder="Enter account number"
+              placeholder={t("accountNumber")}
               value={accountNumber}
               onChange={(e) => setAccountNumber(e.target.value.replace(/\D/g, ""))}
               className="h-14 text-lg rounded-2xl"
@@ -130,7 +132,7 @@ export default function BankManualEntry() {
           {/* Account Type */}
           <div>
             <label className="block text-sm font-medium text-foreground mb-2">
-              Account Type
+              {t("accountType")}
             </label>
             <button
               onClick={() => setShowAccountTypes(!showAccountTypes)}
@@ -139,7 +141,7 @@ export default function BankManualEntry() {
               {accountType ? (
                 <span className="font-medium text-foreground">{accountType}</span>
               ) : (
-                <span className="text-muted-foreground">Select account type</span>
+                <span className="text-muted-foreground">{t("accountType")}</span>
               )}
               <ChevronDown className={`h-5 w-5 text-muted-foreground transition-transform ${showAccountTypes ? "rotate-180" : ""}`} />
             </button>
@@ -172,7 +174,7 @@ export default function BankManualEntry() {
           onClick={handleContinue}
           disabled={!isValid}
         >
-          Continue
+          {t("continue")}
           <ArrowRight className="ml-3 h-5 w-5" />
         </Button>
       </div>

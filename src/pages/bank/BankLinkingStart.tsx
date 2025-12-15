@@ -2,9 +2,11 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ProgressSteps } from "@/components/patela/ProgressSteps";
 import { CreditCard, Building2, Shield, ArrowRight } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function BankLinkingStart() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -20,11 +22,11 @@ export default function BankLinkingStart() {
         </div>
 
         <h1 className="text-2xl font-bold text-foreground text-center mb-3">
-          Link Your Bank Account
+          {t("linkBank")}
         </h1>
         
         <p className="text-muted-foreground text-center text-lg mb-8 max-w-xs">
-          This is where your money will be paid after each sale
+          {t("linkBankDesc")}
         </p>
 
         {/* Benefits */}
@@ -34,7 +36,7 @@ export default function BankLinkingStart() {
               <CreditCard className="h-6 w-6 text-primary" />
             </div>
             <div>
-              <p className="font-semibold text-foreground">Scan Your Bank Card</p>
+              <p className="font-semibold text-foreground">{t("scanBankCard")}</p>
               <p className="text-sm text-muted-foreground">No typing needed</p>
             </div>
           </div>
@@ -59,7 +61,7 @@ export default function BankLinkingStart() {
           onClick={() => navigate("/bank/scan")}
         >
           <CreditCard className="mr-3 h-6 w-6" />
-          Scan Bank Card
+          {t("scanBankCard")}
           <ArrowRight className="ml-auto h-5 w-5" />
         </Button>
         
@@ -69,7 +71,7 @@ export default function BankLinkingStart() {
           className="w-full text-base h-14 rounded-2xl"
           onClick={() => navigate("/bank/manual")}
         >
-          Enter Details Manually
+          {t("enterManually")}
         </Button>
       </div>
     </div>

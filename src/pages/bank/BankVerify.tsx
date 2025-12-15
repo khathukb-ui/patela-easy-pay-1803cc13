@@ -2,11 +2,13 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Shield, CheckCircle2, XCircle, Upload, Loader2 } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 type VerificationStatus = "verifying" | "success" | "failed";
 
 export default function BankVerify() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [status, setStatus] = useState<VerificationStatus>("verifying");
   const [progress, setProgress] = useState(0);
 
@@ -67,15 +69,15 @@ export default function BankVerify() {
           </div>
 
           <h1 className="text-2xl font-bold text-foreground mb-2">
-            Verifying Your Account
+            {t("verifying")}
           </h1>
           <p className="text-muted-foreground mb-4">
-            This only takes a moment...
+            {t("loading")}
           </p>
 
           <div className="flex items-center gap-2 text-primary">
             <Loader2 className="h-4 w-4 animate-spin" />
-            <span className="font-medium">{progress}% Complete</span>
+            <span className="font-mono font-bold">{progress}%</span>
           </div>
         </div>
       )}
@@ -87,10 +89,10 @@ export default function BankVerify() {
           </div>
 
           <h1 className="text-2xl font-bold text-foreground mb-2">
-            Account Verified!
+            {t("verified")}!
           </h1>
           <p className="text-muted-foreground mb-8 max-w-xs">
-            Your bank account has been verified successfully. You're all set to receive payments.
+            {t("accountReady")}
           </p>
 
           <div className="w-full max-w-sm bg-success/5 border border-success/20 rounded-2xl p-4 mb-8">
@@ -100,7 +102,7 @@ export default function BankVerify() {
               </div>
               <div className="text-left">
                 <p className="font-semibold text-foreground">FNB ****4521</p>
-                <p className="text-sm text-success">Verified</p>
+                <p className="text-sm text-success">{t("verified")}</p>
               </div>
             </div>
           </div>
@@ -110,7 +112,7 @@ export default function BankVerify() {
             className="w-full max-w-sm patela-gradient-primary text-lg font-bold h-16 rounded-2xl patela-shadow-md"
             onClick={() => navigate("/bank/success")}
           >
-            Continue to Home
+            {t("continue")}
           </Button>
         </div>
       )}
@@ -122,10 +124,10 @@ export default function BankVerify() {
           </div>
 
           <h1 className="text-2xl font-bold text-foreground mb-2">
-            Verification Failed
+            {t("verificationFailed")}
           </h1>
           <p className="text-muted-foreground mb-8 max-w-xs">
-            We couldn't verify your account automatically. Please try again or upload proof.
+            {t("retry")}
           </p>
 
           <div className="w-full max-w-sm space-y-3">
@@ -134,7 +136,7 @@ export default function BankVerify() {
               className="w-full patela-gradient-primary text-lg font-bold h-16 rounded-2xl patela-shadow-md"
               onClick={handleRetry}
             >
-              Try Again
+              {t("retry")}
             </Button>
 
             <Button 
@@ -144,7 +146,7 @@ export default function BankVerify() {
               onClick={() => navigate("/bank/upload")}
             >
               <Upload className="mr-2 h-5 w-5" />
-              Upload Bank Statement
+              {t("uploadProof")}
             </Button>
 
             <Button 
@@ -153,7 +155,7 @@ export default function BankVerify() {
               className="w-full h-14"
               onClick={() => navigate("/help")}
             >
-              Contact Support
+              {t("helpSupport")}
             </Button>
           </div>
         </div>

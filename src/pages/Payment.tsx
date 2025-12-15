@@ -5,11 +5,13 @@ import { QuickAmountButton } from "@/components/patela/QuickAmountButton";
 import { OfflineBanner } from "@/components/patela/OfflineBanner";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, CreditCard, Loader2, MessageSquare } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 type PaymentStep = "amount" | "processing" | "success" | "failed";
 
 export default function Payment() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [amount, setAmount] = useState("");
   const [note, setNote] = useState("");
   const [step, setStep] = useState<PaymentStep>("amount");
@@ -67,13 +69,13 @@ export default function Payment() {
           </div>
           
           <div className="space-y-2">
-            <p className="text-muted-foreground text-lg">Charging</p>
+            <p className="text-muted-foreground text-lg">{t("processing")}</p>
             <p className="text-5xl font-bold text-foreground">R{formattedAmount}</p>
           </div>
 
           <div className="flex items-center gap-3 text-muted-foreground">
             <Loader2 className="h-5 w-5 animate-spin" />
-            <p>Waiting for customer to tap, insert or swipe...</p>
+            <p>{t("tapInsertSwipe")}</p>
           </div>
 
           <Button
@@ -82,7 +84,7 @@ export default function Payment() {
             onClick={() => setStep("amount")}
             className="mt-8"
           >
-            Cancel
+            {t("cancel")}
           </Button>
         </div>
       </div>
@@ -101,13 +103,13 @@ export default function Payment() {
         >
           <ArrowLeft className="h-5 w-5 text-foreground" />
         </button>
-        <h1 className="text-xl font-bold text-foreground">Take Payment</h1>
+        <h1 className="text-xl font-bold text-foreground">{t("takePayment")}</h1>
       </header>
 
       {/* Amount Display */}
       <div className="flex-1 flex flex-col items-center justify-center px-6">
         <div className="text-center mb-6">
-          <p className="text-muted-foreground text-sm mb-2">Amount</p>
+          <p className="text-muted-foreground text-sm mb-2">{t("enterAmount")}</p>
           <div className="flex items-baseline justify-center">
             <span className="text-3xl font-bold text-muted-foreground mr-1">R</span>
             <span className="text-6xl font-bold text-foreground tracking-tight">
@@ -119,13 +121,13 @@ export default function Payment() {
         {/* Note Input */}
         <button
           onClick={() => {
-            const newNote = prompt("Add a note (optional)", note);
+            const newNote = prompt(t("addNote"), note);
             if (newNote !== null) setNote(newNote);
           }}
           className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-6"
         >
           <MessageSquare className="h-4 w-4" />
-          <span className="text-sm">{note || "Add a note"}</span>
+          <span className="text-sm">{note || t("addNote")}</span>
         </button>
 
         {/* Quick Amounts */}
@@ -158,7 +160,7 @@ export default function Payment() {
             disabled={!amount || parseFloat(amount) <= 0}
           >
             <CreditCard className="h-6 w-6 mr-2" />
-            Charge R{formattedAmount}
+            {t("chargeCustomer")} R{formattedAmount}
           </Button>
         </div>
       </div>
