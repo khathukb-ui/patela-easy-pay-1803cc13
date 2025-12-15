@@ -38,6 +38,10 @@ import DeviceBluetooth from "./pages/device/DeviceBluetooth";
 import DeviceConfirmBluetooth from "./pages/device/DeviceConfirmBluetooth";
 import DeviceFound from "./pages/device/DeviceFound";
 import DeviceSuccess from "./pages/device/DeviceSuccess";
+import DeviceManagement from "./pages/device/DeviceManagement";
+import DeviceUnpair from "./pages/device/DeviceUnpair";
+import DeviceUnpairSuccess from "./pages/device/DeviceUnpairSuccess";
+import DeviceTransfer from "./pages/device/DeviceTransfer";
 
 const queryClient = new QueryClient();
 
@@ -74,6 +78,10 @@ const App = () => (
           <Route path="/device/confirm-bluetooth" element={<DeviceConfirmBluetooth />} />
           <Route path="/device/found" element={<DeviceFound />} />
           <Route path="/device/success" element={<DeviceSuccess />} />
+          <Route path="/device/manage" element={<DeviceManagement />} />
+          <Route path="/device/unpair" element={<DeviceUnpair />} />
+          <Route path="/device/unpair-success" element={<DeviceUnpairSuccess />} />
+          <Route path="/device/transfer" element={<DeviceTransfer />} />
           
           {/* Main App */}
           <Route path="/home" element={<Home />} />
