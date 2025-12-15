@@ -486,7 +486,7 @@ export default function Index() {
             <span>Join 10,000+ successful vendors</span>
           </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-primary-foreground mb-6">Ready to Grow Your Hustle?</h2>
-          <p className="text-lg text-primary-foreground/80 mb-8 max-w-xl mx-auto">Get your Patela device today and start accepting card payments. No monthly fees, no hidden costs.</p>
+          <p className="text-lg text-primary-foreground/80 mb-8 max-w-xl mx-auto">Get your Patela device today and start accepting card payments. Affordable monthly fees, lower than our competitors.</p>
           <Button
             size="xl"
             className="bg-accent hover:bg-accent/90 text-accent-foreground font-bold patela-shadow-accent text-lg px-10"
