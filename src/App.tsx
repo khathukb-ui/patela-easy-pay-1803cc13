@@ -31,6 +31,14 @@ import BankUploadProof from "./pages/bank/BankUploadProof";
 import BankPending from "./pages/bank/BankPending";
 import BankSuccess from "./pages/bank/BankSuccess";
 
+// Device Pairing
+import DevicePairingStart from "./pages/device/DevicePairingStart";
+import DeviceQRScan from "./pages/device/DeviceQRScan";
+import DeviceBluetooth from "./pages/device/DeviceBluetooth";
+import DeviceConfirmBluetooth from "./pages/device/DeviceConfirmBluetooth";
+import DeviceFound from "./pages/device/DeviceFound";
+import DeviceSuccess from "./pages/device/DeviceSuccess";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -58,6 +66,14 @@ const App = () => (
           <Route path="/bank/upload" element={<BankUploadProof />} />
           <Route path="/bank/pending" element={<BankPending />} />
           <Route path="/bank/success" element={<BankSuccess />} />
+          
+          {/* Device Pairing */}
+          <Route path="/device/start" element={<DevicePairingStart />} />
+          <Route path="/device/qr" element={<DeviceQRScan />} />
+          <Route path="/device/bluetooth" element={<DeviceBluetooth />} />
+          <Route path="/device/confirm-bluetooth" element={<DeviceConfirmBluetooth />} />
+          <Route path="/device/found" element={<DeviceFound />} />
+          <Route path="/device/success" element={<DeviceSuccess />} />
           
           {/* Main App */}
           <Route path="/home" element={<Home />} />
