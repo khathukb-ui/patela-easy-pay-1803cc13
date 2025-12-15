@@ -1,0 +1,671 @@
+export type Language = "en" | "zu" | "st" | "ts";
+
+export interface LanguageOption {
+  code: Language;
+  name: string;
+  nativeName: string;
+  flag: string;
+}
+
+export const languages: LanguageOption[] = [
+  { code: "en", name: "English", nativeName: "English", flag: "🇬🇧" },
+  { code: "zu", name: "isiZulu", nativeName: "isiZulu", flag: "🇿🇦" },
+  { code: "st", name: "Sesotho", nativeName: "Sesotho", flag: "🇿🇦" },
+  { code: "ts", name: "Xitsonga", nativeName: "Xitsonga", flag: "🇿🇦" },
+];
+
+export type TranslationKey = keyof typeof translations.en;
+
+export const translations = {
+  en: {
+    // Common
+    continue: "Continue",
+    cancel: "Cancel",
+    confirm: "Confirm",
+    back: "Back",
+    next: "Next",
+    done: "Done",
+    save: "Save",
+    delete: "Delete",
+    edit: "Edit",
+    close: "Close",
+    retry: "Try Again",
+    loading: "Loading...",
+    success: "Success",
+    error: "Error",
+    warning: "Warning",
+    
+    // Navigation
+    home: "Home",
+    sales: "Sales",
+    account: "Account",
+    help: "Help",
+    
+    // Onboarding
+    welcomeTitle: "Welcome to Patela",
+    welcomeSubtitle: "Accept card payments easily",
+    getStarted: "Get Started",
+    selectLanguage: "Select Your Language",
+    selectLanguageDesc: "Choose the language you prefer",
+    
+    // Phone Verification
+    enterPhone: "Enter Your Phone Number",
+    enterPhoneDesc: "We'll send you a code to verify",
+    phoneNumber: "Phone Number",
+    sendCode: "Send Code",
+    verifyPhone: "Verify Your Phone",
+    enterOtp: "Enter the code we sent to",
+    resendCode: "Resend Code",
+    wrongCode: "Wrong code. Please try again.",
+    codeExpired: "Code expired. Request a new one.",
+    
+    // PIN
+    createPin: "Create Your PIN",
+    createPinDesc: "This PIN protects your account",
+    confirmPin: "Confirm Your PIN",
+    confirmPinDesc: "Enter your PIN again",
+    enterPin: "Enter PIN",
+    pinMismatch: "PINs don't match. Try again.",
+    wrongPin: "Wrong PIN. Please try again.",
+    
+    // Onboarding Success
+    allSet: "You're All Set!",
+    accountReady: "Your account is ready to use",
+    
+    // Home
+    todaySales: "Today's Sales",
+    totalSales: "Total Sales",
+    numberOfSales: "Number of Sales",
+    takePayment: "Take Payment",
+    offlineMode: "Offline Mode",
+    willSyncWhenConnected: "Will sync when connected",
+    queued: "Queued",
+    
+    // Payment
+    enterAmount: "Enter Amount",
+    quickAmounts: "Quick Amounts",
+    chargeCustomer: "Charge Customer",
+    waitingForCard: "Waiting for Card",
+    tapInsertSwipe: "Ask customer to tap, insert or swipe",
+    processing: "Processing...",
+    
+    // Payment Result
+    paymentSuccess: "Payment Successful!",
+    paymentFailed: "Payment Failed",
+    cardDeclined: "Card declined. Try another card or cash.",
+    tryAgain: "Try Again",
+    addNote: "Add Note",
+    sendReceipt: "Send Receipt",
+    noReceipt: "No Receipt",
+    newSale: "New Sale",
+    
+    // Sales History
+    salesHistory: "Sales History",
+    today: "Today",
+    yesterday: "Yesterday",
+    thisWeek: "This Week",
+    noSales: "No sales yet",
+    refund: "Refund",
+    
+    // Bank Linking
+    linkBank: "Link Your Bank Account",
+    linkBankDesc: "This is where your money will be paid",
+    scanBankCard: "Scan Bank Card",
+    enterManually: "Enter Details Manually",
+    bankName: "Bank Name",
+    accountNumber: "Account Number",
+    accountType: "Account Type",
+    confirmBank: "Confirm Your Bank",
+    verifyAccount: "Verify Account",
+    verifying: "Verifying...",
+    verified: "Verified",
+    verificationFailed: "Verification Failed",
+    uploadProof: "Upload Bank Statement",
+    underReview: "Under Review",
+    
+    // Device
+    pairDevice: "Pair Your Patela Device",
+    pairDeviceDesc: "Connect your card machine to start accepting payments",
+    scanQrCode: "Scan QR Code",
+    useBluetooth: "Use Bluetooth Instead",
+    findNearbyDevices: "Find Nearby Devices",
+    searching: "Searching...",
+    deviceFound: "Device Found",
+    connecting: "Connecting...",
+    connected: "Connected",
+    devicePaired: "Device Paired!",
+    startPayments: "Start Taking Payments",
+    
+    // Device Management
+    deviceManagement: "Device Management",
+    battery: "Battery",
+    status: "Status",
+    lastSync: "Last Sync",
+    transferDevice: "Transfer Device",
+    transferDesc: "Move to another account",
+    unpairDevice: "Unpair Device",
+    unpairDesc: "Disconnect from your account",
+    unpairWarning: "The device cannot process payments after unpairing until it's paired again.",
+    confirmUnpair: "Confirm Unpair",
+    unpairing: "Unpairing...",
+    deviceUnpaired: "Device Unpaired",
+    transferCode: "Transfer Code",
+    transferCodeReady: "Transfer Code Ready",
+    shareCodeDesc: "Share this code with the new owner",
+    copyCode: "Copy Code",
+    copied: "Copied!",
+    expiresIn: "Expires in",
+    generateCode: "Generate Transfer Code",
+    
+    // Account
+    money: "Money",
+    bankAccount: "Bank Account",
+    payouts: "Payouts",
+    nextPayout: "Next payout",
+    device: "Device",
+    settings: "Settings",
+    notifications: "Notifications",
+    securityPin: "Security & PIN",
+    helpSupport: "Help & Support",
+    logOut: "Log Out",
+    
+    // Help
+    contactUs: "Contact Us",
+    callSupport: "Call Support",
+    whatsappSupport: "WhatsApp Support",
+    learnPatela: "Learn Patela",
+    howToGetPaid: "How to Get Paid",
+    practiceMode: "Practice Mode",
+    deviceDiagnostics: "Device Diagnostics",
+    shareDiagnostics: "Share Diagnostics",
+  },
+  
+  zu: {
+    // Common
+    continue: "Qhubeka",
+    cancel: "Khansela",
+    confirm: "Qinisekisa",
+    back: "Emuva",
+    next: "Okulandelayo",
+    done: "Kwenziwe",
+    save: "Londoloza",
+    delete: "Susa",
+    edit: "Hlela",
+    close: "Vala",
+    retry: "Zama Futhi",
+    loading: "Iyalayisha...",
+    success: "Impumelelo",
+    error: "Iphutha",
+    warning: "Isexwayiso",
+    
+    // Navigation
+    home: "Ikhaya",
+    sales: "Ukuthengisa",
+    account: "I-akhawunti",
+    help: "Usizo",
+    
+    // Onboarding
+    welcomeTitle: "Siyakwamukela ku-Patela",
+    welcomeSubtitle: "Yamukela izinkokhelo zekhadi kalula",
+    getStarted: "Qala",
+    selectLanguage: "Khetha Ulimi Lwakho",
+    selectLanguageDesc: "Khetha ulimi olukhethayo",
+    
+    // Phone Verification
+    enterPhone: "Faka Inombolo Yakho Yocingo",
+    enterPhoneDesc: "Sizokuthumelela ikhodi ukuze siqinisekise",
+    phoneNumber: "Inombolo Yocingo",
+    sendCode: "Thumela Ikhodi",
+    verifyPhone: "Qinisekisa Ucingo Lwakho",
+    enterOtp: "Faka ikhodi esiyithumele ku",
+    resendCode: "Phinda Uthumele Ikhodi",
+    wrongCode: "Ikhodi engalungile. Sicela uzame futhi.",
+    codeExpired: "Ikhodi iphelelwe yisikhathi. Cela entsha.",
+    
+    // PIN
+    createPin: "Dala I-PIN Yakho",
+    createPinDesc: "Le PIN ivikela i-akhawunti yakho",
+    confirmPin: "Qinisekisa I-PIN Yakho",
+    confirmPinDesc: "Faka i-PIN yakho futhi",
+    enterPin: "Faka I-PIN",
+    pinMismatch: "Ama-PIN awahambelani. Zama futhi.",
+    wrongPin: "I-PIN engalungile. Sicela uzame futhi.",
+    
+    // Onboarding Success
+    allSet: "Ukulungele!",
+    accountReady: "I-akhawunti yakho ilungele ukusetshenziswa",
+    
+    // Home
+    todaySales: "Ukuthengisa Kwanamuhla",
+    totalSales: "Ukuthengisa Okuphelele",
+    numberOfSales: "Inombolo Yokuthengisa",
+    takePayment: "Thatha Inkokhelo",
+    offlineMode: "Imodi Engaxhunyiwe",
+    willSyncWhenConnected: "Izovumelanisa uma ixhunyiwe",
+    queued: "Kulindile",
+    
+    // Payment
+    enterAmount: "Faka Inani",
+    quickAmounts: "Amanani Asheshayo",
+    chargeCustomer: "Khokhisa Ikhasimende",
+    waitingForCard: "Ulindele Ikhadi",
+    tapInsertSwipe: "Cela ikhasimende ukuba lithepe, lifake noma liswayphe",
+    processing: "Iyacubungula...",
+    
+    // Payment Result
+    paymentSuccess: "Inkokhelo Iphumelele!",
+    paymentFailed: "Inkokhelo Ihlulekile",
+    cardDeclined: "Ikhadi linqatshiwe. Zama elinye noma imali.",
+    tryAgain: "Zama Futhi",
+    addNote: "Engeza Inothi",
+    sendReceipt: "Thumela Irisidi",
+    noReceipt: "Ayikho Irisidi",
+    newSale: "Ukuthengisa Okusha",
+    
+    // Sales History
+    salesHistory: "Umlando Wokuthengisa",
+    today: "Namuhla",
+    yesterday: "Izolo",
+    thisWeek: "Leli Viki",
+    noSales: "Akukho ukuthengisa okwamanje",
+    refund: "Buyisela Imali",
+    
+    // Bank Linking
+    linkBank: "Xhumanisa I-akhawunti Yakho Yasebhange",
+    linkBankDesc: "Yilapho imali yakho izokhokhwa khona",
+    scanBankCard: "Skena Ikhadi Lasebhange",
+    enterManually: "Faka Imininingwane Ngesandla",
+    bankName: "Igama Lebhange",
+    accountNumber: "Inombolo Ye-akhawunti",
+    accountType: "Uhlobo Lwe-akhawunti",
+    confirmBank: "Qinisekisa Ibhange Lakho",
+    verifyAccount: "Qinisekisa I-akhawunti",
+    verifying: "Iyaqinisekisa...",
+    verified: "Iqinisekisiwe",
+    verificationFailed: "Ukuqinisekisa Kuhlulekile",
+    uploadProof: "Layisha Isitatimende Sasebhange",
+    underReview: "Ngaphansi Kokubuyekezwa",
+    
+    // Device
+    pairDevice: "Hlanganisa Idivayisi Yakho ye-Patela",
+    pairDeviceDesc: "Xhuma umshini wakho wekhadi ukuze uqale ukwamukela izinkokhelo",
+    scanQrCode: "Skena Ikhodi ye-QR",
+    useBluetooth: "Sebenzisa i-Bluetooth Esikhundleni",
+    findNearbyDevices: "Thola Amadivayisi Aseduze",
+    searching: "Iyasesha...",
+    deviceFound: "Idivayisi Itholakele",
+    connecting: "Iyaxhuma...",
+    connected: "Ixhunyiwe",
+    devicePaired: "Idivayisi Ihlanganisiwe!",
+    startPayments: "Qala Ukuthatha Izinkokhelo",
+    
+    // Device Management
+    deviceManagement: "Ukuphatha Idivayisi",
+    battery: "Ibhethri",
+    status: "Isimo",
+    lastSync: "Ukuvumelanisa Kokugcina",
+    transferDevice: "Dlulisela Idivayisi",
+    transferDesc: "Hambisa kwenye i-akhawunti",
+    unpairDevice: "Hlukanisa Idivayisi",
+    unpairDesc: "Nqamula ku-akhawunti yakho",
+    unpairWarning: "Idivayisi ayikwazi ukucubungula izinkokhelo ngemva kokuhlukanisa kuze ixhunywe futhi.",
+    confirmUnpair: "Qinisekisa Ukuhlukanisa",
+    unpairing: "Iyahlukanisa...",
+    deviceUnpaired: "Idivayisi Ihlukanisiwe",
+    transferCode: "Ikhodi Yokudlulisa",
+    transferCodeReady: "Ikhodi Yokudlulisa Ilungile",
+    shareCodeDesc: "Yabelana nale khodi nomnikazi omusha",
+    copyCode: "Kopisha Ikhodi",
+    copied: "Ikopishiwe!",
+    expiresIn: "Iphelelwa ngu",
+    generateCode: "Khiqiza Ikhodi Yokudlulisa",
+    
+    // Account
+    money: "Imali",
+    bankAccount: "I-akhawunti Yasebhange",
+    payouts: "Izinkokhelo",
+    nextPayout: "Inkokhelo elandelayo",
+    device: "Idivayisi",
+    settings: "Izilungiselelo",
+    notifications: "Izaziso",
+    securityPin: "Ukuphepha ne-PIN",
+    helpSupport: "Usizo Nokusekela",
+    logOut: "Phuma",
+    
+    // Help
+    contactUs: "Xhumana Nathi",
+    callSupport: "Shayela Usizo",
+    whatsappSupport: "Usizo lwe-WhatsApp",
+    learnPatela: "Funda nge-Patela",
+    howToGetPaid: "Indlela Yokukhokhwa",
+    practiceMode: "Imodi Yokuzilolonga",
+    deviceDiagnostics: "Ukuhlola Idivayisi",
+    shareDiagnostics: "Yabelana Ngokuhlola",
+  },
+  
+  st: {
+    // Common
+    continue: "Tswela pele",
+    cancel: "Hlakola",
+    confirm: "Netefatsa",
+    back: "Morao",
+    next: "E latelang",
+    done: "Ho entswe",
+    save: "Boloka",
+    delete: "Hlakola",
+    edit: "Fetola",
+    close: "Kwala",
+    retry: "Leka hape",
+    loading: "E a laeya...",
+    success: "Katleho",
+    error: "Phoso",
+    warning: "Temoso",
+    
+    // Navigation
+    home: "Lehae",
+    sales: "Thekiso",
+    account: "Akhaonto",
+    help: "Thuso",
+    
+    // Onboarding
+    welcomeTitle: "Rea o amohela ho Patela",
+    welcomeSubtitle: "Amohela ditefello tsa karete habonolo",
+    getStarted: "Qala",
+    selectLanguage: "Khetha Puo ya Hao",
+    selectLanguageDesc: "Khetha puo eo o e ratang",
+    
+    // Phone Verification
+    enterPhone: "Kenya Nomoro ya Hao ya Mohala",
+    enterPhoneDesc: "Re tla o romella khoutu ho netefatsa",
+    phoneNumber: "Nomoro ya Mohala",
+    sendCode: "Romela Khoutu",
+    verifyPhone: "Netefatsa Mohala wa Hao",
+    enterOtp: "Kenya khoutu eo re e rometseng ho",
+    resendCode: "Romela Khoutu Hape",
+    wrongCode: "Khoutu e fosahetseng. Ka kopo leka hape.",
+    codeExpired: "Khoutu e fedile. Kopa e ntjha.",
+    
+    // PIN
+    createPin: "Theha PIN ya Hao",
+    createPinDesc: "PIN ena e sireletsa akhaonto ya hao",
+    confirmPin: "Netefatsa PIN ya Hao",
+    confirmPinDesc: "Kenya PIN ya hao hape",
+    enterPin: "Kenya PIN",
+    pinMismatch: "Di-PIN ha di tshwane. Leka hape.",
+    wrongPin: "PIN e fosahetseng. Ka kopo leka hape.",
+    
+    // Onboarding Success
+    allSet: "O Lokile!",
+    accountReady: "Akhaonto ya hao e lokile ho sebediswa",
+    
+    // Home
+    todaySales: "Thekiso ya Kajeno",
+    totalSales: "Thekiso Yohle",
+    numberOfSales: "Palo ya Thekiso",
+    takePayment: "Nka Tefo",
+    offlineMode: "Mokhoa o sa Hokahaneng",
+    willSyncWhenConnected: "E tla hokahana ha e hokahantswe",
+    queued: "E emetswe",
+    
+    // Payment
+    enterAmount: "Kenya Chelete",
+    quickAmounts: "Dichelete tse Potlakileng",
+    chargeCustomer: "Lefisa Moreki",
+    waitingForCard: "E emetse Karete",
+    tapInsertSwipe: "Kopa moreki ho thathapa, kenya kapa swaepa",
+    processing: "E a sebetsa...",
+    
+    // Payment Result
+    paymentSuccess: "Tefo e Atlehile!",
+    paymentFailed: "Tefo e Hlolehile",
+    cardDeclined: "Karete e hanilwe. Leka e nngwe kapa tjhelete.",
+    tryAgain: "Leka Hape",
+    addNote: "Kenya Tlhaloso",
+    sendReceipt: "Romela Risiti",
+    noReceipt: "Ha ho Risiti",
+    newSale: "Thekiso e Ntjha",
+    
+    // Sales History
+    salesHistory: "Histori ya Thekiso",
+    today: "Kajeno",
+    yesterday: "Maobane",
+    thisWeek: "Beke ena",
+    noSales: "Ha ho thekiso ho fihlela jwale",
+    refund: "Khutlisa Tjhelete",
+    
+    // Bank Linking
+    linkBank: "Hokela Akhaonto ya Hao ya Banka",
+    linkBankDesc: "Ke moo tjhelete ya hao e tla lefelwa teng",
+    scanBankCard: "Skena Karete ya Banka",
+    enterManually: "Kenya Dintlha ka Letsoho",
+    bankName: "Lebitso la Banka",
+    accountNumber: "Nomoro ya Akhaonto",
+    accountType: "Mofuta wa Akhaonto",
+    confirmBank: "Netefatsa Banka ya Hao",
+    verifyAccount: "Netefatsa Akhaonto",
+    verifying: "E a netefatsa...",
+    verified: "E netefaditswe",
+    verificationFailed: "Ponetefatso e Hlolehile",
+    uploadProof: "Laeya Setatemente sa Banka",
+    underReview: "E Hlahlojwa",
+    
+    // Device
+    pairDevice: "Hokela Sesebediswa sa Hao sa Patela",
+    pairDeviceDesc: "Hokela mochini wa hao wa karete ho qala ho amohela ditefo",
+    scanQrCode: "Skena Khoutu ya QR",
+    useBluetooth: "Sebedisa Bluetooth ho e na",
+    findNearbyDevices: "Fumana Disebediswa tse Haufi",
+    searching: "E a batla...",
+    deviceFound: "Sesebediswa se Fumanehile",
+    connecting: "E a hokela...",
+    connected: "E Hokelantswe",
+    devicePaired: "Sesebediswa se Hokelantswe!",
+    startPayments: "Qala ho Nka Ditefo",
+    
+    // Device Management
+    deviceManagement: "Taolo ya Sesebediswa",
+    battery: "Betri",
+    status: "Boemo",
+    lastSync: "Hokahano ya Morao",
+    transferDevice: "Fetisetsa Sesebediswa",
+    transferDesc: "Fetisetsa ho akhaonto e nngwe",
+    unpairDevice: "Arola Sesebediswa",
+    unpairDesc: "Kgaola ho akhaonto ya hao",
+    unpairWarning: "Sesebediswa se ke ke sa sebetsa ditefo kamora ho arola ho fihlela se hokelwa hape.",
+    confirmUnpair: "Netefatsa ho Arola",
+    unpairing: "E a arola...",
+    deviceUnpaired: "Sesebediswa se Arolilwe",
+    transferCode: "Khoutu ya ho Fetisetsa",
+    transferCodeReady: "Khoutu ya ho Fetisetsa e Lokile",
+    shareCodeDesc: "Arolelana khoutu ena le monga e motjha",
+    copyCode: "Kopa Khoutu",
+    copied: "E Kopilwe!",
+    expiresIn: "E fella ka",
+    generateCode: "Hlahisa Khoutu ya ho Fetisetsa",
+    
+    // Account
+    money: "Tjhelete",
+    bankAccount: "Akhaonto ya Banka",
+    payouts: "Ditefo",
+    nextPayout: "Tefo e latelang",
+    device: "Sesebediswa",
+    settings: "Ditlhophiso",
+    notifications: "Ditsebiso",
+    securityPin: "Tshireletso le PIN",
+    helpSupport: "Thuso le Tshehetso",
+    logOut: "Tswa",
+    
+    // Help
+    contactUs: "Ikopanye le Rona",
+    callSupport: "Letsetsa Thuso",
+    whatsappSupport: "Thuso ya WhatsApp",
+    learnPatela: "Ithute ka Patela",
+    howToGetPaid: "Mokgwa wa ho Lefuwa",
+    practiceMode: "Mokhoa wa ho Ikoetlisa",
+    deviceDiagnostics: "Tlhahlobo ya Sesebediswa",
+    shareDiagnostics: "Arolelana Tlhahlobo",
+  },
+  
+  ts: {
+    // Common
+    continue: "Ya emahlweni",
+    cancel: "Hundzula",
+    confirm: "Tiyisisa",
+    back: "Endzhaku",
+    next: "Lelandzelaka",
+    done: "Ku herile",
+    save: "Hlayisa",
+    delete: "Susa",
+    edit: "Lulamisa",
+    close: "Pfala",
+    retry: "Ringeta nakambe",
+    loading: "Ya layicha...",
+    success: "Ku humelele",
+    error: "Xihoxo",
+    warning: "Xitsundzuxo",
+    
+    // Navigation
+    home: "Kaya",
+    sales: "Vuxavisi",
+    account: "Akhawunti",
+    help: "Pfuneto",
+    
+    // Onboarding
+    welcomeTitle: "Xewani eka Patela",
+    welcomeSubtitle: "Amukela mabindzu ya tikhadi hi ku olova",
+    getStarted: "Sungula",
+    selectLanguage: "Hlawula Ririmi ra Wena",
+    selectLanguageDesc: "Hlawula ririmi leri u ri rhandzaka",
+    
+    // Phone Verification
+    enterPhone: "Nghenisa Nomboro ya Riqingho ra Wena",
+    enterPhoneDesc: "Hi ta ku rhumela khodi ku tiyisisa",
+    phoneNumber: "Nomboro ya Riqingho",
+    sendCode: "Rhumela Khodi",
+    verifyPhone: "Tiyisisa Riqingho ra Wena",
+    enterOtp: "Nghenisa khodi leyi hi yi rhumeleke eka",
+    resendCode: "Rhumela Khodi Nakambe",
+    wrongCode: "Khodi yo hoxeka. Ringeta nakambe.",
+    codeExpired: "Khodi yi herile. Kombela yin'wana.",
+    
+    // PIN
+    createPin: "Tumbuluxa PIN ya Wena",
+    createPinDesc: "PIN leyi yi sirhelela akhawunti ya wena",
+    confirmPin: "Tiyisisa PIN ya Wena",
+    confirmPinDesc: "Nghenisa PIN ya wena nakambe",
+    enterPin: "Nghenisa PIN",
+    pinMismatch: "Ti-PIN a ti fambelani. Ringeta nakambe.",
+    wrongPin: "PIN yo hoxeka. Ringeta nakambe.",
+    
+    // Onboarding Success
+    allSet: "U Lunghile!",
+    accountReady: "Akhawunti ya wena yi lunghile ku tirhisiwa",
+    
+    // Home
+    todaySales: "Vuxavisi bya Namuntlha",
+    totalSales: "Vuxavisi Hinkwabyo",
+    numberOfSales: "Nomboro ya Vuxavisi",
+    takePayment: "Teka Mbindzu",
+    offlineMode: "Xiyimo xo Pfumala Inthanete",
+    willSyncWhenConnected: "Xi ta hlanganisiwa loko xi hlanganisiwile",
+    queued: "Swi yimele",
+    
+    // Payment
+    enterAmount: "Nghenisa Xikalo",
+    quickAmounts: "Swikalo swo Hatlisa",
+    chargeCustomer: "Hakelisa Xikweleti",
+    waitingForCard: "Ku yimela Khadi",
+    tapInsertSwipe: "Kombela xikweleti ku thepa, nghenisa kumbe swayipha",
+    processing: "Ya tirha...",
+    
+    // Payment Result
+    paymentSuccess: "Mbindzu wu Humelele!",
+    paymentFailed: "Mbindzu wu Tsandzekile",
+    cardDeclined: "Khadi yi ariwe. Ringeta yin'wana kumbe mali.",
+    tryAgain: "Ringeta Nakambe",
+    addNote: "Engetela Xitsalwa",
+    sendReceipt: "Rhumela Risiti",
+    noReceipt: "Ku hava Risiti",
+    newSale: "Vuxavisi Byin'tshwa",
+    
+    // Sales History
+    salesHistory: "Matimu ya Vuxavisi",
+    today: "Namuntlha",
+    yesterday: "Tolo",
+    thisWeek: "Vhiki leri",
+    noSales: "Ku hava vuxavisi sweswi",
+    refund: "Hundzuluxela Mali",
+    
+    // Bank Linking
+    linkBank: "Hlanganisa Akhawunti ya Wena ya Banka",
+    linkBankDesc: "Laha mali ya wena yi nga ta hakeriwa kona",
+    scanBankCard: "Skena Khadi ya Banka",
+    enterManually: "Nghenisa Vuxokoxoko hi Voko",
+    bankName: "Vito ra Banka",
+    accountNumber: "Nomboro ya Akhawunti",
+    accountType: "Muxaka wa Akhawunti",
+    confirmBank: "Tiyisisa Banka ya Wena",
+    verifyAccount: "Tiyisisa Akhawunti",
+    verifying: "Ya tiyisisa...",
+    verified: "Yi tiyisisiwile",
+    verificationFailed: "Ku Tiyisisa ku Tsandzekile",
+    uploadProof: "Layicha Xtatemente xa Banka",
+    underReview: "Yi Kamberiwa",
+    
+    // Device
+    pairDevice: "Hlanganisa Xiseketelo xa Wena xa Patela",
+    pairDeviceDesc: "Hlanganisa muchini wa wena wa tikhadi ku sungula ku amukela mabindzu",
+    scanQrCode: "Skena Khodi ya QR",
+    useBluetooth: "Tirhisa Bluetooth Ematshan'wini",
+    findNearbyDevices: "Kuma Swiseketelo swa Kusuhi",
+    searching: "Ya lava...",
+    deviceFound: "Xiseketelo xi Kumiwile",
+    connecting: "Ya hlanganisa...",
+    connected: "Xi Hlanganisiwile",
+    devicePaired: "Xiseketelo xi Hlanganisiwile!",
+    startPayments: "Sungula ku Teka Mabindzu",
+    
+    // Device Management
+    deviceManagement: "Vulawuri bya Xiseketelo",
+    battery: "Bhetri",
+    status: "Xiyimo",
+    lastSync: "Ku Hlanganisiwa ko Hetelela",
+    transferDevice: "Hundzisela Xiseketelo",
+    transferDesc: "Fambisela eka akhawunti yin'wana",
+    unpairDevice: "Hambanisa Xiseketelo",
+    unpairDesc: "Tsema eka akhawunti ya wena",
+    unpairWarning: "Xiseketelo a xi nge tirhi mabindzu endzhaku ko hambanisiwa ku kondza xi hlanganisiwa nakambe.",
+    confirmUnpair: "Tiyisisa ku Hambanisa",
+    unpairing: "Ya hambanisa...",
+    deviceUnpaired: "Xiseketelo xi Hambanisiwile",
+    transferCode: "Khodi yo Hundzisela",
+    transferCodeReady: "Khodi yo Hundzisela yi Lunghile",
+    shareCodeDesc: "Avelana khodi leyi ni n'winyi wuntshwa",
+    copyCode: "Kopa Khodi",
+    copied: "Yi Kopiwile!",
+    expiresIn: "Yi hela hi",
+    generateCode: "Endla Khodi yo Hundzisela",
+    
+    // Account
+    money: "Mali",
+    bankAccount: "Akhawunti ya Banka",
+    payouts: "Mabindzu",
+    nextPayout: "Mbindzu lowu landzela",
+    device: "Xiseketelo",
+    settings: "Switirhisiwa",
+    notifications: "Switiviso",
+    securityPin: "Vuhlayiseki ni PIN",
+    helpSupport: "Pfuneto ni Nseketelo",
+    logOut: "Huma",
+    
+    // Help
+    contactUs: "Hi Tihlanganise na Hina",
+    callSupport: "Ringa Pfuneto",
+    whatsappSupport: "Pfuneto ya WhatsApp",
+    learnPatela: "Dyondza hi Patela",
+    howToGetPaid: "Ndlela yo Hakeriwa",
+    practiceMode: "Xiyimo xo Tiletela",
+    deviceDiagnostics: "Vulavisisi bya Xiseketelo",
+    shareDiagnostics: "Avelana Vulavisisi",
+  },
+} as const;

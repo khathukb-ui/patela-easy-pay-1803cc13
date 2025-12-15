@@ -1,9 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { BottomNav } from "@/components/patela/BottomNav";
-import { Button } from "@/components/ui/button";
 import { 
   User, 
-  CreditCard, 
   Smartphone, 
   Bell, 
   Shield, 
@@ -13,6 +11,7 @@ import {
   Building2,
   Wallet
 } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface SettingsItemProps {
   icon: typeof User;
@@ -28,11 +27,11 @@ function SettingsItem({ icon: Icon, label, description, onClick, danger }: Setti
       onClick={onClick}
       className="w-full flex items-center gap-4 p-4 bg-card rounded-xl border border-border hover:bg-secondary/50 transition-colors text-left"
     >
-      <div className={`h-10 w-10 rounded-xl ${danger ? 'bg-destructive/10' : 'bg-primary/10'} flex items-center justify-center`}>
-        <Icon className={`h-5 w-5 ${danger ? 'text-destructive' : 'text-primary'}`} />
+      <div className={`h-10 w-10 rounded-xl ${danger ? "bg-destructive/10" : "bg-primary/10"} flex items-center justify-center`}>
+        <Icon className={`h-5 w-5 ${danger ? "text-destructive" : "text-primary"}`} />
       </div>
       <div className="flex-1">
-        <p className={`font-medium ${danger ? 'text-destructive' : 'text-foreground'}`}>{label}</p>
+        <p className={`font-medium ${danger ? "text-destructive" : "text-foreground"}`}>{label}</p>
         {description && <p className="text-sm text-muted-foreground">{description}</p>}
       </div>
       <ChevronRight className="h-5 w-5 text-muted-foreground" />
@@ -42,6 +41,7 @@ function SettingsItem({ icon: Icon, label, description, onClick, danger }: Setti
 
 export default function Account() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   return (
     <div className="min-h-screen bg-background pb-24">
@@ -62,18 +62,19 @@ export default function Account() {
         {/* Bank & Payouts */}
         <div>
           <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3">
-            Money
+            {t("money")}
           </h2>
           <div className="space-y-2">
             <SettingsItem
               icon={Building2}
-              label="Bank Account"
+              label={t("bankAccount")}
               description="FNB ••••4523"
+              onClick={() => navigate("/bank/start")}
             />
             <SettingsItem
               icon={Wallet}
-              label="Payouts"
-              description="Next payout: Tomorrow"
+              label={t("payouts")}
+              description={`${t("nextPayout")}: Tomorrow`}
             />
           </div>
         </div>
@@ -81,13 +82,13 @@ export default function Account() {
         {/* Device */}
         <div>
           <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3">
-            Device
+            {t("device")}
           </h2>
           <div className="space-y-2">
             <SettingsItem
               icon={Smartphone}
-              label="Patela Device"
-              description="Patela Pro • Connected"
+              label="Patela Pro"
+              description={t("connected")}
               onClick={() => navigate("/device/manage")}
             />
           </div>
@@ -96,12 +97,16 @@ export default function Account() {
         {/* Settings */}
         <div>
           <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3">
-            Settings
+            {t("settings")}
           </h2>
           <div className="space-y-2">
-            <SettingsItem icon={Bell} label="Notifications" />
-            <SettingsItem icon={Shield} label="Security & PIN" />
-            <SettingsItem icon={HelpCircle} label="Help & Support" />
+            <SettingsItem icon={Bell} label={t("notifications")} />
+            <SettingsItem icon={Shield} label={t("securityPin")} />
+            <SettingsItem 
+              icon={HelpCircle} 
+              label={t("helpSupport")} 
+              onClick={() => navigate("/help")}
+            />
           </div>
         </div>
 
@@ -109,7 +114,7 @@ export default function Account() {
         <div className="pt-4">
           <SettingsItem
             icon={LogOut}
-            label="Log Out"
+            label={t("logOut")}
             danger
           />
         </div>
