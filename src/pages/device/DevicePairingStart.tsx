@@ -1,7 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Smartphone, QrCode, Bluetooth, Shield, ArrowRight } from "lucide-react";
+import { QrCode, Bluetooth, Shield, ArrowRight } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import patelaDeviceBox from "@/assets/patela-device-box.jpg";
 
 export default function DevicePairingStart() {
   const navigate = useNavigate();
@@ -20,8 +21,17 @@ export default function DevicePairingStart() {
 
       {/* Content */}
       <div className="flex-1 flex flex-col items-center justify-center px-6 pb-8">
-        <div className="w-20 h-20 rounded-full bg-primary flex items-center justify-center mb-6 patela-shadow-primary animate-fade-in">
-          <Smartphone className="h-10 w-10 text-primary-foreground" />
+        {/* Device Image */}
+        <div className="relative w-36 h-36 mb-6 animate-patela-bounce-in">
+          <div className="absolute inset-0 rounded-2xl overflow-hidden shadow-xl border-2 border-primary/20">
+            <img 
+              src={patelaDeviceBox} 
+              alt="Patela payment device" 
+              className="w-full h-full object-cover"
+            />
+          </div>
+          {/* Pulse ring */}
+          <div className="absolute -inset-2 rounded-2xl border-2 border-accent/50 animate-ping" style={{ animationDuration: "2s" }} />
         </div>
 
         <h1 className="text-2xl font-bold text-foreground text-center mb-3">
