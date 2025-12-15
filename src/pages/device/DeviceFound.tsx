@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Smartphone, Battery, Wifi, CheckCircle2, Loader2 } from "lucide-react";
+import { Battery, Wifi, CheckCircle2, Loader2 } from "lucide-react";
+import patelaDeviceBox from "@/assets/patela-device-box.jpg";
 
 export default function DeviceFound() {
   const navigate = useNavigate();
@@ -9,11 +10,10 @@ export default function DeviceFound() {
   const [isConnecting, setIsConnecting] = useState(true);
   const [connectionProgress, setConnectionProgress] = useState(0);
   
-  const { deviceName, deviceId, battery, method } = location.state || {
+  const { deviceName, deviceId, battery } = location.state || {
     deviceName: "Patela Pro",
     deviceId: "PTL-2024-7842",
     battery: 85,
-    method: "qr"
   };
 
   useEffect(() => {
@@ -36,8 +36,12 @@ export default function DeviceFound() {
       <div className="flex flex-col items-center text-center animate-fade-in">
         {/* Device Visual */}
         <div className="relative mb-8">
-          <div className="w-32 h-32 rounded-3xl patela-gradient-primary flex items-center justify-center patela-shadow-lg">
-            <Smartphone className="h-16 w-16 text-primary-foreground" />
+          <div className="w-32 h-32 rounded-3xl overflow-hidden shadow-xl border-2 border-primary/20">
+            <img 
+              src={patelaDeviceBox} 
+              alt="Patela payment device" 
+              className="w-full h-full object-cover"
+            />
           </div>
           
           {/* Connection Status Badge */}
@@ -50,6 +54,11 @@ export default function DeviceFound() {
               <CheckCircle2 className="h-6 w-6 text-success-foreground" />
             )}
           </div>
+
+          {/* Connecting pulse */}
+          {isConnecting && (
+            <div className="absolute -inset-2 rounded-3xl border-2 border-accent/50 animate-ping" style={{ animationDuration: "1.5s" }} />
+          )}
         </div>
 
         {/* Status Text */}
@@ -65,7 +74,7 @@ export default function DeviceFound() {
             {/* Progress Bar */}
             <div className="w-full max-w-xs h-2 bg-muted rounded-full overflow-hidden mb-4">
               <div 
-                className="h-full patela-gradient-primary transition-all duration-200"
+                className="h-full bg-accent transition-all duration-200"
                 style={{ width: `${connectionProgress}%` }}
               />
             </div>
@@ -81,10 +90,14 @@ export default function DeviceFound() {
             </p>
 
             {/* Device Info Card */}
-            <div className="w-full max-w-sm bg-card rounded-2xl patela-shadow-sm p-5 mb-8">
+            <div className="w-full max-w-sm bg-card rounded-2xl patela-shadow-sm border border-primary/10 p-5 mb-8">
               <div className="flex items-center gap-4 mb-4">
-                <div className="w-14 h-14 rounded-2xl patela-gradient-primary flex items-center justify-center">
-                  <Smartphone className="h-7 w-7 text-primary-foreground" />
+                <div className="w-14 h-14 rounded-2xl overflow-hidden border border-primary/20">
+                  <img 
+                    src={patelaDeviceBox} 
+                    alt="Patela device" 
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 <div className="text-left">
                   <p className="font-bold text-foreground text-lg">{deviceName}</p>
@@ -106,7 +119,7 @@ export default function DeviceFound() {
 
             <Button 
               size="xl" 
-              className="w-full max-w-sm patela-gradient-primary text-lg font-bold h-16 rounded-2xl patela-shadow-md"
+              className="w-full max-w-sm bg-accent text-accent-foreground text-lg font-bold h-16 rounded-2xl patela-shadow-accent hover:bg-accent/90"
               onClick={() => navigate("/device/success")}
             >
               <CheckCircle2 className="mr-3 h-6 w-6" />

@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Shield, Wifi, Smartphone } from "lucide-react";
 import { PatelaLogo } from "@/components/patela/PatelaLogo";
 import patelaHeroBg from "@/assets/patela-hero-bg.jpg";
+import patelaDeviceBox from "@/assets/patela-device-box.jpg";
 
 export default function Index() {
   const navigate = useNavigate();
@@ -14,25 +15,38 @@ export default function Index() {
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url(${patelaHeroBg})` }}
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-primary/95 via-primary/90 to-primary" />
+      <div className="absolute inset-0 bg-gradient-to-b from-primary/95 via-primary/85 to-primary/95" />
       
       {/* Content */}
       <div className="relative z-10 flex-1 flex flex-col">
         {/* Hero Section */}
-        <div className="flex-1 flex flex-col items-center justify-center px-6 py-12 text-center">
+        <div className="flex-1 flex flex-col items-center justify-center px-6 py-8 text-center">
           {/* Logo Text */}
-          <div className="mb-4 animate-patela-bounce-in">
+          <div className="mb-2 animate-patela-bounce-in">
             <PatelaLogo size="xl" variant="light" />
           </div>
 
           {/* Tagline */}
-          <p className="text-xl text-primary-foreground/90 mb-12 animate-patela-slide-up" style={{ animationDelay: "0.1s" }}>
+          <p className="text-xl text-primary-foreground/90 mb-6 animate-patela-slide-up" style={{ animationDelay: "0.1s" }}>
             Get paid. Stay paid.
           </p>
 
+          {/* Device Image */}
+          <div className="relative w-48 h-48 mb-6 animate-patela-fade-in" style={{ animationDelay: "0.15s" }}>
+            <div className="absolute inset-0 rounded-3xl overflow-hidden shadow-2xl border-4 border-primary-foreground/20">
+              <img 
+                src={patelaDeviceBox} 
+                alt="Patela payment device" 
+                className="w-full h-full object-cover"
+              />
+            </div>
+            {/* Glow effect */}
+            <div className="absolute -inset-4 rounded-3xl bg-accent/20 blur-2xl -z-10" />
+          </div>
+
           {/* Features */}
-          <div className="w-full max-w-sm space-y-3 mb-12 animate-patela-fade-in" style={{ animationDelay: "0.2s" }}>
-            <div className="flex items-center gap-4 bg-primary-foreground/10 backdrop-blur-sm rounded-xl p-4 border border-primary-foreground/20">
+          <div className="w-full max-w-sm space-y-3 animate-patela-fade-in" style={{ animationDelay: "0.2s" }}>
+            <div className="flex items-center gap-4 bg-primary-foreground/10 backdrop-blur-sm rounded-xl p-3 border border-primary-foreground/20">
               <div className="h-10 w-10 rounded-lg bg-accent flex items-center justify-center">
                 <Wifi className="h-5 w-5 text-accent-foreground" />
               </div>
@@ -42,7 +56,7 @@ export default function Index() {
               </div>
             </div>
 
-            <div className="flex items-center gap-4 bg-primary-foreground/10 backdrop-blur-sm rounded-xl p-4 border border-primary-foreground/20">
+            <div className="flex items-center gap-4 bg-primary-foreground/10 backdrop-blur-sm rounded-xl p-3 border border-primary-foreground/20">
               <div className="h-10 w-10 rounded-lg bg-accent flex items-center justify-center">
                 <Smartphone className="h-5 w-5 text-accent-foreground" />
               </div>
@@ -52,7 +66,7 @@ export default function Index() {
               </div>
             </div>
 
-            <div className="flex items-center gap-4 bg-primary-foreground/10 backdrop-blur-sm rounded-xl p-4 border border-primary-foreground/20">
+            <div className="flex items-center gap-4 bg-primary-foreground/10 backdrop-blur-sm rounded-xl p-3 border border-primary-foreground/20">
               <div className="h-10 w-10 rounded-lg bg-accent flex items-center justify-center">
                 <Shield className="h-5 w-5 text-accent-foreground" />
               </div>
