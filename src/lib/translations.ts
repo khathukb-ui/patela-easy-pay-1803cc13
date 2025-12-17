@@ -208,6 +208,9 @@ export const translations = {
     commWhatsAppDesc: "Get messages on WhatsApp",
     commEmail: "Email",
     commEmailDesc: "Receive emails with receipts & updates",
+    emailAddress: "Email Address",
+    emailPlaceholder: "Enter your email address",
+    emailError: "Please enter a valid email address",
     communicationNote: "Select at least one way to receive important updates",
   },
   
@@ -402,6 +405,9 @@ export const translations = {
     commWhatsAppDesc: "Thola imilayezo ku-WhatsApp",
     commEmail: "I-imeyili",
     commEmailDesc: "Thola ama-imeyili anezibuyekezo",
+    emailAddress: "Ikheli Le-imeyili",
+    emailPlaceholder: "Faka ikheli lakho le-imeyili",
+    emailError: "Sicela ufake ikheli le-imeyili elifanele",
     communicationNote: "Khetha okungenani indlela eyodwa yokuthola izibuyekezo ezibalulekile",
   },
   
@@ -596,6 +602,9 @@ export const translations = {
     commWhatsAppDesc: "Fumana melaetsa ho WhatsApp",
     commEmail: "Imeile",
     commEmailDesc: "Fumana diimeile tsa ditlaleho",
+    emailAddress: "Aterese ya Imeile",
+    emailPlaceholder: "Kenya aterese ya hao ya imeile",
+    emailError: "Ka kopo kenya aterese ya imeile e nepahetseng",
     communicationNote: "Khetha bonyane tsela e le nngwe ya ho fumana ditlaleho tse bohlokwa",
   },
   
@@ -790,6 +799,9 @@ export const translations = {
     commWhatsAppDesc: "Kuma marungula eka WhatsApp",
     commEmail: "Imeyili",
     commEmailDesc: "Kuma ti-imeyili ta switiviso",
+    emailAddress: "Aderesi ya Imeyili",
+    emailPlaceholder: "Nghenisa aderesi ya wena ya imeyili",
+    emailError: "Kombela u nghenisa aderesi ya imeyili leyi faneleke",
     communicationNote: "Hlawula ndlela yin'we kumbe ku tlula yo kuma switiviso swa nkoka",
   },
 } as const;
