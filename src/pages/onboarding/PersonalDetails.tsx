@@ -17,6 +17,30 @@ interface CommunicationMethod {
   description: string;
 }
 
+// Validate SA ID number format and checksum (Luhn algorithm)
+const validateSAID = (id: string): boolean => {
+  if (!id) return true; // Optional field
+  if (!/^\d{13}$/.test(id)) return false;
+  
+  // Validate date of birth (first 6 digits: YYMMDD)
+  const year = parseInt(id.substring(0, 2));
+  const month = parseInt(id.substring(2, 4));
+  const day = parseInt(id.substring(4, 6));
+  if (month < 1 || month > 12 || day < 1 || day > 31) return false;
+  
+  // Luhn checksum validation
+  let sum = 0;
+  for (let i = 0; i < 13; i++) {
+    let digit = parseInt(id[i]);
+    if (i % 2 === 1) {
+      digit *= 2;
+      if (digit > 9) digit -= 9;
+    }
+    sum += digit;
+  }
+  return sum % 10 === 0;
+};
+
 export default function PersonalDetails() {
   const [step, setStep] = useState<Step>("personal");
   const [isLoading, setIsLoading] = useState(false);
@@ -27,6 +51,7 @@ export default function PersonalDetails() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [idNumber, setIdNumber] = useState("");
+  const [idError, setIdError] = useState("");
 
   // Business details
   const [businessName, setBusinessName] = useState("");
@@ -63,6 +88,10 @@ export default function PersonalDetails() {
   const handleNext = async () => {
     if (step === "personal") {
       if (!firstName.trim() || !lastName.trim()) return;
+      if (idNumber && !validateSAID(idNumber)) {
+        setIdError(t("idNumberError"));
+        return;
+      }
       setStep("business");
     } else if (step === "business") {
       if (!businessName.trim()) return;
@@ -86,7 +115,7 @@ export default function PersonalDetails() {
   };
 
   const isNextDisabled = () => {
-    if (step === "personal") return !firstName.trim() || !lastName.trim();
+    if (step === "personal") return !firstName.trim() || !lastName.trim() || !!idError;
     if (step === "business") return !businessName.trim();
     return selectedMethods.length === 0;
   };
@@ -158,11 +187,23 @@ export default function PersonalDetails() {
                 <Input
                   id="idNumber"
                   value={idNumber}
-                  onChange={(e) => setIdNumber(e.target.value)}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/\D/g, '');
+                    setIdNumber(value);
+                    if (value && !validateSAID(value)) {
+                      setIdError(t("idNumberError"));
+                    } else {
+                      setIdError("");
+                    }
+                  }}
                   placeholder={t("idNumberPlaceholder")}
-                  className="h-14 text-lg"
+                  className={cn("h-14 text-lg", idError && "border-destructive")}
                   maxLength={13}
+                  inputMode="numeric"
                 />
+                {idError && (
+                  <p className="text-sm text-destructive">{idError}</p>
+                )}
               </div>
             </div>
           </>
