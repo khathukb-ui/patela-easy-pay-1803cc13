@@ -47,6 +47,10 @@ export const translations = {
     getStarted: "Get Started",
     selectLanguage: "Select Your Language",
     selectLanguageDesc: "Choose the language you prefer",
+    welcomeBack: "Welcome Back!",
+    resumeOnboardingDesc: "You have saved progress. Would you like to continue where you left off?",
+    continueWhereLeft: "Continue Where I Left Off",
+    startFresh: "Start Fresh",
     
     // Phone Verification
     enterPhone: "Enter Your Phone Number",
@@ -244,6 +248,10 @@ export const translations = {
     getStarted: "Qala",
     selectLanguage: "Khetha Ulimi Lwakho",
     selectLanguageDesc: "Khetha ulimi olukhethayo",
+    welcomeBack: "Siyakwamukela Futhi!",
+    resumeOnboardingDesc: "Unempumelelo egciniwe. Ungathanda ukuqhubeka lapho ugcine khona?",
+    continueWhereLeft: "Qhubeka Lapho Ngigcine Khona",
+    startFresh: "Qala Kabusha",
     
     // Phone Verification
     enterPhone: "Faka Inombolo Yakho Yocingo",
@@ -441,6 +449,10 @@ export const translations = {
     getStarted: "Qala",
     selectLanguage: "Khetha Puo ya Hao",
     selectLanguageDesc: "Khetha puo eo o e ratang",
+    welcomeBack: "Rea o Amohela Hape!",
+    resumeOnboardingDesc: "O na le tsoelo-pele e bolokilweng. Na o ka rata ho tswela pele moo o neng o emise teng?",
+    continueWhereLeft: "Tswela Pele Moo ke Emisitseng",
+    startFresh: "Qala Bocha",
     
     // Phone Verification
     enterPhone: "Kenya Nomoro ya Hao ya Mohala",
@@ -638,6 +650,10 @@ export const translations = {
     getStarted: "Sungula",
     selectLanguage: "Hlawula Ririmi ra Wena",
     selectLanguageDesc: "Hlawula ririmi leri u ri rhandzaka",
+    welcomeBack: "Ha Amukeriwa Nakambe!",
+    resumeOnboardingDesc: "U na ni nhluvuko lowu hlayisiweke. Xana u lava ku ya emahlweni laha u yimeke kona?",
+    continueWhereLeft: "Ya Emahlweni Laha Ndzi Yimeke Kona",
+    startFresh: "Sungula Hi Vuntshwa",
     
     // Phone Verification
     enterPhone: "Nghenisa Nomboro ya Riqingho ra Wena",
