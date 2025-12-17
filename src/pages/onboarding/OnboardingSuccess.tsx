@@ -1,11 +1,19 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Check, CreditCard, Smartphone, ArrowRight } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useOnboardingData } from "@/hooks/use-onboarding-data";
 
 export default function OnboardingSuccess() {
   const navigate = useNavigate();
   const { t } = useLanguage();
+  const { clearData } = useOnboardingData();
+
+  // Clear onboarding data when user completes onboarding
+  useEffect(() => {
+    clearData();
+  }, [clearData]);
 
   return (
     <div className="min-h-screen patela-app-bg flex flex-col items-center justify-center px-6 py-12">

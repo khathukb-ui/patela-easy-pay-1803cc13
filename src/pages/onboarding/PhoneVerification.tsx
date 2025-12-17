@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { PhoneInput } from "@/components/patela/PhoneInput";
 import { OtpInput } from "@/components/patela/OtpInput";
@@ -7,17 +7,24 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, ArrowLeft, Loader2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useOnboardingData } from "@/hooks/use-onboarding-data";
 
 type Step = "phone" | "otp";
 
 export default function PhoneVerification() {
+  const { data: onboardingData, updateData } = useOnboardingData();
   const [step, setStep] = useState<Step>("phone");
-  const [phone, setPhone] = useState("");
+  const [phone, setPhone] = useState(onboardingData.phone);
   const [otp, setOtp] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const { t } = useLanguage();
+
+  // Save phone to onboarding data when it changes
+  useEffect(() => {
+    updateData({ phone, currentStep: "phone" });
+  }, [phone, updateData]);
 
   const handleSendOtp = async () => {
     if (phone.length < 9) {
@@ -53,6 +60,7 @@ export default function PhoneVerification() {
 
     if (otp === "123456") {
       setIsLoading(false);
+      updateData({ phoneVerified: true, currentStep: "details" });
       navigate("/onboarding/details");
     } else {
       setIsLoading(false);

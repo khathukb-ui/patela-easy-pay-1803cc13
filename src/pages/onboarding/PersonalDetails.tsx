@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ProgressSteps } from "@/components/patela/ProgressSteps";
 import { Button } from "@/components/ui/button";
@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { ArrowRight, ArrowLeft, Loader2, User, Store, MessageSquare, Mail, Phone, Check } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { cn } from "@/lib/utils";
+import { useOnboardingData } from "@/hooks/use-onboarding-data";
 
 type Step = "personal" | "business" | "communication";
 
@@ -42,25 +43,40 @@ const validateSAID = (id: string): boolean => {
 };
 
 export default function PersonalDetails() {
+  const { data: onboardingData, updateData } = useOnboardingData();
   const [step, setStep] = useState<Step>("personal");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { t } = useLanguage();
 
-  // Personal details
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [idNumber, setIdNumber] = useState("");
+  // Personal details - initialize from saved data
+  const [firstName, setFirstName] = useState(onboardingData.firstName);
+  const [lastName, setLastName] = useState(onboardingData.lastName);
+  const [idNumber, setIdNumber] = useState(onboardingData.idNumber);
   const [idError, setIdError] = useState("");
 
-  // Business details
-  const [businessName, setBusinessName] = useState("");
-  const [businessType, setBusinessType] = useState("");
+  // Business details - initialize from saved data
+  const [businessName, setBusinessName] = useState(onboardingData.businessName);
+  const [businessType, setBusinessType] = useState(onboardingData.businessType);
 
-  // Communication preferences
-  const [selectedMethods, setSelectedMethods] = useState<string[]>(["sms"]);
-  const [email, setEmail] = useState("");
+  // Communication preferences - initialize from saved data
+  const [selectedMethods, setSelectedMethods] = useState<string[]>(onboardingData.selectedMethods);
+  const [email, setEmail] = useState(onboardingData.email);
   const [emailError, setEmailError] = useState("");
+
+  // Save data when it changes
+  useEffect(() => {
+    updateData({
+      firstName,
+      lastName,
+      idNumber,
+      businessName,
+      businessType,
+      selectedMethods,
+      email,
+      currentStep: "details",
+    });
+  }, [firstName, lastName, idNumber, businessName, businessType, selectedMethods, email, updateData]);
 
   const validateEmail = (email: string): boolean => {
     if (!email) return false;
