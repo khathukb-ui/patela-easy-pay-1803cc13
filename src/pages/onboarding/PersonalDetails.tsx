@@ -59,6 +59,14 @@ export default function PersonalDetails() {
 
   // Communication preferences
   const [selectedMethods, setSelectedMethods] = useState<string[]>(["sms"]);
+  const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState("");
+
+  const validateEmail = (email: string): boolean => {
+    if (!email) return false;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
 
   const businessTypes = [
     { id: "food", label: t("businessTypeFood"), icon: "🍔" },
@@ -117,7 +125,9 @@ export default function PersonalDetails() {
   const isNextDisabled = () => {
     if (step === "personal") return !firstName.trim() || !lastName.trim() || !!idError;
     if (step === "business") return !businessName.trim();
-    return selectedMethods.length === 0;
+    if (selectedMethods.length === 0) return true;
+    if (selectedMethods.includes("email") && !validateEmail(email)) return true;
+    return false;
   };
 
   const getCurrentStepNumber = () => {
@@ -313,6 +323,32 @@ export default function PersonalDetails() {
                   </button>
                 );
               })}
+
+              {selectedMethods.includes("email") && (
+                <div className="space-y-2 animate-patela-fade-in">
+                  <Label htmlFor="email" className="text-base font-medium">
+                    {t("emailAddress")}
+                  </Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      if (e.target.value && !validateEmail(e.target.value)) {
+                        setEmailError(t("emailError"));
+                      } else {
+                        setEmailError("");
+                      }
+                    }}
+                    placeholder={t("emailPlaceholder")}
+                    className={cn("h-14 text-lg", emailError && "border-destructive")}
+                  />
+                  {emailError && (
+                    <p className="text-sm text-destructive">{emailError}</p>
+                  )}
+                </div>
+              )}
 
               <p className="text-sm text-muted-foreground text-center mt-4">
                 {t("communicationNote")}
