@@ -13,12 +13,8 @@ const sizeClasses = {
 };
 
 export function PatelaCard({ className = "", size = "lg" }: PatelaCardProps) {
-  const logoSize = size === "sm" ? "sm" : "md";
-  const chipSize = size === "sm" ? "w-8 h-5" : "w-10 h-7";
-  const chipIconSize = size === "sm" ? "w-4 h-4" : "w-5 h-5";
-  const numberSize = size === "sm" ? "text-sm" : "text-lg";
-  const padding = size === "sm" ? "p-4" : "p-6";
-  const chipTop = size === "sm" ? "top-12" : "top-16";
+  const isSmall = size === "sm";
+  const logoSize = isSmall ? "sm" : "md";
 
   return (
     <div className={`relative ${sizeClasses[size]} animate-float group ${className}`}>
@@ -38,20 +34,26 @@ export function PatelaCard({ className = "", size = "lg" }: PatelaCardProps) {
       </div>
       
       {/* Logo */}
-      <div className={`absolute top-${size === "sm" ? "4" : "6"} left-${size === "sm" ? "4" : "6"}`}>
+      <div className={isSmall ? "absolute top-4 left-4" : "absolute top-6 left-6"}>
         <PatelaLogo size={logoSize} variant="dark" />
       </div>
       
       {/* Chip icon */}
-      <div className={`absolute ${chipTop} left-${size === "sm" ? "4" : "6"}`}>
-        <div className={`${chipSize} rounded bg-gradient-to-br from-amber-200 via-amber-100 to-amber-300 border border-amber-300/50 flex items-center justify-center`}>
-          <Cpu className={`${chipIconSize} text-amber-600/60`} strokeWidth={1} />
+      <div className={isSmall ? "absolute top-12 left-4" : "absolute top-16 left-6"}>
+        <div className={isSmall 
+          ? "w-8 h-5 rounded bg-gradient-to-br from-amber-200 via-amber-100 to-amber-300 border border-amber-300/50 flex items-center justify-center"
+          : "w-10 h-7 rounded bg-gradient-to-br from-amber-200 via-amber-100 to-amber-300 border border-amber-300/50 flex items-center justify-center"
+        }>
+          <Cpu className={isSmall ? "w-4 h-4 text-amber-600/60" : "w-5 h-5 text-amber-600/60"} strokeWidth={1} />
         </div>
       </div>
       
       {/* Card number */}
-      <div className={`absolute bottom-${size === "sm" ? "4" : "6"} left-${size === "sm" ? "4" : "6"} right-${size === "sm" ? "4" : "6"}`}>
-        <p className={`font-mono ${numberSize} tracking-[0.2em] text-black`}>
+      <div className={isSmall ? "absolute bottom-4 left-4 right-4" : "absolute bottom-6 left-6 right-6"}>
+        <p className={isSmall 
+          ? "font-mono text-sm tracking-[0.2em] text-black"
+          : "font-mono text-lg tracking-[0.2em] text-black"
+        }>
           4532 7891 0124 3456
         </p>
       </div>
