@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ProgressSteps } from "@/components/patela/ProgressSteps";
 import { ArrowLeft, ArrowRight, Building2, CreditCard, CheckCircle2, Pencil } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { PatelaCard } from "@/components/patela/PatelaCard";
 
 export default function BankConfirm() {
   const navigate = useNavigate();
@@ -31,6 +32,11 @@ export default function BankConfirm() {
 
       {/* Content */}
       <div className="flex-1 patela-form-container py-4">
+        {/* Patela Card */}
+        <div className="flex justify-center mb-4 scale-90 -mt-2">
+          <PatelaCard size="md" />
+        </div>
+
         <div className="flex items-center gap-2 mb-2">
           {scanned && (
             <span className="px-2.5 py-0.5 bg-success/10 text-success text-xs font-medium rounded-full">

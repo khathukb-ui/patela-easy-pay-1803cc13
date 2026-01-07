@@ -2,8 +2,9 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ProgressSteps } from "@/components/patela/ProgressSteps";
-import { Camera, CreditCard, X, Flashlight, RotateCcw } from "lucide-react";
+import { Camera, X, Flashlight, RotateCcw } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { PatelaCard } from "@/components/patela/PatelaCard";
 
 export default function BankCardScan() {
   const navigate = useNavigate();
@@ -85,15 +86,9 @@ export default function BankCardScan() {
           </div>
         </div>
 
-        {/* Card Icon */}
-        <div className="flex items-center gap-3 p-2.5 bg-card rounded-xl patela-shadow-sm mb-3 w-full max-w-xs border border-border">
-          <div className="w-9 h-9 rounded-lg bg-accent/10 flex items-center justify-center">
-            <CreditCard className="h-4 w-4 text-accent" />
-          </div>
-          <div>
-            <p className="font-semibold text-foreground text-sm">Position your card</p>
-            <p className="text-xs text-muted-foreground">Front side facing up</p>
-          </div>
+        {/* Patela Card */}
+        <div className="mb-3 scale-75 -my-4">
+          <PatelaCard size="sm" />
         </div>
       </div>
 
