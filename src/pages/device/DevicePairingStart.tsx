@@ -19,10 +19,10 @@ export default function DevicePairingStart() {
         </div>
       </div>
 
-      {/* Content */}
-      <div className="flex-1 flex flex-col items-center justify-center px-4 pb-4">
+      {/* Content - Single connected section */}
+      <div className="flex-1 flex flex-col items-center justify-center px-4">
         {/* Device Image */}
-        <div className="relative w-28 h-28 mb-4 animate-patela-bounce-in">
+        <div className="relative w-24 h-24 mb-3 animate-patela-bounce-in">
           <div className="absolute inset-0 rounded-xl overflow-hidden shadow-lg border-2 border-primary/20">
             <img 
               src={patelaDeviceBox} 
@@ -38,38 +38,35 @@ export default function DevicePairingStart() {
           {t("pairDevice")}
         </h1>
         
-        <p className="text-muted-foreground text-center text-sm mb-4 max-w-xs">
+        <p className="text-muted-foreground text-center text-sm mb-2 max-w-xs">
           {t("pairDeviceDesc")}
         </p>
 
-        {/* Clear instruction */}
-        <div className="w-full max-w-sm bg-secondary/50 rounded-lg p-2.5 mb-4">
-          <p className="text-xs text-muted-foreground text-center">
-            Choose how you'd like to pair your device:
-          </p>
-        </div>
-      </div>
+        <p className="text-xs text-muted-foreground text-center mb-4">
+          Choose how you'd like to pair your device:
+        </p>
 
-      {/* Bottom Actions */}
-      <div className="p-4 flex flex-col items-center gap-2">
-        <Button 
-          variant="default"
-          size="default" 
-          className="w-[220px] shadow-md hover:shadow-lg border border-primary/10 transition-all duration-200 active:scale-95"
-          onClick={() => navigate("/device/qr")}
-        >
-          <QrCode className="mr-1.5 h-4 w-4" />
-          {t("scanQrCode")}
-        </Button>
-        
-        <Button 
-          variant="default" 
-          size="default"
-          className="w-[220px] shadow-md hover:shadow-lg border border-primary/10 transition-all duration-200 active:scale-95"
-          onClick={() => navigate("/device/bluetooth")}
-        >
-          {t("useBluetooth")}
-        </Button>
+        {/* Actions inline with content */}
+        <div className="flex flex-col items-center gap-2">
+          <Button 
+            variant="default"
+            size="default" 
+            className="w-[220px] shadow-md hover:shadow-lg border border-primary/10 transition-all duration-200 active:scale-95"
+            onClick={() => navigate("/device/qr")}
+          >
+            <QrCode className="mr-1.5 h-4 w-4" />
+            {t("scanQrCode")}
+          </Button>
+          
+          <Button 
+            variant="default" 
+            size="default"
+            className="w-[220px] shadow-md hover:shadow-lg border border-primary/10 transition-all duration-200 active:scale-95"
+            onClick={() => navigate("/device/bluetooth")}
+          >
+            {t("useBluetooth")}
+          </Button>
+        </div>
       </div>
     </div>
   );
