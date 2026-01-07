@@ -68,7 +68,7 @@ export default function DeviceBluetooth() {
   return (
     <div className="min-h-screen patela-app-bg flex flex-col">
       {/* Header */}
-      <div className="p-4 pt-8 flex items-center justify-between">
+      <div className="p-4 pt-6 flex items-center justify-between">
         <button 
           onClick={() => navigate("/device/start")}
           className="w-10 h-10 rounded-full bg-card flex items-center justify-center"
@@ -76,9 +76,9 @@ export default function DeviceBluetooth() {
           <ArrowLeft className="h-5 w-5 text-foreground" />
         </button>
         <div className="flex items-center justify-center gap-2">
-          <div className="h-2 w-8 rounded-full bg-success" />
-          <div className="h-2 w-8 rounded-full patela-gradient-primary" />
-          <div className="h-2 w-8 rounded-full bg-muted" />
+          <div className="h-2 w-6 rounded-full bg-success" />
+          <div className="h-2 w-6 rounded-full patela-gradient-primary" />
+          <div className="h-2 w-6 rounded-full bg-muted" />
         </div>
         <button 
           onClick={handleRefresh}
@@ -90,16 +90,16 @@ export default function DeviceBluetooth() {
       </div>
 
       {/* Content */}
-      <div className="flex-1 px-6 py-4">
-        <div className="flex items-center gap-3 mb-2">
+      <div className="flex-1 patela-form-container py-4">
+        <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center">
             <Bluetooth className="h-5 w-5 text-accent" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-foreground">
+            <h1 className="text-lg font-bold text-foreground">
               Find Nearby Devices
             </h1>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-xs text-muted-foreground">
               Turn on your Patela machine
             </p>
           </div>
@@ -107,22 +107,22 @@ export default function DeviceBluetooth() {
 
         {/* Searching State */}
         {isSearching && (
-          <div className="flex flex-col items-center justify-center py-16">
-            <div className="relative mb-6">
-              <div className="w-24 h-24 rounded-full bg-accent/10 flex items-center justify-center">
-                <Bluetooth className="h-12 w-12 text-accent" />
+          <div className="flex flex-col items-center justify-center py-12">
+            <div className="relative mb-4">
+              <div className="w-20 h-20 rounded-full bg-accent/10 flex items-center justify-center">
+                <Bluetooth className="h-10 w-10 text-accent" />
               </div>
               <div className="absolute inset-0 rounded-full border-4 border-accent/30 animate-ping" />
             </div>
-            <p className="text-foreground font-medium mb-2">Searching...</p>
-            <p className="text-sm text-muted-foreground">Looking for Patela devices nearby</p>
+            <p className="text-foreground font-medium mb-1 text-sm">Searching...</p>
+            <p className="text-xs text-muted-foreground">Looking for Patela devices nearby</p>
           </div>
         )}
 
         {/* Device List */}
         {!isSearching && devices.length > 0 && (
-          <div className="mt-6 space-y-3">
-            <p className="text-sm text-muted-foreground mb-3">
+          <div className="mt-4 space-y-2">
+            <p className="text-xs text-muted-foreground mb-2">
               {devices.length} device{devices.length > 1 ? "s" : ""} found
             </p>
             
@@ -130,14 +130,14 @@ export default function DeviceBluetooth() {
               <button
                 key={device.id}
                 onClick={() => handleSelectDevice(device)}
-                className="w-full flex items-center gap-4 p-4 bg-card rounded-2xl patela-shadow-sm hover:bg-muted/50 transition-colors"
+                className="w-full flex items-center gap-3 p-3 bg-card rounded-xl patela-shadow-sm hover:bg-muted/50 transition-colors border border-border"
               >
-                <div className="w-14 h-14 rounded-2xl patela-gradient-primary flex items-center justify-center">
-                  <Smartphone className="h-7 w-7 text-primary-foreground" />
+                <div className="w-12 h-12 rounded-xl patela-gradient-primary flex items-center justify-center">
+                  <Smartphone className="h-6 w-6 text-primary-foreground" />
                 </div>
                 <div className="flex-1 text-left">
-                  <p className="font-bold text-foreground text-lg">{device.name}</p>
-                  <p className="text-sm text-muted-foreground">{device.id}</p>
+                  <p className="font-bold text-foreground">{device.name}</p>
+                  <p className="text-xs text-muted-foreground">{device.id}</p>
                 </div>
                 <div className="flex flex-col items-end gap-1">
                   {getSignalBars(device.signal)}
@@ -153,15 +153,15 @@ export default function DeviceBluetooth() {
 
         {/* No Devices Found */}
         {!isSearching && devices.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-16">
-            <div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center mb-4">
-              <Bluetooth className="h-10 w-10 text-muted-foreground" />
+          <div className="flex flex-col items-center justify-center py-12">
+            <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-3">
+              <Bluetooth className="h-8 w-8 text-muted-foreground" />
             </div>
-            <p className="text-foreground font-medium mb-2">No devices found</p>
-            <p className="text-sm text-muted-foreground text-center max-w-xs mb-6">
+            <p className="text-foreground font-medium mb-1 text-sm">No devices found</p>
+            <p className="text-xs text-muted-foreground text-center max-w-xs mb-4">
               Make sure your Patela machine is turned on and nearby
             </p>
-            <Button onClick={handleRefresh} variant="outline" className="rounded-xl">
+            <Button onClick={handleRefresh} variant="outline" size="sm" className="rounded-lg">
               <RefreshCw className="mr-2 h-4 w-4" />
               Try Again
             </Button>
@@ -170,16 +170,16 @@ export default function DeviceBluetooth() {
 
         {/* Help Tips */}
         {!isSearching && (
-          <div className="mt-8 p-4 bg-muted/50 rounded-2xl">
-            <h3 className="font-semibold text-foreground mb-3">Can't find your device?</h3>
-            <ul className="space-y-2 text-sm text-muted-foreground">
+          <div className="mt-6 p-3 bg-muted/50 rounded-xl">
+            <h3 className="font-semibold text-foreground text-sm mb-2">Can't find your device?</h3>
+            <ul className="space-y-1.5 text-xs text-muted-foreground">
               <li className="flex items-start gap-2">
                 <span className="text-primary font-bold">1.</span>
                 <span>Turn on your Patela machine</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-primary font-bold">2.</span>
-                <span>Make sure Bluetooth is on in your phone settings</span>
+                <span>Enable Bluetooth on your phone</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-primary font-bold">3.</span>

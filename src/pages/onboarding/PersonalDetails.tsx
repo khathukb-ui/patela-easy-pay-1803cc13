@@ -156,10 +156,10 @@ export default function PersonalDetails() {
     <div className="min-h-screen patela-app-bg flex flex-col">
       <ProgressSteps currentStep={3} totalSteps={5} />
 
-      <div className="flex-1 flex flex-col px-6 py-8">
+      <div className="flex-1 flex flex-col patela-form-container py-6">
         <button
           onClick={handleBack}
-          className="flex items-center gap-2 text-muted-foreground mb-6 hover:text-foreground transition-colors"
+          className="flex items-center gap-2 text-muted-foreground mb-4 hover:text-foreground transition-colors"
         >
           <ArrowLeft className="h-5 w-5" />
           {t("back")}
@@ -167,48 +167,50 @@ export default function PersonalDetails() {
 
         {step === "personal" && (
           <>
-            <div className="text-center mb-8 animate-patela-slide-up">
-              <div className="h-20 w-20 mx-auto mb-4 rounded-full bg-primary flex items-center justify-center patela-shadow-primary">
-                <User className="h-10 w-10 text-primary-foreground" />
+            <div className="text-center mb-6 animate-patela-slide-up">
+              <div className="h-16 w-16 mx-auto mb-3 rounded-full bg-primary flex items-center justify-center patela-shadow-primary">
+                <User className="h-8 w-8 text-primary-foreground" />
               </div>
-              <h1 className="text-3xl font-bold text-foreground mb-2">
+              <h1 className="text-2xl font-bold text-foreground mb-1">
                 {t("personalDetailsTitle")}
               </h1>
-              <p className="text-muted-foreground text-lg">
+              <p className="text-muted-foreground text-sm">
                 {t("personalDetailsDesc")}
               </p>
             </div>
 
-            <div className="flex-1 space-y-6 animate-patela-fade-in">
-              <div className="space-y-2">
-                <Label htmlFor="firstName" className="text-base font-medium">
-                  {t("firstName")}
+            <div className="flex-1 patela-form-section animate-patela-fade-in">
+              <h2 className="patela-section-heading">Your Information</h2>
+              
+              <div className="patela-form-field">
+                <Label htmlFor="firstName" className="patela-label">
+                  First Name
                 </Label>
                 <Input
                   id="firstName"
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
-                  placeholder={t("firstNamePlaceholder")}
-                  className="h-14 text-lg"
+                  placeholder="Enter your first name"
+                  className="h-12"
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="lastName" className="text-base font-medium">
-                  {t("lastName")}
+              <div className="patela-form-field">
+                <Label htmlFor="lastName" className="patela-label">
+                  Last Name
                 </Label>
                 <Input
                   id="lastName"
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
-                  placeholder={t("lastNamePlaceholder")}
-                  className="h-14 text-lg"
+                  placeholder="Enter your last name"
+                  className="h-12"
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="idNumber" className="text-base font-medium">
-                  {t("idNumber")} <span className="text-muted-foreground font-normal">({t("optional")})</span>
+              <div className="patela-form-field">
+                <Label htmlFor="idNumber" className="patela-label">
+                  ID Number <span className="text-muted-foreground font-normal text-xs">({t("optional")})</span>
                 </Label>
                 <Input
                   id="idNumber"
@@ -222,13 +224,15 @@ export default function PersonalDetails() {
                       setIdError("");
                     }
                   }}
-                  placeholder={t("idNumberPlaceholder")}
-                  className={cn("h-14 text-lg", idError && "border-destructive")}
+                  placeholder="13-digit SA ID number"
+                  className={cn("h-12", idError && "border-destructive")}
                   maxLength={13}
                   inputMode="numeric"
                 />
-                {idError && (
-                  <p className="text-sm text-destructive">{idError}</p>
+                {idError ? (
+                  <p className="text-xs text-destructive mt-1">{idError}</p>
+                ) : (
+                  <p className="patela-helper-text">Used for verification purposes only</p>
                 )}
               </div>
             </div>
@@ -237,37 +241,40 @@ export default function PersonalDetails() {
 
         {step === "business" && (
           <>
-            <div className="text-center mb-8 animate-patela-slide-up">
-              <div className="h-20 w-20 mx-auto mb-4 rounded-full bg-accent flex items-center justify-center">
-                <Store className="h-10 w-10 text-accent-foreground" />
+            <div className="text-center mb-6 animate-patela-slide-up">
+              <div className="h-16 w-16 mx-auto mb-3 rounded-full bg-accent flex items-center justify-center">
+                <Store className="h-8 w-8 text-accent-foreground" />
               </div>
-              <h1 className="text-3xl font-bold text-foreground mb-2">
+              <h1 className="text-2xl font-bold text-foreground mb-1">
                 {t("businessDetailsTitle")}
               </h1>
-              <p className="text-muted-foreground text-lg">
+              <p className="text-muted-foreground text-sm">
                 {t("businessDetailsDesc")}
               </p>
             </div>
 
-            <div className="flex-1 space-y-6 animate-patela-fade-in">
-              <div className="space-y-2">
-                <Label htmlFor="businessName" className="text-base font-medium">
-                  {t("businessName")}
+            <div className="flex-1 patela-form-section animate-patela-fade-in">
+              <h2 className="patela-section-heading">Business Information</h2>
+              
+              <div className="patela-form-field">
+                <Label htmlFor="businessName" className="patela-label">
+                  Business Name
                 </Label>
                 <Input
                   id="businessName"
                   value={businessName}
                   onChange={(e) => setBusinessName(e.target.value)}
-                  placeholder={t("businessNamePlaceholder")}
-                  className="h-14 text-lg"
+                  placeholder="Enter your business name"
+                  className="h-12"
                 />
+                <p className="patela-helper-text">This will appear on customer receipts</p>
               </div>
 
-              <div className="space-y-3">
-                <Label className="text-base font-medium">
-                  {t("businessTypeLabel")} <span className="text-muted-foreground font-normal">({t("optional")})</span>
+              <div className="patela-form-field">
+                <Label className="patela-label">
+                  Business Type <span className="text-muted-foreground font-normal text-xs">({t("optional")})</span>
                 </Label>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-2 mt-2">
                   {businessTypes.map((type) => {
                     const isSelected = businessType === type.id;
                     return (
@@ -275,15 +282,15 @@ export default function PersonalDetails() {
                         key={type.id}
                         onClick={() => setBusinessType(type.id)}
                         className={cn(
-                          "flex items-center gap-3 p-4 rounded-xl border-2 transition-all",
+                          "flex items-center gap-2 p-3 rounded-xl border-2 transition-all",
                           isSelected
-                            ? "border-primary bg-primary/10 ring-2 ring-primary/20"
+                            ? "border-primary bg-primary/10"
                             : "border-border bg-card hover:border-muted-foreground/30"
                         )}
                       >
-                        <span className="text-2xl">{type.icon}</span>
+                        <span className="text-xl">{type.icon}</span>
                         <span className={cn(
-                          "font-medium",
+                          "font-medium text-sm",
                           isSelected ? "text-primary" : "text-foreground"
                         )}>{type.label}</span>
                       </button>
@@ -297,19 +304,21 @@ export default function PersonalDetails() {
 
         {step === "communication" && (
           <>
-            <div className="text-center mb-8 animate-patela-slide-up">
-              <div className="h-20 w-20 mx-auto mb-4 rounded-full bg-success flex items-center justify-center">
-                <MessageSquare className="h-10 w-10 text-success-foreground" />
+            <div className="text-center mb-6 animate-patela-slide-up">
+              <div className="h-16 w-16 mx-auto mb-3 rounded-full bg-success flex items-center justify-center">
+                <MessageSquare className="h-8 w-8 text-success-foreground" />
               </div>
-              <h1 className="text-3xl font-bold text-foreground mb-2">
+              <h1 className="text-2xl font-bold text-foreground mb-1">
                 {t("communicationTitle")}
               </h1>
-              <p className="text-muted-foreground text-lg">
+              <p className="text-muted-foreground text-sm">
                 {t("communicationDesc")}
               </p>
             </div>
 
-            <div className="flex-1 space-y-4 animate-patela-fade-in">
+            <div className="flex-1 patela-form-section animate-patela-fade-in">
+              <h2 className="patela-section-heading">Contact Preferences</h2>
+              
               {communicationMethods.map((method) => {
                 const isSelected = selectedMethods.includes(method.id);
                 const Icon = method.icon;
@@ -318,31 +327,31 @@ export default function PersonalDetails() {
                     key={method.id}
                     onClick={() => toggleCommunicationMethod(method.id)}
                     className={cn(
-                      "w-full flex items-center gap-4 p-5 rounded-xl border-2 transition-all text-left",
+                      "w-full flex items-center gap-3 p-4 rounded-xl border-2 transition-all text-left",
                       isSelected
-                        ? "border-primary bg-primary/10 ring-2 ring-primary/20"
+                        ? "border-primary bg-primary/10"
                         : "border-border bg-card hover:border-muted-foreground/30"
                     )}
                   >
                     <div className={cn(
-                      "h-12 w-12 rounded-full flex items-center justify-center transition-colors",
+                      "h-10 w-10 rounded-full flex items-center justify-center transition-colors",
                       isSelected ? "bg-primary" : "bg-muted"
                     )}>
                       <Icon className={cn(
-                        "h-6 w-6",
+                        "h-5 w-5",
                         isSelected ? "text-primary-foreground" : "text-muted-foreground"
                       )} />
                     </div>
                     <div className="flex-1">
                       <p className={cn(
-                        "font-semibold text-lg",
+                        "font-semibold",
                         isSelected ? "text-primary" : "text-foreground"
                       )}>{method.label}</p>
-                      <p className="text-muted-foreground">{method.description}</p>
+                      <p className="text-muted-foreground text-sm">{method.description}</p>
                     </div>
                     {isSelected && (
-                      <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
-                        <Check className="h-5 w-5 text-primary-foreground" />
+                      <div className="h-6 w-6 rounded-full bg-primary flex items-center justify-center">
+                        <Check className="h-4 w-4 text-primary-foreground" />
                       </div>
                     )}
                   </button>
@@ -350,9 +359,9 @@ export default function PersonalDetails() {
               })}
 
               {selectedMethods.includes("email") && (
-                <div className="space-y-2 animate-patela-fade-in">
-                  <Label htmlFor="email" className="text-base font-medium">
-                    {t("emailAddress")}
+                <div className="patela-form-field animate-patela-fade-in mt-3">
+                  <Label htmlFor="email" className="patela-label">
+                    Email Address
                   </Label>
                   <Input
                     id="email"
@@ -366,23 +375,25 @@ export default function PersonalDetails() {
                         setEmailError("");
                       }
                     }}
-                    placeholder={t("emailPlaceholder")}
-                    className={cn("h-14 text-lg", emailError && "border-destructive")}
+                    placeholder="your@email.com"
+                    className={cn("h-12", emailError && "border-destructive")}
                   />
-                  {emailError && (
-                    <p className="text-sm text-destructive">{emailError}</p>
+                  {emailError ? (
+                    <p className="text-xs text-destructive mt-1">{emailError}</p>
+                  ) : (
+                    <p className="patela-helper-text">For receipts and updates</p>
                   )}
                 </div>
               )}
 
-              <p className="text-sm text-muted-foreground text-center mt-4">
+              <p className="text-xs text-muted-foreground text-center mt-4">
                 {t("communicationNote")}
               </p>
             </div>
           </>
         )}
 
-        <div className="pt-6">
+        <div className="patela-button-container">
           <Button
             variant="hero"
             size="xl"
@@ -393,11 +404,11 @@ export default function PersonalDetails() {
             {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                {t("loading")}
+                Saving...
               </>
             ) : (
               <>
-                {step === "communication" ? t("continue") : t("next")}
+                {step === "communication" ? "Complete Setup" : "Continue"}
                 <ArrowRight className="ml-2 h-5 w-5" />
               </>
             )}
