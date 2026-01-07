@@ -28,9 +28,15 @@ export default function BankLinkingStart() {
               alt="Patela payment card" 
               className="w-full h-full object-contain drop-shadow-2xl"
             />
-            {/* Logo overlay */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <PatelaLogo size="lg" variant="dark" className="drop-shadow-lg" />
+            {/* Card content overlay */}
+            <div className="absolute inset-0 flex flex-col justify-between p-6">
+              <PatelaLogo size="sm" variant="dark" className="drop-shadow-md" />
+              <div className="space-y-1">
+                <p className="font-mono text-sm tracking-widest text-foreground/80 drop-shadow-sm">
+                  4532 •••• •••• 7891
+                </p>
+                <p className="text-xs text-muted-foreground">VALID THRU 12/28</p>
+              </div>
             </div>
           </div>
         </div>
