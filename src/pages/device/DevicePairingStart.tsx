@@ -38,31 +38,22 @@ export default function DevicePairingStart() {
           {t("pairDevice")}
         </h1>
         
-        <p className="text-muted-foreground text-center text-lg mb-8 max-w-xs">
+        <p className="text-muted-foreground text-center text-lg mb-6 max-w-xs">
           {t("pairDeviceDesc")}
         </p>
 
-        {/* Info List - Non-interactive */}
-        <ul className="w-full max-w-sm space-y-3 mb-8 text-left">
-          <li className="flex items-center gap-3 text-muted-foreground">
-            <QrCode className="h-5 w-5 text-primary flex-shrink-0" />
-            <span className="text-sm">Scan QR code on your device - fast & easy</span>
-          </li>
-          <li className="flex items-center gap-3 text-muted-foreground">
-            <Bluetooth className="h-5 w-5 text-primary flex-shrink-0" />
-            <span className="text-sm">Bluetooth available if QR doesn't work</span>
-          </li>
-          <li className="flex items-center gap-3 text-muted-foreground">
-            <Shield className="h-5 w-5 text-primary flex-shrink-0" />
-            <span className="text-sm">Secure encrypted connection</span>
-          </li>
-        </ul>
+        {/* Clear instruction */}
+        <div className="w-full max-w-sm bg-secondary/50 rounded-xl p-4 mb-8">
+          <p className="text-sm text-muted-foreground text-center">
+            Choose how you'd like to pair your device:
+          </p>
+        </div>
       </div>
 
-      {/* Bottom Actions - Unified Styling */}
+      {/* Bottom Actions - Same color for both options */}
       <div className="p-6 space-y-3">
         <Button 
-          variant="hero"
+          variant="default"
           size="xl" 
           className="w-full"
           onClick={() => navigate("/device/qr")}
@@ -72,7 +63,7 @@ export default function DevicePairingStart() {
         </Button>
         
         <Button 
-          variant="outline" 
+          variant="default" 
           size="lg"
           className="w-full"
           onClick={() => navigate("/device/bluetooth")}

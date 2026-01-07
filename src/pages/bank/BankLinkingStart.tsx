@@ -25,27 +25,22 @@ export default function BankLinkingStart() {
           {t("linkBank")}
         </h1>
         
-        <p className="text-muted-foreground text-center text-lg mb-8 max-w-xs">
+        <p className="text-muted-foreground text-center text-lg mb-6 max-w-xs">
           {t("linkBankDesc")}
         </p>
 
-        {/* Info List - clearly non-interactive */}
-        <ul className="w-full max-w-sm space-y-3 mb-8 text-left">
-          <li className="flex items-center gap-3 text-muted-foreground">
-            <CreditCard className="h-5 w-5 text-primary flex-shrink-0" />
-            <span className="text-sm">Scan your bank card - no typing needed</span>
-          </li>
-          <li className="flex items-center gap-3 text-muted-foreground">
-            <Shield className="h-5 w-5 text-primary flex-shrink-0" />
-            <span className="text-sm">Your details are encrypted & protected</span>
-          </li>
-        </ul>
+        {/* Clear instruction */}
+        <div className="w-full max-w-sm bg-secondary/50 rounded-xl p-4 mb-8">
+          <p className="text-sm text-muted-foreground text-center">
+            Choose how you'd like to add your bank details:
+          </p>
+        </div>
       </div>
 
-      {/* Bottom Actions - consistent button styling */}
+      {/* Bottom Actions - Same color for both options */}
       <div className="p-6 space-y-3">
         <Button 
-          variant="hero"
+          variant="default"
           size="xl" 
           className="w-full"
           onClick={() => navigate("/bank/scan")}
@@ -55,7 +50,7 @@ export default function BankLinkingStart() {
         </Button>
         
         <Button 
-          variant="outline" 
+          variant="default" 
           size="lg"
           className="w-full"
           onClick={() => navigate("/bank/manual")}
