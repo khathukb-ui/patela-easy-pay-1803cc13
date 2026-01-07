@@ -214,9 +214,9 @@ export default function Items() {
       {/* Add/Edit Form Modal */}
       {showAddForm && (
         <div className="fixed inset-0 bg-black/50 flex items-end justify-center z-50">
-          <div className="bg-card w-full max-w-lg rounded-t-3xl p-6 animate-patela-slide-up">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-foreground">
+          <div className="bg-card w-full max-w-lg rounded-t-2xl p-5 animate-patela-slide-up">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-bold text-foreground">
                 {editingItem ? "Edit Item" : "Add New Item"}
               </h2>
               <button
@@ -227,9 +227,11 @@ export default function Items() {
               </button>
             </div>
 
-            <div className="space-y-4">
-              <div>
-                <label className="text-sm font-medium text-foreground mb-1 block">
+            <div className="patela-form-section">
+              <h3 className="patela-section-heading">Item Details</h3>
+              
+              <div className="patela-form-field">
+                <label className="patela-label">
                   Item Name *
                 </label>
                 <input
@@ -237,13 +239,13 @@ export default function Items() {
                   value={formName}
                   onChange={(e) => setFormName(e.target.value)}
                   placeholder="e.g. Bread"
-                  className="w-full px-4 py-3 rounded-xl border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-accent"
+                  className="w-full px-4 py-3 rounded-xl border-2 border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium text-foreground mb-1 block">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="patela-form-field">
+                  <label className="patela-label">
                     Price (R) *
                   </label>
                   <input
@@ -251,11 +253,11 @@ export default function Items() {
                     value={formPrice}
                     onChange={(e) => setFormPrice(e.target.value)}
                     placeholder="0.00"
-                    className="w-full px-4 py-3 rounded-xl border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-accent"
+                    className="w-full px-4 py-3 rounded-xl border-2 border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
                   />
                 </div>
-                <div>
-                  <label className="text-sm font-medium text-foreground mb-1 block">
+                <div className="patela-form-field">
+                  <label className="patela-label">
                     Stock Qty
                   </label>
                   <input
@@ -263,22 +265,24 @@ export default function Items() {
                     value={formStock}
                     onChange={(e) => setFormStock(e.target.value)}
                     placeholder="0"
-                    className="w-full px-4 py-3 rounded-xl border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-accent"
+                    className="w-full px-4 py-3 rounded-xl border-2 border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
                   />
+                  <p className="patela-helper-text">Current inventory count</p>
                 </div>
               </div>
 
-              <div>
-                <label className="text-sm font-medium text-foreground mb-1 block">
-                  Category (optional)
+              <div className="patela-form-field">
+                <label className="patela-label">
+                  Category <span className="text-muted-foreground font-normal text-xs">(optional)</span>
                 </label>
                 <input
                   type="text"
                   value={formCategory}
                   onChange={(e) => setFormCategory(e.target.value)}
                   placeholder="e.g. Groceries"
-                  className="w-full px-4 py-3 rounded-xl border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-accent"
+                  className="w-full px-4 py-3 rounded-xl border-2 border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
                 />
+                <p className="patela-helper-text">Helps organize your items</p>
               </div>
 
               <Button

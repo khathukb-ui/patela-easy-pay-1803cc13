@@ -44,7 +44,7 @@ export default function BankManualEntry() {
   return (
     <div className="min-h-screen patela-app-bg flex flex-col">
       {/* Header */}
-      <div className="p-4 pt-8 flex items-center justify-between">
+      <div className="p-4 pt-6 flex items-center justify-between">
         <button 
           onClick={() => navigate("/bank/start")}
           className="w-10 h-10 rounded-full bg-card flex items-center justify-center"
@@ -56,28 +56,28 @@ export default function BankManualEntry() {
       </div>
 
       {/* Content */}
-      <div className="flex-1 px-6 py-4">
-        <h1 className="text-2xl font-bold text-foreground mb-2">
-          {t("enterManually")}
+      <div className="flex-1 patela-form-container py-4">
+        <h1 className="text-xl font-bold text-foreground mb-1">
+          Enter Bank Details
         </h1>
-        <p className="text-muted-foreground mb-6">
-          {t("linkBankDesc")}
+        <p className="text-muted-foreground text-sm mb-6">
+          Link your bank account to receive payments
         </p>
 
-        <div className="space-y-4">
+        <div className="patela-form-section">
           {/* Bank Selection */}
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-2">
-              {t("bankName")}
+          <div className="patela-form-field">
+            <label className="patela-label">
+              Select Your Bank
             </label>
             <button
               onClick={() => setShowBankList(!showBankList)}
-              className="w-full flex items-center justify-between p-4 bg-card border border-primary/10 rounded-2xl text-left hover:bg-primary/5 transition-colors"
+              className="w-full flex items-center justify-between p-3 bg-card border-2 border-border rounded-xl text-left hover:border-primary/30 transition-colors"
             >
               {selectedBankData ? (
                 <div className="flex items-center gap-3">
                   <div 
-                    className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold"
+                    className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm"
                     style={{ backgroundColor: selectedBankData.color }}
                   >
                     {selectedBankData.name[0]}
@@ -91,7 +91,7 @@ export default function BankManualEntry() {
             </button>
             
             {showBankList && (
-              <div className="mt-2 bg-card border border-primary/10 rounded-2xl overflow-hidden">
+              <div className="mt-2 bg-card border-2 border-border rounded-xl overflow-hidden">
                 {BANKS.map((bank) => (
                   <button
                     key={bank.id}
@@ -99,10 +99,10 @@ export default function BankManualEntry() {
                       setSelectedBank(bank.id);
                       setShowBankList(false);
                     }}
-                    className="w-full flex items-center gap-3 p-4 hover:bg-muted transition-colors border-b border-border last:border-b-0"
+                    className="w-full flex items-center gap-3 p-3 hover:bg-muted transition-colors border-b border-border last:border-b-0"
                   >
                     <div 
-                      className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold"
+                      className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm"
                       style={{ backgroundColor: bank.color }}
                     >
                       {bank.name[0]}
@@ -115,39 +115,40 @@ export default function BankManualEntry() {
           </div>
 
           {/* Account Number */}
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-2">
-              {t("accountNumber")}
+          <div className="patela-form-field">
+            <label className="patela-label">
+              Account Number
             </label>
             <Input
               type="tel"
               inputMode="numeric"
-              placeholder={t("accountNumber")}
+              placeholder="Enter your account number"
               value={accountNumber}
               onChange={(e) => setAccountNumber(e.target.value.replace(/\D/g, ""))}
-              className="h-14 text-lg rounded-2xl"
+              className="h-12"
             />
+            <p className="patela-helper-text">Your bank account number (8-12 digits)</p>
           </div>
 
           {/* Account Type */}
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-2">
-              {t("accountType")}
+          <div className="patela-form-field">
+            <label className="patela-label">
+              Account Type
             </label>
             <button
               onClick={() => setShowAccountTypes(!showAccountTypes)}
-              className="w-full flex items-center justify-between p-4 bg-card border border-primary/10 rounded-2xl text-left hover:bg-primary/5 transition-colors"
+              className="w-full flex items-center justify-between p-3 bg-card border-2 border-border rounded-xl text-left hover:border-primary/30 transition-colors"
             >
               {accountType ? (
                 <span className="font-medium text-foreground">{accountType}</span>
               ) : (
-                <span className="text-muted-foreground">{t("accountType")}</span>
+                <span className="text-muted-foreground">Select account type</span>
               )}
               <ChevronDown className={`h-5 w-5 text-muted-foreground transition-transform ${showAccountTypes ? "rotate-180" : ""}`} />
             </button>
             
             {showAccountTypes && (
-              <div className="mt-2 bg-card border border-primary/10 rounded-2xl overflow-hidden">
+              <div className="mt-2 bg-card border-2 border-border rounded-xl overflow-hidden">
                 {ACCOUNT_TYPES.map((type) => (
                   <button
                     key={type}
@@ -155,7 +156,7 @@ export default function BankManualEntry() {
                       setAccountType(type);
                       setShowAccountTypes(false);
                     }}
-                    className="w-full text-left p-4 hover:bg-muted transition-colors border-b border-border last:border-b-0 font-medium text-foreground"
+                    className="w-full text-left p-3 hover:bg-muted transition-colors border-b border-border last:border-b-0 font-medium text-foreground"
                   >
                     {type}
                   </button>
@@ -167,7 +168,7 @@ export default function BankManualEntry() {
       </div>
 
       {/* Bottom Action */}
-      <div className="p-6">
+      <div className="patela-button-container">
         <Button 
           variant="hero"
           size="xl" 
@@ -175,8 +176,8 @@ export default function BankManualEntry() {
           onClick={handleContinue}
           disabled={!isValid}
         >
-          {t("continue")}
-          <ArrowRight className="ml-3 h-5 w-5" />
+          Continue to Verify
+          <ArrowRight className="ml-2 h-5 w-5" />
         </Button>
       </div>
     </div>

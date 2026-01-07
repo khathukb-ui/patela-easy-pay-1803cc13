@@ -108,54 +108,56 @@ export default function BankVerify() {
           </div>
 
           <Button 
+            variant="hero"
             size="xl" 
-            className="w-full max-w-sm patela-gradient-primary text-lg font-bold h-16 rounded-2xl patela-shadow-md"
+            className="w-full max-w-sm"
             onClick={() => navigate("/bank/success")}
           >
-            {t("continue")}
+            Continue
           </Button>
         </div>
       )}
 
       {status === "failed" && (
-        <div className="flex flex-col items-center text-center animate-fade-in">
-          <div className="w-24 h-24 rounded-full bg-destructive/10 flex items-center justify-center mb-6">
-            <XCircle className="h-12 w-12 text-destructive" />
+        <div className="flex flex-col items-center text-center animate-fade-in patela-form-container">
+          <div className="w-20 h-20 rounded-full bg-destructive/10 flex items-center justify-center mb-4">
+            <XCircle className="h-10 w-10 text-destructive" />
           </div>
 
-          <h1 className="text-2xl font-bold text-foreground mb-2">
-            {t("verificationFailed")}
+          <h1 className="text-xl font-bold text-foreground mb-1">
+            Verification Failed
           </h1>
-          <p className="text-muted-foreground mb-8 max-w-xs">
-            {t("retry")}
+          <p className="text-muted-foreground text-sm mb-6 max-w-xs">
+            We couldn't verify your account. Please try again or upload proof.
           </p>
 
           <div className="w-full max-w-sm space-y-3">
             <Button 
+              variant="hero"
               size="xl" 
-              className="w-full patela-gradient-primary text-lg font-bold h-16 rounded-2xl patela-shadow-md"
+              className="w-full"
               onClick={handleRetry}
             >
-              {t("retry")}
+              Try Again
             </Button>
 
             <Button 
               variant="outline"
               size="lg" 
-              className="w-full h-14 rounded-2xl"
+              className="w-full"
               onClick={() => navigate("/bank/upload")}
             >
               <Upload className="mr-2 h-5 w-5" />
-              {t("uploadProof")}
+              Upload Proof of Account
             </Button>
 
             <Button 
               variant="ghost"
               size="lg" 
-              className="w-full h-14"
+              className="w-full text-muted-foreground"
               onClick={() => navigate("/help")}
             >
-              {t("helpSupport")}
+              Get Help
             </Button>
           </div>
         </div>

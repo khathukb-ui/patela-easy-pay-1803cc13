@@ -274,3 +274,51 @@
 .animate-patela-fade-in {
   animation: patela-fade-in 0.3s ease-out forwards;
 }
+
+/* Form and Layout Utilities */
+@layer components {
+  /* Consistent form container with balanced margins */
+  .patela-form-container {
+    @apply px-4 sm:px-6 max-w-lg mx-auto w-full;
+  }
+
+  /* Form section with proper grouping */
+  .patela-form-section {
+    @apply space-y-3;
+  }
+
+  /* Form field with consistent spacing */
+  .patela-form-field {
+    @apply space-y-1.5;
+  }
+
+  /* Form label styling */
+  .patela-label {
+    @apply text-sm font-semibold text-foreground;
+  }
+
+  /* Helper text below inputs */
+  .patela-helper-text {
+    @apply text-xs text-muted-foreground mt-1;
+  }
+
+  /* Section heading for form groups */
+  .patela-section-heading {
+    @apply text-base font-bold text-foreground mb-3;
+  }
+
+  /* Consistent button container at bottom */
+  .patela-button-container {
+    @apply pt-4 pb-6 px-4 sm:px-6;
+  }
+
+  /* Page content wrapper with consistent spacing */
+  .patela-page-content {
+    @apply flex-1 px-4 sm:px-6 py-4;
+  }
+
+  /* Card with form inside */
+  .patela-form-card {
+    @apply bg-card rounded-2xl p-4 border border-border;
+  }
+}

@@ -84,28 +84,29 @@ export default function PhoneVerification() {
     <div className="min-h-screen patela-app-bg flex flex-col">
       <ProgressSteps currentStep={2} totalSteps={5} />
 
-      <div className="flex-1 flex flex-col px-6 py-8">
+      <div className="flex-1 flex flex-col patela-form-container py-6">
         {step === "phone" ? (
           <>
             <button
               onClick={() => navigate("/onboarding/language")}
-              className="flex items-center gap-2 text-muted-foreground mb-6 hover:text-foreground transition-colors"
+              className="flex items-center gap-2 text-muted-foreground mb-4 hover:text-foreground transition-colors"
             >
               <ArrowLeft className="h-5 w-5" />
               {t("back")}
             </button>
 
-            <div className="text-center mb-8 animate-patela-slide-up">
-              <div className="text-6xl mb-4">📱</div>
-              <h1 className="text-3xl font-bold text-foreground mb-2">
+            <div className="text-center mb-6 animate-patela-slide-up">
+              <div className="text-5xl mb-3">📱</div>
+              <h1 className="text-2xl font-bold text-foreground mb-1">
                 {t("enterPhone")}
               </h1>
-              <p className="text-muted-foreground text-lg">
+              <p className="text-muted-foreground text-sm">
                 {t("enterPhoneDesc")}
               </p>
             </div>
 
-            <div className="flex-1 flex flex-col justify-center animate-patela-fade-in">
+            <div className="flex-1 flex flex-col justify-center animate-patela-fade-in patela-form-section">
+              <label className="patela-label mb-2">Mobile Number</label>
               <PhoneInput
                 value={phone}
                 onChange={(val) => {
@@ -115,9 +116,10 @@ export default function PhoneVerification() {
                 error={error}
                 disabled={isLoading}
               />
+              <p className="patela-helper-text">We'll send you a verification code</p>
             </div>
 
-            <div className="pt-6">
+            <div className="patela-button-container">
               <Button
                 variant="hero"
                 size="xl"
@@ -128,11 +130,11 @@ export default function PhoneVerification() {
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                    {t("loading")}
+                    Sending...
                   </>
                 ) : (
                   <>
-                    {t("sendCode")}
+                    Send Verification Code
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </>
                 )}
@@ -147,23 +149,24 @@ export default function PhoneVerification() {
                 setOtp("");
                 setError("");
               }}
-              className="flex items-center gap-2 text-muted-foreground mb-6 hover:text-foreground transition-colors"
+              className="flex items-center gap-2 text-muted-foreground mb-4 hover:text-foreground transition-colors"
             >
               <ArrowLeft className="h-5 w-5" />
               {t("back")}
             </button>
 
-            <div className="text-center mb-8 animate-patela-slide-up">
-              <div className="text-6xl mb-4">✉️</div>
-              <h1 className="text-3xl font-bold text-foreground mb-2">
+            <div className="text-center mb-6 animate-patela-slide-up">
+              <div className="text-5xl mb-3">✉️</div>
+              <h1 className="text-2xl font-bold text-foreground mb-1">
                 {t("verifyPhone")}
               </h1>
-              <p className="text-muted-foreground text-lg">
-                {t("enterOtp")} +27 {phone}
+              <p className="text-muted-foreground text-sm">
+                Enter the 6-digit code sent to +27 {phone}
               </p>
             </div>
 
-            <div className="flex-1 flex flex-col justify-center animate-patela-fade-in">
+            <div className="flex-1 flex flex-col justify-center animate-patela-fade-in patela-form-section">
+              <label className="patela-label mb-2 text-center">Verification Code</label>
               <OtpInput
                 value={otp}
                 onChange={(val) => {
@@ -177,13 +180,13 @@ export default function PhoneVerification() {
               <button
                 onClick={handleResendOtp}
                 disabled={isLoading}
-                className="mt-6 text-primary font-medium hover:underline disabled:opacity-50 text-center"
+                className="mt-4 text-primary text-sm font-medium hover:underline disabled:opacity-50 text-center"
               >
-                {t("resendCode")}
+                Didn't receive it? Resend code
               </button>
             </div>
 
-            <div className="pt-6">
+            <div className="patela-button-container">
               <Button
                 variant="hero"
                 size="xl"
@@ -194,11 +197,11 @@ export default function PhoneVerification() {
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                    {t("loading")}
+                    Verifying...
                   </>
                 ) : (
                   <>
-                    {t("confirm")}
+                    Verify & Continue
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </>
                 )}

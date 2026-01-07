@@ -29,7 +29,7 @@ export default function BankCardScan() {
   return (
     <div className="min-h-screen patela-app-bg flex flex-col">
       {/* Header */}
-      <div className="p-4 pt-8 flex items-center justify-between">
+      <div className="p-4 pt-6 flex items-center justify-between">
         <button 
           onClick={() => navigate("/bank/start")}
           className="w-10 h-10 rounded-full bg-card flex items-center justify-center"
@@ -41,79 +41,80 @@ export default function BankCardScan() {
       </div>
 
       {/* Scan Area */}
-      <div className="flex-1 flex flex-col items-center justify-center px-6">
-        <h1 className="text-xl font-bold text-foreground text-center mb-2">
-          {t("scanBankCard")}
+      <div className="flex-1 flex flex-col items-center justify-center patela-form-container">
+        <h1 className="text-xl font-bold text-foreground text-center mb-1">
+          Scan Your Bank Card
         </h1>
-        <p className="text-muted-foreground text-center mb-6">
-          Hold your card inside the frame
+        <p className="text-muted-foreground text-sm text-center mb-4">
+          Position your card within the frame
         </p>
 
         {/* Camera Preview Area */}
-        <div className="relative w-full max-w-sm aspect-[1.6/1] rounded-3xl overflow-hidden bg-muted mb-6">
+        <div className="relative w-full max-w-xs aspect-[1.6/1] rounded-2xl overflow-hidden bg-muted mb-4">
           {/* Simulated camera view */}
           <div className="absolute inset-0 bg-gradient-to-br from-muted to-muted-foreground/20 flex items-center justify-center">
             {isScanning ? (
               <div className="flex flex-col items-center">
-                <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4" />
-                <p className="text-foreground font-medium">{t("loading")}</p>
+                <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mb-3" />
+                <p className="text-foreground font-medium text-sm">Scanning...</p>
               </div>
             ) : (
-              <Camera className="h-16 w-16 text-muted-foreground/50" />
+              <Camera className="h-12 w-12 text-muted-foreground/50" />
             )}
           </div>
 
           {/* Card Frame Overlay */}
-          <div className="absolute inset-4 border-2 border-dashed border-primary/50 rounded-2xl">
+          <div className="absolute inset-3 border-2 border-dashed border-primary/50 rounded-xl">
             {/* Corner Markers */}
-            <div className="absolute -top-1 -left-1 w-6 h-6 border-t-4 border-l-4 border-primary rounded-tl-lg" />
-            <div className="absolute -top-1 -right-1 w-6 h-6 border-t-4 border-r-4 border-primary rounded-tr-lg" />
-            <div className="absolute -bottom-1 -left-1 w-6 h-6 border-b-4 border-l-4 border-primary rounded-bl-lg" />
-            <div className="absolute -bottom-1 -right-1 w-6 h-6 border-b-4 border-r-4 border-primary rounded-br-lg" />
+            <div className="absolute -top-1 -left-1 w-5 h-5 border-t-3 border-l-3 border-primary rounded-tl-lg" />
+            <div className="absolute -top-1 -right-1 w-5 h-5 border-t-3 border-r-3 border-primary rounded-tr-lg" />
+            <div className="absolute -bottom-1 -left-1 w-5 h-5 border-b-3 border-l-3 border-primary rounded-bl-lg" />
+            <div className="absolute -bottom-1 -right-1 w-5 h-5 border-b-3 border-r-3 border-primary rounded-br-lg" />
           </div>
 
           {/* Controls */}
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-4">
+          <div className="absolute bottom-3 left-1/2 -translate-x-1/2">
             <button 
               onClick={() => setFlashOn(!flashOn)}
-              className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors ${
+              className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${
                 flashOn ? "bg-accent text-accent-foreground" : "bg-background/80 text-foreground"
               }`}
             >
-              <Flashlight className="h-5 w-5" />
+              <Flashlight className="h-4 w-4" />
             </button>
           </div>
         </div>
 
         {/* Card Icon */}
-        <div className="flex items-center gap-3 p-4 bg-card rounded-2xl patela-shadow-sm mb-4 w-full max-w-sm border border-primary/10">
-          <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center">
-            <CreditCard className="h-6 w-6 text-accent" />
+        <div className="flex items-center gap-3 p-3 bg-card rounded-xl patela-shadow-sm mb-4 w-full max-w-xs border border-border">
+          <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center">
+            <CreditCard className="h-5 w-5 text-accent" />
           </div>
           <div>
-            <p className="font-semibold text-foreground">Position your card</p>
-            <p className="text-sm text-muted-foreground">Front side facing up</p>
+            <p className="font-semibold text-foreground text-sm">Position your card</p>
+            <p className="text-xs text-muted-foreground">Front side facing up</p>
           </div>
         </div>
       </div>
 
       {/* Bottom Actions */}
-      <div className="p-6 space-y-3">
+      <div className="patela-button-container space-y-3">
         <Button 
+          variant="hero"
           size="xl" 
-          className="w-full bg-accent text-accent-foreground text-lg font-bold h-16 rounded-2xl patela-shadow-accent hover:bg-accent/90"
+          className="w-full"
           onClick={handleStartScan}
           disabled={isScanning}
         >
           {isScanning ? (
             <>
-              <RotateCcw className="mr-3 h-6 w-6 animate-spin" />
-              {t("loading")}
+              <RotateCcw className="mr-2 h-5 w-5 animate-spin" />
+              Scanning...
             </>
           ) : (
             <>
-              <Camera className="mr-3 h-6 w-6" />
-              Take Photo
+              <Camera className="mr-2 h-5 w-5" />
+              Capture Card
             </>
           )}
         </Button>
@@ -121,10 +122,10 @@ export default function BankCardScan() {
         <Button 
           variant="ghost" 
           size="lg"
-          className="w-full text-base h-14 text-primary hover:bg-primary/5"
+          className="w-full text-primary"
           onClick={() => navigate("/bank/manual")}
         >
-          {t("enterManually")}
+          Enter Details Manually
         </Button>
       </div>
     </div>
