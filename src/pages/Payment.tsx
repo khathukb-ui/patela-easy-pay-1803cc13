@@ -3,11 +3,15 @@ import { useNavigate } from "react-router-dom";
 import { Keypad } from "@/components/patela/Keypad";
 import { QuickAmountButton } from "@/components/patela/QuickAmountButton";
 import { OfflineBanner } from "@/components/patela/OfflineBanner";
+import { ItemSelector } from "@/components/patela/ItemSelector";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, CreditCard, Loader2, MessageSquare } from "lucide-react";
+import { ArrowLeft, CreditCard, Loader2, MessageSquare, ShoppingCart, Calculator, X, Package } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useCatalog, useCart } from "@/hooks/use-catalog";
+import { cn } from "@/lib/utils";
 
 type PaymentStep = "amount" | "processing" | "success" | "failed";
+type InputMode = "manual" | "items";
 
 export default function Payment() {
   const navigate = useNavigate();
@@ -16,6 +20,10 @@ export default function Payment() {
   const [note, setNote] = useState("");
   const [step, setStep] = useState<PaymentStep>("amount");
   const [isOffline] = useState(false);
+  const [inputMode, setInputMode] = useState<InputMode>("manual");
+
+  const { items } = useCatalog();
+  const { cart, addToCart, removeFromCart, clearCart, cartTotal, cartCount } = useCart();
 
   const quickAmounts = [20, 50, 100, 200];
 
@@ -38,7 +46,8 @@ export default function Payment() {
   };
 
   const handleCharge = async () => {
-    if (!amount || parseFloat(amount) <= 0) return;
+    const chargeAmount = inputMode === "items" ? cartTotal : parseFloat(amount);
+    if (!chargeAmount || chargeAmount <= 0) return;
 
     setStep("processing");
 
@@ -47,16 +56,20 @@ export default function Payment() {
 
     // Random success/fail for demo
     const success = Math.random() > 0.2;
+    const itemsNote = inputMode === "items" && cart.length > 0
+      ? cart.map(c => `${c.quantity}x ${c.name}`).join(", ")
+      : note;
+
     if (success) {
-      navigate("/payment/success", { state: { amount: parseFloat(amount), note } });
+      navigate("/payment/success", { state: { amount: chargeAmount, note: itemsNote } });
     } else {
-      navigate("/payment/failed", { state: { amount: parseFloat(amount) } });
+      navigate("/payment/failed", { state: { amount: chargeAmount } });
     }
   };
 
-  const displayAmount = amount || "0";
-  const formattedAmount = parseFloat(displayAmount).toLocaleString("en-ZA", {
-    minimumFractionDigits: 0,
+  const currentAmount = inputMode === "items" ? cartTotal : (amount ? parseFloat(amount) : 0);
+  const formattedAmount = currentAmount.toLocaleString("en-ZA", {
+    minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
 
@@ -96,59 +109,145 @@ export default function Payment() {
       <OfflineBanner isOffline={isOffline} />
 
       {/* Header */}
-      <header className="flex items-center gap-4 px-4 py-4">
-        <button
-          onClick={() => navigate("/home")}
-          className="h-10 w-10 rounded-xl bg-secondary flex items-center justify-center hover:bg-secondary/80 transition-colors"
-        >
-          <ArrowLeft className="h-5 w-5 text-foreground" />
-        </button>
-        <h1 className="text-xl font-bold text-foreground">{t("takePayment")}</h1>
+      <header className="flex items-center justify-between px-4 py-4">
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => navigate("/home")}
+            className="h-10 w-10 rounded-xl bg-secondary flex items-center justify-center hover:bg-secondary/80 transition-colors"
+          >
+            <ArrowLeft className="h-5 w-5 text-foreground" />
+          </button>
+          <h1 className="text-xl font-bold text-foreground">{t("takePayment")}</h1>
+        </div>
+
+        {/* Mode Toggle */}
+        <div className="flex bg-secondary rounded-xl p-1">
+          <button
+            onClick={() => {
+              setInputMode("manual");
+              clearCart();
+            }}
+            className={cn(
+              "flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all",
+              inputMode === "manual"
+                ? "bg-primary text-primary-foreground"
+                : "text-muted-foreground hover:text-foreground"
+            )}
+          >
+            <Calculator className="h-4 w-4" />
+            Amount
+          </button>
+          <button
+            onClick={() => {
+              setInputMode("items");
+              setAmount("");
+            }}
+            className={cn(
+              "flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all",
+              inputMode === "items"
+                ? "bg-primary text-primary-foreground"
+                : "text-muted-foreground hover:text-foreground"
+            )}
+          >
+            <ShoppingCart className="h-4 w-4" />
+            Items
+          </button>
+        </div>
       </header>
 
       {/* Amount Display */}
-      <div className="flex-1 flex flex-col items-center justify-center px-6">
-        <div className="text-center mb-6">
-          <p className="text-muted-foreground text-sm mb-2">{t("enterAmount")}</p>
+      <div className="px-6 py-4">
+        <div className="text-center mb-4">
+          <p className="text-muted-foreground text-sm mb-2">
+            {inputMode === "items" ? "Cart Total" : t("enterAmount")}
+          </p>
           <div className="flex items-baseline justify-center">
             <span className="text-3xl font-bold text-muted-foreground mr-1">R</span>
-            <span className="text-6xl font-bold text-foreground tracking-tight">
+            <span className="text-5xl font-bold text-foreground tracking-tight">
               {formattedAmount}
             </span>
           </div>
         </div>
 
-        {/* Note Input */}
-        <button
-          onClick={() => {
-            const newNote = prompt(t("addNote"), note);
-            if (newNote !== null) setNote(newNote);
-          }}
-          className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-6"
-        >
-          <MessageSquare className="h-4 w-4" />
-          <span className="text-sm">{note || t("addNote")}</span>
-        </button>
+        {/* Cart Summary (Items Mode) */}
+        {inputMode === "items" && cart.length > 0 && (
+          <div className="bg-accent/10 rounded-xl p-3 mb-4">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-medium text-foreground">
+                {cartCount} item{cartCount !== 1 ? "s" : ""} in cart
+              </span>
+              <button
+                onClick={clearCart}
+                className="text-xs text-destructive hover:underline flex items-center gap-1"
+              >
+                <X className="h-3 w-3" />
+                Clear
+              </button>
+            </div>
+            <div className="flex flex-wrap gap-1">
+              {cart.map((item) => (
+                <span
+                  key={item.id}
+                  className="text-xs bg-accent/20 text-accent px-2 py-1 rounded-full"
+                >
+                  {item.quantity}× {item.name}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
 
-        {/* Quick Amounts */}
-        <div className="flex items-center gap-3 mb-4 flex-wrap justify-center">
-          {quickAmounts.map((quickAmount) => (
-            <QuickAmountButton
-              key={quickAmount}
-              amount={quickAmount}
-              onClick={handleQuickAmount}
-            />
-          ))}
-        </div>
+        {/* Note Input (Manual Mode) */}
+        {inputMode === "manual" && (
+          <button
+            onClick={() => {
+              const newNote = prompt(t("addNote"), note);
+              if (newNote !== null) setNote(newNote);
+            }}
+            className="flex items-center justify-center gap-2 text-muted-foreground hover:text-foreground transition-colors w-full"
+          >
+            <MessageSquare className="h-4 w-4" />
+            <span className="text-sm">{note || t("addNote")}</span>
+          </button>
+        )}
       </div>
 
-      {/* Keypad */}
+      {/* Main Input Area */}
+      <div className="flex-1 overflow-hidden">
+        {inputMode === "items" ? (
+          <div className="px-4 pb-4 h-full overflow-y-auto">
+            <ItemSelector
+              items={items}
+              cart={cart}
+              onAdd={addToCart}
+              onRemove={removeFromCart}
+            />
+          </div>
+        ) : (
+          <>
+            {/* Quick Amounts */}
+            <div className="flex items-center gap-3 px-6 mb-4 flex-wrap justify-center">
+              {quickAmounts.map((quickAmount) => (
+                <QuickAmountButton
+                  key={quickAmount}
+                  amount={quickAmount}
+                  onClick={handleQuickAmount}
+                />
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+
+      {/* Bottom Section */}
       <div className="bg-card border-t border-border">
-        <Keypad
-          onKeyPress={handleKeyPress}
-          onDelete={handleDelete}
-          onClear={() => setAmount("")}
-        />
+        {inputMode === "manual" && (
+          <Keypad
+            onKeyPress={handleKeyPress}
+            onDelete={handleDelete}
+            onClear={() => setAmount("")}
+          />
+        )}
 
         {/* Charge Button */}
         <div className="px-4 pb-6">
@@ -157,7 +256,7 @@ export default function Payment() {
             size="xl"
             className="w-full"
             onClick={handleCharge}
-            disabled={!amount || parseFloat(amount) <= 0}
+            disabled={currentAmount <= 0}
           >
             <CreditCard className="h-6 w-6 mr-2" />
             {t("chargeCustomer")} R{formattedAmount}

@@ -18,6 +18,7 @@ import PaymentFailed from "./pages/PaymentFailed";
 import Sales from "./pages/Sales";
 import Account from "./pages/Account";
 import Help from "./pages/Help";
+import Items from "./pages/Items";
 
 // Onboarding
 import LanguageSelection from "./pages/onboarding/LanguageSelection";
@@ -114,6 +115,7 @@ function AppContent() {
           <Route path="/payment/success" element={<PaymentSuccess />} />
           <Route path="/payment/failed" element={<PaymentFailed />} />
           <Route path="/sales" element={<Sales />} />
+          <Route path="/items" element={<Items />} />
           <Route path="/account" element={<Account />} />
           <Route path="/help" element={<Help />} />
           
