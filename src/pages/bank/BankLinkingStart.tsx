@@ -37,12 +37,12 @@ export default function BankLinkingStart() {
         </div>
       </div>
 
-      {/* Bottom Actions - Compact buttons */}
-      <div className="p-6 flex flex-col items-center gap-3">
+      {/* Bottom Actions - Premium button styling */}
+      <div className="p-6 flex flex-col items-center gap-4">
         <Button 
           variant="default"
           size="lg" 
-          className="w-auto min-w-[200px] shadow-md hover:shadow-lg border border-primary/20"
+          className="min-w-[220px] shadow-lg hover:shadow-xl border border-primary/10 transition-all duration-200 active:scale-95 hover:scale-[1.02]"
           onClick={() => navigate("/bank/scan")}
         >
           <CreditCard className="mr-2 h-5 w-5" />
@@ -51,8 +51,8 @@ export default function BankLinkingStart() {
         
         <Button 
           variant="default" 
-          size="default"
-          className="w-auto min-w-[200px] shadow-md hover:shadow-lg border border-primary/20"
+          size="lg"
+          className="min-w-[220px] shadow-lg hover:shadow-xl border border-primary/10 transition-all duration-200 active:scale-95 hover:scale-[1.02]"
           onClick={() => navigate("/bank/manual")}
         >
           {t("enterManually")}
