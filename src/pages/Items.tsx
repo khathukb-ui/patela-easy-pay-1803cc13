@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { BottomNav } from "@/components/patela/BottomNav";
 import { Button } from "@/components/ui/button";
 import { useCatalog, CatalogItem } from "@/hooks/use-catalog";
-import { Plus, Package, AlertTriangle, PackageX, Pencil, Trash2, X, Check, Save } from "lucide-react";
+import { Plus, Package, AlertTriangle, PackageX, Pencil, Trash2, X, Check } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -11,13 +10,11 @@ import { toast } from "sonner";
 type ViewMode = "all" | "low" | "out";
 
 export default function Items() {
-  const navigate = useNavigate();
   const { t } = useLanguage();
   const { items, addItem, updateItem, deleteItem, getLowStockItems, getOutOfStockItems } = useCatalog();
   const [viewMode, setViewMode] = useState<ViewMode>("all");
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingItem, setEditingItem] = useState<CatalogItem | null>(null);
-  const [hasChanges, setHasChanges] = useState(false);
 
   // Form state
   const [formName, setFormName] = useState("");
@@ -53,6 +50,7 @@ export default function Items() {
         stock: parseInt(formStock) || 0,
         category: formCategory || undefined,
       });
+      toast.success("Item updated successfully!");
     } else {
       addItem({
         name: formName,
@@ -61,25 +59,13 @@ export default function Items() {
         lowStockThreshold: 5,
         category: formCategory || undefined,
       });
+      toast.success("Item added successfully!");
     }
-    setHasChanges(true);
     resetForm();
   };
 
-  const handleSaveAll = () => {
-    toast.success("Items saved successfully!");
-    setHasChanges(false);
-  };
-
   const handleCancel = () => {
-    if (hasChanges) {
-      if (confirm("Discard unsaved changes?")) {
-        setHasChanges(false);
-        navigate(-1);
-      }
-    } else {
-      navigate(-1);
-    }
+    resetForm();
   };
 
   const handleEdit = (item: CatalogItem) => {
@@ -94,7 +80,7 @@ export default function Items() {
   const handleDelete = (id: string) => {
     if (confirm("Delete this item?")) {
       deleteItem(id);
-      setHasChanges(true);
+      toast.success("Item deleted");
     }
   };
 
@@ -307,47 +293,29 @@ export default function Items() {
                 <p className="patela-helper-text">Helps organize your items</p>
               </div>
 
-              <Button
-                variant="hero"
-                size="lg"
-                className="w-full mt-4"
-                onClick={handleSave}
-                disabled={!formName || !formPrice}
-              >
-                <Check className="h-5 w-5 mr-2" />
-                {editingItem ? "Save Changes" : "Add Item"}
-              </Button>
+              <div className="flex gap-3 mt-4">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="flex-1"
+                  onClick={handleCancel}
+                >
+                  <X className="h-4 w-4 mr-2" />
+                  Cancel
+                </Button>
+                <Button
+                  variant="hero"
+                  size="lg"
+                  className="flex-1"
+                  onClick={handleSave}
+                  disabled={!formName || !formPrice}
+                >
+                  <Check className="h-5 w-5 mr-2" />
+                  {editingItem ? "Save" : "Save Item"}
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
-
-      {/* Fixed Action Bar - appears when there are items */}
-      {items.length > 0 && (
-        <div className="fixed bottom-16 left-0 right-0 bg-card border-t border-border px-6 py-4 z-40 shadow-lg">
-          <div className="flex gap-3 max-w-lg mx-auto">
-            <Button
-              variant="outline"
-              size="lg"
-              className="flex-1"
-              onClick={handleCancel}
-            >
-              <X className="h-4 w-4 mr-2" />
-              Cancel
-            </Button>
-            <Button
-              variant="hero"
-              size="lg"
-              className="flex-1 gap-2"
-              onClick={handleSaveAll}
-            >
-              <Save className="h-4 w-4" />
-              Save Items
-            </Button>
-          </div>
-          {hasChanges && (
-            <p className="text-center text-xs text-warning mt-2">You have unsaved changes</p>
-          )}
         </div>
       )}
 
