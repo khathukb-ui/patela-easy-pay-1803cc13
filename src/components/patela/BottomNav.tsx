@@ -1,12 +1,12 @@
-import { Home, History, User, HelpCircle } from "lucide-react";
+import { Home, History, User, HelpCircle, Package } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   { icon: Home, label: "Home", path: "/home" },
+  { icon: Package, label: "Items", path: "/items" },
   { icon: History, label: "Sales", path: "/sales" },
   { icon: User, label: "Account", path: "/account" },
-  { icon: HelpCircle, label: "Help", path: "/help" },
 ];
 
 export function BottomNav() {
