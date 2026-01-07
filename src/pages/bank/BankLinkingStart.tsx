@@ -43,7 +43,7 @@ export default function BankLinkingStart() {
           
           {/* Card number */}
           <div className="absolute bottom-6 left-6 right-6">
-            <p className="font-mono text-lg tracking-[0.2em] text-foreground/70">
+            <p className="font-mono text-lg tracking-[0.2em] text-black">
               4532 7891 0124 3456
             </p>
           </div>
