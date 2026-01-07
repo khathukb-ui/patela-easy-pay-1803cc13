@@ -11,19 +11,19 @@ export default function DevicePairingStart() {
   return (
     <div className="min-h-screen patela-app-bg flex flex-col">
       {/* Header */}
-      <div className="p-4 pt-8">
-        <div className="flex items-center justify-center gap-2 py-4">
-          <div className="h-2 w-8 rounded-full bg-accent" />
-          <div className="h-2 w-8 rounded-full bg-muted" />
-          <div className="h-2 w-8 rounded-full bg-muted" />
+      <div className="p-3 pt-6">
+        <div className="flex items-center justify-center gap-1.5 py-2">
+          <div className="h-1.5 w-6 rounded-full bg-accent" />
+          <div className="h-1.5 w-6 rounded-full bg-muted" />
+          <div className="h-1.5 w-6 rounded-full bg-muted" />
         </div>
       </div>
 
       {/* Content */}
-      <div className="flex-1 flex flex-col items-center justify-center px-6 pb-8">
+      <div className="flex-1 flex flex-col items-center justify-center px-4 pb-4">
         {/* Device Image */}
-        <div className="relative w-36 h-36 mb-6 animate-patela-bounce-in">
-          <div className="absolute inset-0 rounded-2xl overflow-hidden shadow-xl border-2 border-primary/20">
+        <div className="relative w-28 h-28 mb-4 animate-patela-bounce-in">
+          <div className="absolute inset-0 rounded-xl overflow-hidden shadow-lg border-2 border-primary/20">
             <img 
               src={patelaDeviceBox} 
               alt="Patela payment device" 
@@ -31,41 +31,41 @@ export default function DevicePairingStart() {
             />
           </div>
           {/* Pulse ring */}
-          <div className="absolute -inset-2 rounded-2xl border-2 border-accent/50 animate-ping" style={{ animationDuration: "2s" }} />
+          <div className="absolute -inset-1.5 rounded-xl border-2 border-accent/50 animate-ping" style={{ animationDuration: "2s" }} />
         </div>
 
-        <h1 className="text-2xl font-bold text-foreground text-center mb-3">
+        <h1 className="text-xl font-bold text-foreground text-center mb-1">
           {t("pairDevice")}
         </h1>
         
-        <p className="text-muted-foreground text-center text-lg mb-6 max-w-xs">
+        <p className="text-muted-foreground text-center text-sm mb-4 max-w-xs">
           {t("pairDeviceDesc")}
         </p>
 
         {/* Clear instruction */}
-        <div className="w-full max-w-sm bg-secondary/50 rounded-xl p-4 mb-8">
-          <p className="text-sm text-muted-foreground text-center">
+        <div className="w-full max-w-sm bg-secondary/50 rounded-lg p-2.5 mb-4">
+          <p className="text-xs text-muted-foreground text-center">
             Choose how you'd like to pair your device:
           </p>
         </div>
       </div>
 
-      {/* Bottom Actions - Premium button styling */}
-      <div className="p-6 flex flex-col items-center gap-4">
+      {/* Bottom Actions */}
+      <div className="p-4 flex flex-col items-center gap-2">
         <Button 
           variant="default"
-          size="lg" 
-          className="w-[240px] shadow-lg hover:shadow-xl border border-primary/10 transition-all duration-200 active:scale-95 hover:scale-[1.02]"
+          size="default" 
+          className="w-[220px] shadow-md hover:shadow-lg border border-primary/10 transition-all duration-200 active:scale-95"
           onClick={() => navigate("/device/qr")}
         >
-          <QrCode className="mr-2 h-5 w-5" />
+          <QrCode className="mr-1.5 h-4 w-4" />
           {t("scanQrCode")}
         </Button>
         
         <Button 
           variant="default" 
-          size="lg"
-          className="w-[240px] shadow-lg hover:shadow-xl border border-primary/10 transition-all duration-200 active:scale-95 hover:scale-[1.02]"
+          size="default"
+          className="w-[220px] shadow-md hover:shadow-lg border border-primary/10 transition-all duration-200 active:scale-95"
           onClick={() => navigate("/device/bluetooth")}
         >
           {t("useBluetooth")}
