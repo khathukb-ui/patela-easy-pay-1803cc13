@@ -51,12 +51,12 @@ export default function OnboardingSuccess() {
           </div>
         </div>
 
-        {/* Single Clear Action */}
-        <div className="w-full pt-6">
+        {/* Action Button - Premium styling */}
+        <div className="w-full pt-6 flex flex-col items-center gap-4">
           <Button
-            variant="hero"
-            size="xl"
-            className="w-full"
+            variant="default"
+            size="lg"
+            className="w-[240px] shadow-lg hover:shadow-xl border border-primary/10 transition-all duration-200 active:scale-95 hover:scale-[1.02]"
             onClick={() => navigate("/bank/start")}
           >
             Continue
@@ -64,7 +64,7 @@ export default function OnboardingSuccess() {
           </Button>
           
           <button
-            className="w-full mt-4 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
             onClick={() => navigate("/home")}
           >
             Skip for now
