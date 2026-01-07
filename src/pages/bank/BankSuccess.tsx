@@ -49,44 +49,31 @@ export default function BankSuccess() {
           </div>
         </div>
 
-        {/* What's Next */}
-        <div className="w-full max-w-sm mb-8">
-          <h3 className="font-semibold text-foreground mb-3 text-left">{t("next")}:</h3>
-          <div className="space-y-3">
-            <div className="flex items-center gap-3 p-3 bg-accent/10 rounded-xl">
-              <div className="w-8 h-8 rounded-full bg-accent flex items-center justify-center text-accent-foreground font-bold text-sm">
-                1
-              </div>
-              <span className="text-foreground">{t("pairDevice")}</span>
-            </div>
-            <div className="flex items-center gap-3 p-3 bg-accent/10 rounded-xl">
-              <div className="w-8 h-8 rounded-full bg-accent flex items-center justify-center text-accent-foreground font-bold text-sm">
-                2
-              </div>
-              <span className="text-foreground">{t("takePayment")}</span>
-            </div>
-          </div>
+        {/* What's Next - Informational */}
+        <div className="w-full max-w-sm mb-8 bg-muted/30 rounded-2xl p-5 border border-border">
+          <p className="text-sm text-muted-foreground mb-3">{t("next")}:</p>
+          <p className="text-foreground font-medium">
+            {t("pairDevice")} — connect your Patela device to start accepting payments.
+          </p>
         </div>
 
+        {/* Actions - Unified Styling */}
         <div className="w-full max-w-sm space-y-3">
           <Button 
+            variant="hero"
             size="xl" 
-            className="w-full bg-accent text-accent-foreground text-lg font-bold h-16 rounded-2xl patela-shadow-accent hover:bg-accent/90"
+            className="w-full"
             onClick={() => navigate("/device/start")}
           >
             {t("pairDevice")}
-            <ArrowRight className="ml-auto h-5 w-5" />
           </Button>
           
-          <Button 
-            variant="outline" 
-            size="lg"
-            className="w-full h-14 rounded-2xl border-primary/20 hover:bg-primary/5"
+          <button 
+            className="w-full text-muted-foreground text-sm py-3 hover:text-foreground transition-colors"
             onClick={() => navigate("/home")}
           >
-            <Home className="mr-2 h-5 w-5" />
-            {t("home")}
-          </Button>
+            Skip for now
+          </button>
         </div>
       </div>
     </div>

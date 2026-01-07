@@ -42,59 +42,41 @@ export default function DevicePairingStart() {
           {t("pairDeviceDesc")}
         </p>
 
-        {/* Pairing Methods */}
-        <div className="w-full max-w-sm space-y-4 mb-8">
-          <div className="flex items-center gap-4 p-4 bg-card rounded-2xl patela-shadow-sm border border-primary/10">
-            <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center">
-              <QrCode className="h-6 w-6 text-accent" />
-            </div>
-            <div>
-              <p className="font-semibold text-foreground">{t("scanQrCode")}</p>
-              <p className="text-sm text-muted-foreground">Fast & easy pairing</p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-4 p-4 bg-card rounded-2xl patela-shadow-sm border border-primary/10">
-            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-              <Bluetooth className="h-6 w-6 text-primary" />
-            </div>
-            <div>
-              <p className="font-semibold text-foreground">Bluetooth</p>
-              <p className="text-sm text-muted-foreground">If QR code does not work</p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-4 p-4 bg-card rounded-2xl patela-shadow-sm border border-primary/10">
-            <div className="w-12 h-12 rounded-full bg-success/10 flex items-center justify-center">
-              <Shield className="h-6 w-6 text-success" />
-            </div>
-            <div>
-              <p className="font-semibold text-foreground">Secure Connection</p>
-              <p className="text-sm text-muted-foreground">Your device is protected</p>
-            </div>
-          </div>
-        </div>
+        {/* Info List - Non-interactive */}
+        <ul className="w-full max-w-sm space-y-3 mb-8 text-left">
+          <li className="flex items-center gap-3 text-muted-foreground">
+            <QrCode className="h-5 w-5 text-primary flex-shrink-0" />
+            <span className="text-sm">Scan QR code on your device - fast & easy</span>
+          </li>
+          <li className="flex items-center gap-3 text-muted-foreground">
+            <Bluetooth className="h-5 w-5 text-primary flex-shrink-0" />
+            <span className="text-sm">Bluetooth available if QR doesn't work</span>
+          </li>
+          <li className="flex items-center gap-3 text-muted-foreground">
+            <Shield className="h-5 w-5 text-primary flex-shrink-0" />
+            <span className="text-sm">Secure encrypted connection</span>
+          </li>
+        </ul>
       </div>
 
-      {/* Bottom Actions */}
+      {/* Bottom Actions - Unified Styling */}
       <div className="p-6 space-y-3">
         <Button 
+          variant="hero"
           size="xl" 
-          className="w-full bg-accent text-accent-foreground text-lg font-bold h-16 rounded-2xl patela-shadow-accent hover:bg-accent/90"
+          className="w-full"
           onClick={() => navigate("/device/qr")}
         >
-          <QrCode className="mr-3 h-6 w-6" />
+          <QrCode className="mr-2 h-5 w-5" />
           {t("scanQrCode")}
-          <ArrowRight className="ml-auto h-5 w-5" />
         </Button>
         
         <Button 
           variant="outline" 
           size="lg"
-          className="w-full text-base h-14 rounded-2xl border-primary/20 hover:bg-primary/5"
+          className="w-full"
           onClick={() => navigate("/device/bluetooth")}
         >
-          <Bluetooth className="mr-2 h-5 w-5" />
           {t("useBluetooth")}
         </Button>
       </div>
