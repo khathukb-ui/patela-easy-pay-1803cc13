@@ -44,9 +44,9 @@ export default function LanguageSelection() {
       <div className="flex-1 flex flex-col patela-form-container py-6">
         {showResumePrompt ? (
           <div className="flex-1 flex flex-col items-center justify-center animate-patela-fade-in">
-            <div className="text-center mb-6">
-              <div className="text-5xl mb-3">👋</div>
-              <h1 className="text-2xl font-bold text-foreground mb-1">
+            <div className="text-center mb-8">
+              <div className="text-5xl mb-4">👋</div>
+              <h1 className="text-2xl font-bold text-foreground mb-2">
                 {t("welcomeBack")}
               </h1>
               <p className="text-muted-foreground text-sm">
@@ -78,8 +78,8 @@ export default function LanguageSelection() {
           </div>
         ) : (
           <>
-            <div className="text-center mb-6 animate-patela-slide-up">
-              <h1 className="text-2xl font-bold text-foreground mb-1">
+            <div className="text-center mb-8 animate-patela-slide-up">
+              <h1 className="text-2xl font-bold text-foreground mb-2">
                 {t("selectLanguage")}
               </h1>
               <p className="text-muted-foreground text-sm">
@@ -94,7 +94,7 @@ export default function LanguageSelection() {
               />
             </div>
 
-            <div className="patela-button-container" style={{ animationDelay: "0.2s" }}>
+            <div className="pt-6 pb-4" style={{ animationDelay: "0.2s" }}>
               <Button
                 variant="hero"
                 size="xl"

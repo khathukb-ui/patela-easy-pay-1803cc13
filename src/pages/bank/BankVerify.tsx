@@ -36,11 +36,11 @@ export default function BankVerify() {
   };
 
   return (
-    <div className="min-h-screen patela-app-bg flex flex-col items-center justify-center px-4">
+    <div className="min-h-screen patela-app-bg flex flex-col items-center justify-center px-6">
       {status === "verifying" && (
         <div className="flex flex-col items-center text-center animate-fade-in">
-          <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-3 relative">
-            <Shield className="h-10 w-10 text-primary" />
+          <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center mb-6 relative">
+            <Shield className="h-12 w-12 text-primary" />
             <div className="absolute inset-0">
               <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
                 <circle
@@ -68,48 +68,48 @@ export default function BankVerify() {
             </div>
           </div>
 
-          <h1 className="text-xl font-bold text-foreground mb-1">
+          <h1 className="text-2xl font-bold text-foreground mb-2">
             {t("verifying")}
           </h1>
-          <p className="text-muted-foreground text-sm mb-3">
+          <p className="text-muted-foreground mb-4">
             {t("loading")}
           </p>
 
-          <div className="flex items-center gap-1.5 text-primary">
-            <Loader2 className="h-3.5 w-3.5 animate-spin" />
-            <span className="font-mono font-bold text-sm">{progress}%</span>
+          <div className="flex items-center gap-2 text-primary">
+            <Loader2 className="h-4 w-4 animate-spin" />
+            <span className="font-mono font-bold">{progress}%</span>
           </div>
         </div>
       )}
 
       {status === "success" && (
         <div className="flex flex-col items-center text-center animate-fade-in">
-          <div className="w-20 h-20 rounded-full bg-success/10 flex items-center justify-center mb-3">
-            <CheckCircle2 className="h-10 w-10 text-success" />
+          <div className="w-24 h-24 rounded-full bg-success/10 flex items-center justify-center mb-6">
+            <CheckCircle2 className="h-12 w-12 text-success" />
           </div>
 
-          <h1 className="text-xl font-bold text-foreground mb-1">
+          <h1 className="text-2xl font-bold text-foreground mb-2">
             {t("verified")}!
           </h1>
-          <p className="text-muted-foreground text-sm mb-4 max-w-xs">
+          <p className="text-muted-foreground mb-6 max-w-xs">
             {t("accountReady")}
           </p>
 
-          <div className="w-full max-w-sm bg-success/5 border border-success/20 rounded-xl p-3 mb-4">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-success/20 flex items-center justify-center flex-shrink-0">
-                <CheckCircle2 className="h-4 w-4 text-success" />
+          <div className="w-full max-w-sm bg-success/5 border border-success/20 rounded-xl p-4 mb-6">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-success/20 flex items-center justify-center flex-shrink-0">
+                <CheckCircle2 className="h-5 w-5 text-success" />
               </div>
               <div className="text-left">
-                <p className="font-semibold text-sm text-foreground">FNB ****4521</p>
-                <p className="text-xs text-success">{t("verified")}</p>
+                <p className="font-semibold text-foreground">FNB ****4521</p>
+                <p className="text-sm text-success">{t("verified")}</p>
               </div>
             </div>
           </div>
 
           <Button 
             variant="hero"
-            size="lg" 
+            size="xl" 
             className="w-full max-w-sm"
             onClick={() => navigate("/bank/success")}
           >
@@ -120,21 +120,21 @@ export default function BankVerify() {
 
       {status === "failed" && (
         <div className="flex flex-col items-center text-center animate-fade-in w-full max-w-sm">
-          <div className="w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center mb-2">
-            <XCircle className="h-8 w-8 text-destructive" />
+          <div className="w-20 h-20 rounded-full bg-destructive/10 flex items-center justify-center mb-4">
+            <XCircle className="h-10 w-10 text-destructive" />
           </div>
 
-          <h1 className="text-lg font-bold text-foreground mb-0.5">
+          <h1 className="text-xl font-bold text-foreground mb-1">
             Verification Failed
           </h1>
-          <p className="text-muted-foreground text-xs mb-4">
+          <p className="text-muted-foreground text-sm mb-6">
             We couldn't verify your account. Please try again or upload proof.
           </p>
 
-          <div className="w-full space-y-2">
+          <div className="w-full space-y-3">
             <Button 
               variant="hero"
-              size="lg" 
+              size="xl" 
               className="w-full"
               onClick={handleRetry}
             >
@@ -143,17 +143,17 @@ export default function BankVerify() {
 
             <Button 
               variant="outline"
-              size="default" 
+              size="lg" 
               className="w-full"
               onClick={() => navigate("/bank/upload")}
             >
-              <Upload className="mr-1.5 h-4 w-4" />
+              <Upload className="mr-2 h-5 w-5" />
               Upload Proof of Account
             </Button>
 
             <Button 
               variant="ghost"
-              size="sm" 
+              size="default" 
               className="w-full text-muted-foreground"
               onClick={() => navigate("/help")}
             >
