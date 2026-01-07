@@ -1,9 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ProgressSteps } from "@/components/patela/ProgressSteps";
-import { CreditCard } from "lucide-react";
+import { CreditCard, Cpu } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
-import patelaCardImage from "@/assets/patela-card.png";
+import { PatelaLogo } from "@/components/patela/PatelaLogo";
 
 export default function BankLinkingStart() {
   const navigate = useNavigate();
@@ -18,13 +18,35 @@ export default function BankLinkingStart() {
 
       {/* Content - Single connected section */}
       <div className="flex-1 flex flex-col items-center justify-center px-4">
-        {/* Patela Card Image */}
-        <div className="relative w-80 h-52 mb-4">
-          <img 
-            src={patelaCardImage} 
-            alt="Patela payment card" 
-            className="w-full h-full object-contain animate-float"
-          />
+        {/* CSS-only Patela Card */}
+        <div className="relative w-80 h-48 mb-6 animate-float">
+          {/* Card shape outline - subtle border only */}
+          <div className="absolute inset-0 rounded-2xl border border-primary/20" />
+          
+          {/* Decorative wave accent */}
+          <div className="absolute bottom-0 left-0 right-0 h-16 overflow-hidden rounded-b-2xl">
+            <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-primary/5 to-primary/15 transform -skew-y-3" />
+            <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 transform skew-y-2 translate-y-2" />
+          </div>
+          
+          {/* Logo */}
+          <div className="absolute top-6 left-6">
+            <PatelaLogo size="md" variant="dark" />
+          </div>
+          
+          {/* Chip icon */}
+          <div className="absolute top-16 left-6">
+            <div className="w-10 h-7 rounded bg-gradient-to-br from-amber-200 via-amber-100 to-amber-300 border border-amber-300/50 flex items-center justify-center">
+              <Cpu className="w-5 h-5 text-amber-600/60" strokeWidth={1} />
+            </div>
+          </div>
+          
+          {/* Card number */}
+          <div className="absolute bottom-6 left-6 right-6">
+            <p className="font-mono text-lg tracking-[0.2em] text-foreground/70">
+              4532 7891 0124 3456
+            </p>
+          </div>
         </div>
 
         <h1 className="text-3xl font-bold text-foreground text-center mb-1">
