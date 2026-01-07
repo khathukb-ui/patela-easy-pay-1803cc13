@@ -48,14 +48,14 @@ export default function DeviceUnpair() {
       {/* Content */}
       <div className="flex-1 flex flex-col items-center px-6 py-4">
         {/* Warning Icon */}
-        <div className="w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center mb-3">
-          <Unlink className="h-8 w-8 text-destructive" />
+        <div className="w-20 h-20 rounded-full bg-destructive/10 flex items-center justify-center mb-3">
+          <Unlink className="h-10 w-10 text-destructive" />
         </div>
 
-        <h2 className="text-xl font-bold text-foreground text-center mb-1">
+        <h2 className="text-2xl font-bold text-foreground text-center mb-1">
           Unpair Patela Pro?
         </h2>
-        <p className="text-muted-foreground text-sm text-center mb-4 max-w-xs">
+        <p className="text-muted-foreground text-base text-center mb-4 max-w-xs">
           This device will be disconnected from your account. You can pair it again later.
         </p>
 
@@ -95,19 +95,19 @@ export default function DeviceUnpair() {
         <div className="mt-4 flex flex-col items-center gap-2">
           <Button 
             variant="destructive"
-            size="default" 
-            className="w-[220px]"
+            size="xl" 
+            className="w-[300px]"
             onClick={handleUnpair}
             disabled={pin.length !== 4 || isProcessing}
           >
             {isProcessing ? (
               <>
-                <Loader2 className="mr-1.5 h-4 w-4 animate-spin" />
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                 Unpairing...
               </>
             ) : (
               <>
-                <Unlink className="mr-1.5 h-4 w-4" />
+                <Unlink className="mr-2 h-5 w-5" />
                 Confirm Unpair
               </>
             )}
@@ -115,8 +115,8 @@ export default function DeviceUnpair() {
           
           <Button 
             variant="ghost" 
-            size="default"
-            className="w-[220px] text-muted-foreground"
+            size="xl"
+            className="w-[300px] text-muted-foreground"
             onClick={() => navigate("/device/manage")}
           >
             Cancel

@@ -42,10 +42,10 @@ export default function BankCardScan() {
 
       {/* Scan Area */}
       <div className="flex-1 flex flex-col items-center justify-center patela-form-container">
-        <h1 className="text-xl font-bold text-foreground text-center mb-1">
+        <h1 className="text-2xl font-bold text-foreground text-center mb-1">
           Scan Your Bank Card
         </h1>
-        <p className="text-muted-foreground text-sm text-center mb-3">
+        <p className="text-muted-foreground text-base text-center mb-3">
           Position your card within the frame
         </p>
 
@@ -101,19 +101,19 @@ export default function BankCardScan() {
       <div className="p-4 flex flex-col items-center gap-2">
         <Button 
           variant="default"
-          size="default" 
-          className="w-[220px] shadow-md hover:shadow-lg transition-all duration-200 active:scale-95"
+          size="xl" 
+          className="w-[300px] shadow-md hover:shadow-lg transition-all duration-200 active:scale-95"
           onClick={handleStartScan}
           disabled={isScanning}
         >
           {isScanning ? (
             <>
-              <RotateCcw className="mr-1.5 h-4 w-4 animate-spin" />
+              <RotateCcw className="mr-2 h-5 w-5 animate-spin" />
               Scanning...
             </>
           ) : (
             <>
-              <Camera className="mr-1.5 h-4 w-4" />
+              <Camera className="mr-2 h-5 w-5" />
               Capture Card
             </>
           )}
@@ -121,8 +121,8 @@ export default function BankCardScan() {
         
         <Button 
           variant="ghost" 
-          size="default"
-          className="w-[220px] text-muted-foreground"
+          size="xl"
+          className="w-[300px] text-muted-foreground"
           onClick={() => navigate("/bank/manual")}
         >
           Enter Details Manually

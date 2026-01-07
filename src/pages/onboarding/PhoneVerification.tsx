@@ -96,17 +96,17 @@ export default function PhoneVerification() {
             </button>
 
             <div className="text-center mb-4 animate-patela-slide-up">
-              <div className="text-4xl mb-3">📱</div>
-              <h1 className="text-xl font-bold text-foreground mb-1">
+              <div className="text-5xl mb-3">📱</div>
+              <h1 className="text-2xl font-bold text-foreground mb-1">
                 {t("enterPhone")}
               </h1>
-              <p className="text-muted-foreground text-sm">
+              <p className="text-muted-foreground text-base">
                 {t("enterPhoneDesc")}
               </p>
             </div>
 
             <div className="flex-1 flex flex-col justify-center animate-patela-fade-in">
-              <label className="text-sm font-medium text-foreground mb-2">Mobile Number</label>
+              <label className="text-base font-medium text-foreground mb-2">Mobile Number</label>
               <PhoneInput
                 value={phone}
                 onChange={(val) => {
@@ -116,26 +116,26 @@ export default function PhoneVerification() {
                 error={error}
                 disabled={isLoading}
               />
-              <p className="text-xs text-muted-foreground mt-2">We'll send you a verification code</p>
+              <p className="text-sm text-muted-foreground mt-2">We'll send you a verification code</p>
             </div>
 
             <div className="pt-4 pb-4 flex flex-col items-center">
               <Button
                 variant="default"
-                size="default"
-                className="w-[220px] shadow-md hover:shadow-lg transition-all duration-200 active:scale-95"
+                size="xl"
+                className="w-[300px] shadow-md hover:shadow-lg transition-all duration-200 active:scale-95"
                 onClick={handleSendOtp}
                 disabled={isLoading || phone.length < 9}
               >
                 {isLoading ? (
                   <>
-                    <Loader2 className="mr-1.5 h-4 w-4 animate-spin" />
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                     Sending...
                   </>
                 ) : (
                   <>
                     Send Code
-                    <ArrowRight className="ml-1.5 h-4 w-4" />
+                    <ArrowRight className="ml-2 h-5 w-5" />
                   </>
                 )}
               </Button>
@@ -156,17 +156,17 @@ export default function PhoneVerification() {
             </button>
 
             <div className="text-center mb-4 animate-patela-slide-up">
-              <div className="text-4xl mb-3">✉️</div>
-              <h1 className="text-xl font-bold text-foreground mb-1">
+              <div className="text-5xl mb-3">✉️</div>
+              <h1 className="text-2xl font-bold text-foreground mb-1">
                 {t("verifyPhone")}
               </h1>
-              <p className="text-muted-foreground text-sm">
+              <p className="text-muted-foreground text-base">
                 Enter the 6-digit code sent to +27 {phone}
               </p>
             </div>
 
             <div className="flex-1 flex flex-col justify-center animate-patela-fade-in">
-              <label className="text-sm font-medium text-foreground mb-2 text-center">Verification Code</label>
+              <label className="text-base font-medium text-foreground mb-2 text-center">Verification Code</label>
               <OtpInput
                 value={otp}
                 onChange={(val) => {
@@ -180,7 +180,7 @@ export default function PhoneVerification() {
               <button
                 onClick={handleResendOtp}
                 disabled={isLoading}
-                className="mt-3 text-primary text-sm font-medium hover:underline disabled:opacity-50 text-center"
+                className="mt-3 text-primary text-base font-medium hover:underline disabled:opacity-50 text-center"
               >
                 Didn't receive it? Resend code
               </button>
@@ -189,20 +189,20 @@ export default function PhoneVerification() {
             <div className="pt-4 pb-4 flex flex-col items-center">
               <Button
                 variant="default"
-                size="default"
-                className="w-[220px] shadow-md hover:shadow-lg transition-all duration-200 active:scale-95"
+                size="xl"
+                className="w-[300px] shadow-md hover:shadow-lg transition-all duration-200 active:scale-95"
                 onClick={handleVerifyOtp}
                 disabled={isLoading || otp.length < 6}
               >
                 {isLoading ? (
                   <>
-                    <Loader2 className="mr-1.5 h-4 w-4 animate-spin" />
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                     Verifying...
                   </>
                 ) : (
                   <>
                     Verify & Continue
-                    <ArrowRight className="ml-1.5 h-4 w-4" />
+                    <ArrowRight className="ml-2 h-5 w-5" />
                   </>
                 )}
               </Button>
