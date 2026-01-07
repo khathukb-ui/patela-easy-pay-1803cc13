@@ -72,15 +72,16 @@ export default function DeviceSuccess() {
           </div>
         </div>
 
-        <div className="w-full max-w-sm space-y-3">
+        {/* Action - Premium styling */}
+        <div className="w-full max-w-sm flex flex-col items-center gap-4">
           <Button 
-            size="xl" 
-            className="w-full patela-gradient-primary text-lg font-bold h-16 rounded-2xl patela-shadow-md"
+            variant="default"
+            size="lg" 
+            className="w-[240px] shadow-lg hover:shadow-xl border border-primary/10 transition-all duration-200 active:scale-95 hover:scale-[1.02]"
             onClick={() => navigate("/home")}
           >
-            <CreditCard className="mr-3 h-5 w-5" />
+            <CreditCard className="mr-2 h-5 w-5" />
             Start Taking Payments
-            <ArrowRight className="ml-auto h-5 w-5" />
           </Button>
         </div>
       </div>

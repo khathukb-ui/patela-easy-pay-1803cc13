@@ -57,19 +57,19 @@ export default function BankSuccess() {
           </p>
         </div>
 
-        {/* Actions - Unified Styling */}
-        <div className="w-full max-w-sm space-y-3">
+        {/* Actions - Premium styling */}
+        <div className="w-full max-w-sm flex flex-col items-center gap-4">
           <Button 
-            variant="hero"
-            size="xl" 
-            className="w-full"
+            variant="default"
+            size="lg" 
+            className="w-[240px] shadow-lg hover:shadow-xl border border-primary/10 transition-all duration-200 active:scale-95 hover:scale-[1.02]"
             onClick={() => navigate("/device/start")}
           >
             {t("pairDevice")}
           </Button>
           
           <button 
-            className="w-full text-muted-foreground text-sm py-3 hover:text-foreground transition-colors"
+            className="text-muted-foreground text-sm hover:text-foreground transition-colors"
             onClick={() => navigate("/home")}
           >
             Skip for now
