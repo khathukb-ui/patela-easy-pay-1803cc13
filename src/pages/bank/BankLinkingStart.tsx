@@ -29,46 +29,35 @@ export default function BankLinkingStart() {
           {t("linkBankDesc")}
         </p>
 
-        {/* Benefits */}
-        <div className="w-full max-w-sm space-y-4 mb-8">
-          <div className="flex items-center gap-4 p-4 bg-card rounded-2xl patela-shadow-sm border border-primary/10">
-            <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center">
-              <CreditCard className="h-6 w-6 text-accent" />
-            </div>
-            <div>
-              <p className="font-semibold text-foreground">{t("scanBankCard")}</p>
-              <p className="text-sm text-muted-foreground">No typing needed</p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-4 p-4 bg-card rounded-2xl patela-shadow-sm border border-primary/10">
-            <div className="w-12 h-12 rounded-full bg-success/10 flex items-center justify-center">
-              <Shield className="h-6 w-6 text-success" />
-            </div>
-            <div>
-              <p className="font-semibold text-foreground">Safe & Secure</p>
-              <p className="text-sm text-muted-foreground">Your details are protected</p>
-            </div>
-          </div>
-        </div>
+        {/* Info List - clearly non-interactive */}
+        <ul className="w-full max-w-sm space-y-3 mb-8 text-left">
+          <li className="flex items-center gap-3 text-muted-foreground">
+            <CreditCard className="h-5 w-5 text-primary flex-shrink-0" />
+            <span className="text-sm">Scan your bank card - no typing needed</span>
+          </li>
+          <li className="flex items-center gap-3 text-muted-foreground">
+            <Shield className="h-5 w-5 text-primary flex-shrink-0" />
+            <span className="text-sm">Your details are encrypted & protected</span>
+          </li>
+        </ul>
       </div>
 
-      {/* Bottom Actions */}
+      {/* Bottom Actions - consistent button styling */}
       <div className="p-6 space-y-3">
         <Button 
+          variant="hero"
           size="xl" 
-          className="w-full bg-accent text-accent-foreground text-lg font-bold h-16 rounded-2xl patela-shadow-accent hover:bg-accent/90"
+          className="w-full"
           onClick={() => navigate("/bank/scan")}
         >
-          <CreditCard className="mr-3 h-6 w-6" />
+          <CreditCard className="mr-2 h-5 w-5" />
           {t("scanBankCard")}
-          <ArrowRight className="ml-auto h-5 w-5" />
         </Button>
         
         <Button 
           variant="outline" 
           size="lg"
-          className="w-full text-base h-14 rounded-2xl border-primary/20 hover:bg-primary/5"
+          className="w-full"
           onClick={() => navigate("/bank/manual")}
         >
           {t("enterManually")}

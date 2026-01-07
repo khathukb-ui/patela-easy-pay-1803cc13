@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Check, CreditCard, Smartphone, ArrowRight } from "lucide-react";
+import { Check, CreditCard, ArrowRight } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useOnboardingData } from "@/hooks/use-onboarding-data";
 
@@ -31,57 +31,44 @@ export default function OnboardingSuccess() {
           </p>
         </div>
 
-        {/* Next Steps */}
-        <div className="w-full space-y-4 pt-4">
-          <div className="bg-card rounded-2xl p-5 border border-primary/10 patela-shadow-sm text-left">
-            <div className="flex items-start gap-4">
-              <div className="h-12 w-12 rounded-xl bg-accent/10 flex items-center justify-center flex-shrink-0">
-                <CreditCard className="h-6 w-6 text-accent" />
+        {/* What's Next Info */}
+        <div className="w-full pt-4">
+          <p className="text-sm text-muted-foreground text-center mb-3">
+            Your next step:
+          </p>
+          <div className="bg-muted/30 rounded-xl p-4 border border-border/50">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                <CreditCard className="h-5 w-5 text-primary" />
               </div>
-              <div>
-                <h3 className="font-semibold text-foreground mb-1">{t("linkBank")}</h3>
-                <p className="text-sm text-muted-foreground">
+              <div className="text-left">
+                <p className="text-sm font-medium text-foreground">{t("linkBank")}</p>
+                <p className="text-xs text-muted-foreground">
                   {t("linkBankDesc")}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-card rounded-2xl p-5 border border-primary/10 patela-shadow-sm text-left">
-            <div className="flex items-start gap-4">
-              <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                <Smartphone className="h-6 w-6 text-primary" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-foreground mb-1">{t("pairDevice")}</h3>
-                <p className="text-sm text-muted-foreground">
-                  {t("pairDeviceDesc")}
                 </p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="w-full space-y-3 pt-4">
+        {/* Single Clear Action */}
+        <div className="w-full pt-6">
           <Button
             variant="hero"
             size="xl"
             className="w-full"
             onClick={() => navigate("/bank/start")}
           >
-            {t("linkBank")}
+            Continue
             <ArrowRight className="ml-2 h-5 w-5" />
           </Button>
           
-          <Button
-            variant="outline"
-            size="lg"
-            className="w-full border-primary/20 hover:bg-primary/5"
+          <button
+            className="w-full mt-4 text-sm text-muted-foreground hover:text-foreground transition-colors"
             onClick={() => navigate("/home")}
           >
-            {t("home")}
-          </Button>
+            Skip for now
+          </button>
         </div>
       </div>
     </div>
