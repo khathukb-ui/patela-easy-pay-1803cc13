@@ -35,36 +35,36 @@ export default function Sales() {
   return (
     <div className="min-h-screen patela-app-bg pb-24">
       {/* Header */}
-      <header className="bg-primary px-6 py-4 patela-shadow-md">
-        <div className="flex items-center justify-between mb-4">
-          <h1 className="text-2xl font-bold text-primary-foreground">{t("salesHistory")}</h1>
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10">
-              <Filter className="h-5 w-5" />
+      <header className="bg-primary px-4 py-3 patela-shadow-md">
+        <div className="flex items-center justify-between mb-2">
+          <h1 className="text-xl font-bold text-primary-foreground">{t("salesHistory")}</h1>
+          <div className="flex items-center gap-1">
+            <Button variant="ghost" size="icon" className="h-9 w-9 text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10">
+              <Filter className="h-4 w-4" />
             </Button>
-            <Button variant="ghost" size="icon" className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10">
-              <Download className="h-5 w-5" />
+            <Button variant="ghost" size="icon" className="h-9 w-9 text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10">
+              <Download className="h-4 w-4" />
             </Button>
           </div>
         </div>
         
         {/* Date Selector */}
-        <Button variant="outline" className="w-full justify-start gap-2 bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/20">
-          <Calendar className="h-4 w-4" />
+        <Button variant="outline" size="sm" className="w-full justify-start gap-2 bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/20">
+          <Calendar className="h-3.5 w-3.5" />
           {t("today")}, {new Date().toLocaleDateString("en-ZA", { day: "numeric", month: "short" })}
         </Button>
       </header>
 
-      <main className="px-6 py-4">
+      <main className="px-4 py-3">
         {/* Summary */}
-        <div className="bg-accent/10 rounded-xl p-4 mb-6 border border-accent/20">
-          <p className="text-sm text-primary mb-1">{t("todaySales")}</p>
-          <p className="text-3xl font-bold text-accent">R{totalToday.toFixed(2)}</p>
-          <p className="text-sm text-muted-foreground">{sales.filter(s => s.status === "success").length} {t("numberOfSales").toLowerCase()}</p>
+        <div className="bg-accent/10 rounded-xl p-3 mb-4 border border-accent/20">
+          <p className="text-xs text-primary mb-0.5">{t("todaySales")}</p>
+          <p className="text-2xl font-bold text-accent">R{totalToday.toFixed(2)}</p>
+          <p className="text-xs text-muted-foreground">{sales.filter(s => s.status === "success").length} {t("numberOfSales").toLowerCase()}</p>
         </div>
 
         {/* Sales List */}
-        <div className="space-y-3">
+        <div className="space-y-2">
           {sales.map((sale) => (
             <SaleItem
               key={sale.id}
