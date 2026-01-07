@@ -37,12 +37,12 @@ export default function BankLinkingStart() {
         </div>
       </div>
 
-      {/* Bottom Actions - Same color for both options */}
-      <div className="p-6 space-y-3">
+      {/* Bottom Actions - Compact buttons */}
+      <div className="p-6 flex flex-col items-center gap-3">
         <Button 
           variant="default"
-          size="xl" 
-          className="w-full"
+          size="lg" 
+          className="w-auto min-w-[200px]"
           onClick={() => navigate("/bank/scan")}
         >
           <CreditCard className="mr-2 h-5 w-5" />
@@ -51,8 +51,8 @@ export default function BankLinkingStart() {
         
         <Button 
           variant="default" 
-          size="lg"
-          className="w-full"
+          size="default"
+          className="w-auto min-w-[200px]"
           onClick={() => navigate("/bank/manual")}
         >
           {t("enterManually")}
