@@ -41,12 +41,12 @@ export default function LanguageSelection() {
     <div className="min-h-screen patela-app-bg flex flex-col">
       <ProgressSteps currentStep={1} totalSteps={5} />
       
-      <div className="flex-1 flex flex-col patela-form-container py-6">
+      <div className="flex-1 flex flex-col patela-form-container py-4">
         {showResumePrompt ? (
           <div className="flex-1 flex flex-col items-center justify-center animate-patela-fade-in">
-            <div className="text-center mb-8">
-              <div className="text-5xl mb-4">👋</div>
-              <h1 className="text-2xl font-bold text-foreground mb-2">
+            <div className="text-center mb-4">
+              <div className="text-4xl mb-3">👋</div>
+              <h1 className="text-xl font-bold text-foreground mb-1">
                 {t("welcomeBack")}
               </h1>
               <p className="text-muted-foreground text-sm">
@@ -54,32 +54,32 @@ export default function LanguageSelection() {
               </p>
             </div>
 
-            <div className="w-full max-w-sm space-y-3">
+            <div className="w-full max-w-sm flex flex-col items-center gap-2">
               <Button
-                variant="hero"
-                size="xl"
-                className="w-full"
+                variant="default"
+                size="default"
+                className="w-[220px] shadow-md hover:shadow-lg transition-all duration-200 active:scale-95"
                 onClick={handleResume}
               >
-                <Play className="mr-2 h-5 w-5" />
+                <Play className="mr-1.5 h-4 w-4" />
                 Continue Setup
               </Button>
               
               <Button
                 variant="outline"
-                size="lg"
-                className="w-full border-border hover:bg-muted"
+                size="default"
+                className="w-[220px] border-border hover:bg-muted"
                 onClick={handleStartFresh}
               >
-                <RotateCcw className="mr-2 h-5 w-5" />
+                <RotateCcw className="mr-1.5 h-4 w-4" />
                 Start Over
               </Button>
             </div>
           </div>
         ) : (
           <>
-            <div className="text-center mb-8 animate-patela-slide-up">
-              <h1 className="text-2xl font-bold text-foreground mb-2">
+            <div className="text-center mb-4 animate-patela-slide-up">
+              <h1 className="text-xl font-bold text-foreground mb-1">
                 {t("selectLanguage")}
               </h1>
               <p className="text-muted-foreground text-sm">
@@ -94,15 +94,15 @@ export default function LanguageSelection() {
               />
             </div>
 
-            <div className="pt-6 pb-4" style={{ animationDelay: "0.2s" }}>
+            <div className="pt-4 pb-4 flex flex-col items-center" style={{ animationDelay: "0.2s" }}>
               <Button
-                variant="hero"
-                size="xl"
-                className="w-full"
+                variant="default"
+                size="default"
+                className="w-[220px] shadow-md hover:shadow-lg transition-all duration-200 active:scale-95"
                 onClick={() => navigate("/onboarding/phone")}
               >
                 Continue
-                <ArrowRight className="ml-2 h-5 w-5" />
+                <ArrowRight className="ml-1.5 h-4 w-4" />
               </Button>
             </div>
           </>

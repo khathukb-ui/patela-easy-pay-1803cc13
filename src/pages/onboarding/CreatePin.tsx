@@ -40,7 +40,7 @@ export default function CreatePin() {
     <div className="min-h-screen patela-app-bg flex flex-col">
       <ProgressSteps currentStep={4} totalSteps={5} />
 
-      <div className="flex-1 flex flex-col patela-form-container py-6">
+      <div className="flex-1 flex flex-col patela-form-container py-4">
         <button
           onClick={() => {
             if (step === "confirm") {
@@ -52,21 +52,21 @@ export default function CreatePin() {
               navigate("/onboarding/details");
             }
           }}
-          className="flex items-center gap-2 text-muted-foreground mb-6 hover:text-foreground transition-colors"
+          className="flex items-center gap-2 text-muted-foreground mb-4 hover:text-foreground transition-colors text-sm"
         >
-          <ArrowLeft className="h-5 w-5" />
+          <ArrowLeft className="h-4 w-4" />
           {t("back")}
         </button>
 
-        <div className="text-center mb-8 animate-patela-slide-up">
-          <div className="h-16 w-16 mx-auto mb-4 rounded-full bg-primary flex items-center justify-center patela-shadow-primary">
+        <div className="text-center mb-4 animate-patela-slide-up">
+          <div className="h-14 w-14 mx-auto mb-3 rounded-full bg-primary flex items-center justify-center patela-shadow-primary">
             {step === "create" ? (
-              <Lock className="h-8 w-8 text-primary-foreground" />
+              <Lock className="h-7 w-7 text-primary-foreground" />
             ) : (
-              <Shield className="h-8 w-8 text-primary-foreground" />
+              <Shield className="h-7 w-7 text-primary-foreground" />
             )}
           </div>
-          <h1 className="text-2xl font-bold text-foreground mb-2">
+          <h1 className="text-xl font-bold text-foreground mb-1">
             {step === "create" ? "Create Your PIN" : "Confirm Your PIN"}
           </h1>
           <p className="text-muted-foreground text-sm">
@@ -82,7 +82,7 @@ export default function CreatePin() {
           />
         </div>
 
-        <div className="pt-6 text-center">
+        <div className="pt-4 text-center">
           <p className="text-sm text-muted-foreground">
             Your PIN protects your transactions
           </p>

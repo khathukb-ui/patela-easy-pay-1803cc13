@@ -45,12 +45,12 @@ export default function BankCardScan() {
         <h1 className="text-xl font-bold text-foreground text-center mb-1">
           Scan Your Bank Card
         </h1>
-        <p className="text-muted-foreground text-sm text-center mb-4">
+        <p className="text-muted-foreground text-sm text-center mb-3">
           Position your card within the frame
         </p>
 
         {/* Camera Preview Area */}
-        <div className="relative w-full max-w-xs aspect-[1.6/1] rounded-2xl overflow-hidden bg-muted mb-4">
+        <div className="relative w-full max-w-xs aspect-[1.6/1] rounded-2xl overflow-hidden bg-muted mb-3">
           {/* Simulated camera view */}
           <div className="absolute inset-0 bg-gradient-to-br from-muted to-muted-foreground/20 flex items-center justify-center">
             {isScanning ? (
@@ -86,9 +86,9 @@ export default function BankCardScan() {
         </div>
 
         {/* Card Icon */}
-        <div className="flex items-center gap-3 p-3 bg-card rounded-xl patela-shadow-sm mb-4 w-full max-w-xs border border-border">
-          <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center">
-            <CreditCard className="h-5 w-5 text-accent" />
+        <div className="flex items-center gap-3 p-2.5 bg-card rounded-xl patela-shadow-sm mb-3 w-full max-w-xs border border-border">
+          <div className="w-9 h-9 rounded-lg bg-accent/10 flex items-center justify-center">
+            <CreditCard className="h-4 w-4 text-accent" />
           </div>
           <div>
             <p className="font-semibold text-foreground text-sm">Position your card</p>
@@ -98,22 +98,22 @@ export default function BankCardScan() {
       </div>
 
       {/* Bottom Actions */}
-      <div className="patela-button-container space-y-3">
+      <div className="p-4 flex flex-col items-center gap-2">
         <Button 
-          variant="hero"
-          size="xl" 
-          className="w-full"
+          variant="default"
+          size="default" 
+          className="w-[220px] shadow-md hover:shadow-lg transition-all duration-200 active:scale-95"
           onClick={handleStartScan}
           disabled={isScanning}
         >
           {isScanning ? (
             <>
-              <RotateCcw className="mr-2 h-5 w-5 animate-spin" />
+              <RotateCcw className="mr-1.5 h-4 w-4 animate-spin" />
               Scanning...
             </>
           ) : (
             <>
-              <Camera className="mr-2 h-5 w-5" />
+              <Camera className="mr-1.5 h-4 w-4" />
               Capture Card
             </>
           )}
@@ -121,8 +121,8 @@ export default function BankCardScan() {
         
         <Button 
           variant="ghost" 
-          size="lg"
-          className="w-full text-primary"
+          size="default"
+          className="w-[220px] text-muted-foreground"
           onClick={() => navigate("/bank/manual")}
         >
           Enter Details Manually

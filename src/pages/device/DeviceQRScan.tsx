@@ -46,12 +46,12 @@ export default function DeviceQRScan() {
         <h1 className="text-xl font-bold text-foreground text-center mb-1">
           Scan Device QR Code
         </h1>
-        <p className="text-muted-foreground text-sm text-center mb-4">
+        <p className="text-muted-foreground text-sm text-center mb-3">
           Point at the QR code on your Patela machine
         </p>
 
         {/* Camera Preview Area */}
-        <div className="relative w-full max-w-xs aspect-square rounded-2xl overflow-hidden bg-muted mb-4">
+        <div className="relative w-full max-w-xs aspect-square rounded-2xl overflow-hidden bg-muted mb-3">
           {/* Simulated camera view */}
           <div className="absolute inset-0 bg-gradient-to-br from-muted to-muted-foreground/20 flex items-center justify-center">
             {isScanning ? (
@@ -94,9 +94,9 @@ export default function DeviceQRScan() {
         </div>
 
         {/* Helper Text */}
-        <div className="flex items-center gap-3 p-3 bg-card rounded-xl patela-shadow-sm mb-4 w-full max-w-xs border border-border">
-          <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-            <QrCode className="h-5 w-5 text-primary" />
+        <div className="flex items-center gap-3 p-2.5 bg-card rounded-xl patela-shadow-sm mb-3 w-full max-w-xs border border-border">
+          <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center">
+            <QrCode className="h-4 w-4 text-primary" />
           </div>
           <div>
             <p className="font-semibold text-foreground text-sm">Find the QR code</p>
@@ -106,22 +106,22 @@ export default function DeviceQRScan() {
       </div>
 
       {/* Bottom Actions */}
-      <div className="patela-button-container space-y-3">
+      <div className="p-4 flex flex-col items-center gap-2">
         <Button 
-          variant="hero"
-          size="xl" 
-          className="w-full"
+          variant="default"
+          size="default" 
+          className="w-[220px] shadow-md hover:shadow-lg transition-all duration-200 active:scale-95"
           onClick={handleStartScan}
           disabled={isScanning}
         >
           {isScanning ? (
             <>
-              <RotateCcw className="mr-2 h-5 w-5 animate-spin" />
+              <RotateCcw className="mr-1.5 h-4 w-4 animate-spin" />
               Scanning...
             </>
           ) : (
             <>
-              <QrCode className="mr-2 h-5 w-5" />
+              <QrCode className="mr-1.5 h-4 w-4" />
               Start Scanning
             </>
           )}
@@ -129,11 +129,11 @@ export default function DeviceQRScan() {
         
         <Button 
           variant="ghost" 
-          size="lg"
-          className="w-full text-muted-foreground"
+          size="default"
+          className="w-[220px] text-muted-foreground"
           onClick={() => navigate("/device/bluetooth")}
         >
-          <Bluetooth className="mr-2 h-4 w-4" />
+          <Bluetooth className="mr-1.5 h-4 w-4" />
           Use Bluetooth Instead
         </Button>
       </div>

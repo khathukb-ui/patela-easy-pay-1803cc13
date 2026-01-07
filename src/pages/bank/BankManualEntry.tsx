@@ -56,18 +56,18 @@ export default function BankManualEntry() {
       </div>
 
       {/* Content */}
-      <div className="flex-1 patela-form-container py-4">
+      <div className="flex-1 patela-form-container py-3">
         <h1 className="text-xl font-bold text-foreground mb-1">
           Enter Bank Details
         </h1>
-        <p className="text-muted-foreground text-sm mb-6">
+        <p className="text-muted-foreground text-sm mb-4">
           Link your bank account to receive payments
         </p>
 
-        <div className="patela-form-section">
+        <div className="space-y-4">
           {/* Bank Selection */}
-          <div className="patela-form-field">
-            <label className="patela-label">
+          <div className="space-y-1.5">
+            <label className="text-sm font-medium text-foreground">
               Select Your Bank
             </label>
             <button
@@ -91,7 +91,7 @@ export default function BankManualEntry() {
             </button>
             
             {showBankList && (
-              <div className="mt-2 bg-card border-2 border-border rounded-xl overflow-hidden">
+              <div className="mt-1 bg-card border-2 border-border rounded-xl overflow-hidden">
                 {BANKS.map((bank) => (
                   <button
                     key={bank.id}
@@ -115,8 +115,8 @@ export default function BankManualEntry() {
           </div>
 
           {/* Account Number */}
-          <div className="patela-form-field">
-            <label className="patela-label">
+          <div className="space-y-1.5">
+            <label className="text-sm font-medium text-foreground">
               Account Number
             </label>
             <Input
@@ -127,12 +127,12 @@ export default function BankManualEntry() {
               onChange={(e) => setAccountNumber(e.target.value.replace(/\D/g, ""))}
               className="h-12"
             />
-            <p className="patela-helper-text">Your bank account number (8-12 digits)</p>
+            <p className="text-xs text-muted-foreground">Your bank account number (8-12 digits)</p>
           </div>
 
           {/* Account Type */}
-          <div className="patela-form-field">
-            <label className="patela-label">
+          <div className="space-y-1.5">
+            <label className="text-sm font-medium text-foreground">
               Account Type
             </label>
             <button
@@ -148,7 +148,7 @@ export default function BankManualEntry() {
             </button>
             
             {showAccountTypes && (
-              <div className="mt-2 bg-card border-2 border-border rounded-xl overflow-hidden">
+              <div className="mt-1 bg-card border-2 border-border rounded-xl overflow-hidden">
                 {ACCOUNT_TYPES.map((type) => (
                   <button
                     key={type}
@@ -168,16 +168,16 @@ export default function BankManualEntry() {
       </div>
 
       {/* Bottom Action */}
-      <div className="patela-button-container">
+      <div className="p-4 flex flex-col items-center">
         <Button 
-          variant="hero"
-          size="xl" 
-          className="w-full"
+          variant="default"
+          size="default" 
+          className="w-[220px] shadow-md hover:shadow-lg transition-all duration-200 active:scale-95"
           onClick={handleContinue}
           disabled={!isValid}
         >
           Continue to Verify
-          <ArrowRight className="ml-2 h-5 w-5" />
+          <ArrowRight className="ml-1.5 h-4 w-4" />
         </Button>
       </div>
     </div>
