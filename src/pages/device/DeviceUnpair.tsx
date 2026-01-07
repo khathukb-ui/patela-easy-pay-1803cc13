@@ -46,26 +46,26 @@ export default function DeviceUnpair() {
       </div>
 
       {/* Content */}
-      <div className="flex-1 flex flex-col items-center px-6 py-8">
+      <div className="flex-1 flex flex-col items-center px-6 py-4">
         {/* Warning Icon */}
-        <div className="w-20 h-20 rounded-full bg-destructive/10 flex items-center justify-center mb-6">
-          <Unlink className="h-10 w-10 text-destructive" />
+        <div className="w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center mb-3">
+          <Unlink className="h-8 w-8 text-destructive" />
         </div>
 
-        <h2 className="text-xl font-bold text-foreground text-center mb-2">
+        <h2 className="text-xl font-bold text-foreground text-center mb-1">
           Unpair Patela Pro?
         </h2>
-        <p className="text-muted-foreground text-center mb-8 max-w-xs">
+        <p className="text-muted-foreground text-sm text-center mb-4 max-w-xs">
           This device will be disconnected from your account. You can pair it again later.
         </p>
 
         {/* Warning Box */}
-        <div className="w-full max-w-sm p-4 bg-destructive/5 border border-destructive/20 rounded-2xl mb-8">
-          <div className="flex items-start gap-3">
-            <AlertTriangle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
+        <div className="w-full max-w-sm p-3 bg-destructive/5 border border-destructive/20 rounded-xl mb-4">
+          <div className="flex items-start gap-2">
+            <AlertTriangle className="h-4 w-4 text-destructive flex-shrink-0 mt-0.5" />
             <div>
               <p className="font-semibold text-destructive text-sm">Warning</p>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-xs text-muted-foreground">
                 The device cannot process payments after unpairing until it's paired again.
               </p>
             </div>
@@ -74,7 +74,7 @@ export default function DeviceUnpair() {
 
         {/* PIN Entry */}
         <div className="w-full max-w-sm">
-          <p className="text-center text-foreground font-medium mb-4">
+          <p className="text-center text-foreground font-medium text-sm mb-3">
             Enter your PIN to confirm
           </p>
           
@@ -85,43 +85,43 @@ export default function DeviceUnpair() {
           />
 
           {error && (
-            <p className="text-center text-destructive text-sm mt-3">
+            <p className="text-center text-destructive text-sm mt-2">
               {error}
             </p>
           )}
         </div>
-      </div>
 
-      {/* Bottom Action */}
-      <div className="p-6 space-y-3">
-        <Button 
-          size="xl" 
-          variant="destructive"
-          className="w-full text-lg font-bold h-16 rounded-2xl"
-          onClick={handleUnpair}
-          disabled={pin.length !== 4 || isProcessing}
-        >
-          {isProcessing ? (
-            <>
-              <Loader2 className="mr-3 h-6 w-6 animate-spin" />
-              Unpairing...
-            </>
-          ) : (
-            <>
-              <Unlink className="mr-3 h-6 w-6" />
-              Confirm Unpair
-            </>
-          )}
-        </Button>
-        
-        <Button 
-          variant="ghost" 
-          size="lg"
-          className="w-full text-base h-14"
-          onClick={() => navigate("/device/manage")}
-        >
-          Cancel
-        </Button>
+        {/* Actions */}
+        <div className="mt-4 flex flex-col items-center gap-2">
+          <Button 
+            variant="destructive"
+            size="default" 
+            className="w-[220px]"
+            onClick={handleUnpair}
+            disabled={pin.length !== 4 || isProcessing}
+          >
+            {isProcessing ? (
+              <>
+                <Loader2 className="mr-1.5 h-4 w-4 animate-spin" />
+                Unpairing...
+              </>
+            ) : (
+              <>
+                <Unlink className="mr-1.5 h-4 w-4" />
+                Confirm Unpair
+              </>
+            )}
+          </Button>
+          
+          <Button 
+            variant="ghost" 
+            size="default"
+            className="w-[220px] text-muted-foreground"
+            onClick={() => navigate("/device/manage")}
+          >
+            Cancel
+          </Button>
+        </div>
       </div>
     </div>
   );

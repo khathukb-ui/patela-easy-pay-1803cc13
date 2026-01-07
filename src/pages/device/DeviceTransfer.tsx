@@ -74,131 +74,125 @@ export default function DeviceTransfer() {
       </div>
 
       {step === "pin" ? (
-        <>
-          {/* PIN Entry */}
-          <div className="flex-1 flex flex-col items-center px-6 py-8">
-            <div className="w-20 h-20 rounded-full bg-accent/10 flex items-center justify-center mb-6">
-              <Share2 className="h-10 w-10 text-accent" />
-            </div>
-
-            <h2 className="text-xl font-bold text-foreground text-center mb-2">
-              Transfer to Another Account
-            </h2>
-            <p className="text-muted-foreground text-center mb-8 max-w-xs">
-              Generate a one-time code to transfer this device to another Patela account
-            </p>
-
-            <div className="w-full max-w-sm">
-              <p className="text-center text-foreground font-medium mb-4">
-                Enter your PIN to continue
-              </p>
-              
-              <PinInput
-                value={pin}
-                onChange={handlePinComplete}
-                error={error}
-              />
-
-              {error && (
-                <p className="text-center text-destructive text-sm mt-3">
-                  {error}
-                </p>
-              )}
-            </div>
+        <div className="flex-1 flex flex-col items-center px-6 py-4">
+          <div className="w-16 h-16 rounded-full bg-accent/10 flex items-center justify-center mb-3">
+            <Share2 className="h-8 w-8 text-accent" />
           </div>
 
-          {/* Bottom Action */}
-          <div className="p-6">
+          <h2 className="text-xl font-bold text-foreground text-center mb-1">
+            Transfer to Another Account
+          </h2>
+          <p className="text-muted-foreground text-sm text-center mb-4 max-w-xs">
+            Generate a one-time code to transfer this device to another Patela account
+          </p>
+
+          <div className="w-full max-w-sm">
+            <p className="text-center text-foreground font-medium text-sm mb-3">
+              Enter your PIN to continue
+            </p>
+            
+            <PinInput
+              value={pin}
+              onChange={handlePinComplete}
+              error={error}
+            />
+
+            {error && (
+              <p className="text-center text-destructive text-sm mt-2">
+                {error}
+              </p>
+            )}
+          </div>
+
+          <div className="mt-4">
             <Button 
-              size="xl" 
-              className="w-full patela-gradient-primary text-lg font-bold h-16 rounded-2xl patela-shadow-md"
+              variant="default"
+              size="default" 
+              className="w-[220px] shadow-md hover:shadow-lg transition-all duration-200 active:scale-95"
               onClick={handleGenerateCode}
               disabled={pin.length !== 4 || isGenerating}
             >
               {isGenerating ? (
                 <>
-                  <Loader2 className="mr-3 h-6 w-6 animate-spin" />
+                  <Loader2 className="mr-1.5 h-4 w-4 animate-spin" />
                   Generating Code...
                 </>
               ) : (
                 <>
-                  <Share2 className="mr-3 h-6 w-6" />
+                  <Share2 className="mr-1.5 h-4 w-4" />
                   Generate Transfer Code
                 </>
               )}
             </Button>
           </div>
-        </>
+        </div>
       ) : (
-        <>
-          {/* Transfer Code Display */}
-          <div className="flex-1 flex flex-col items-center px-6 py-8">
-            <div className="w-20 h-20 rounded-full bg-success/10 flex items-center justify-center mb-6">
-              <CheckCircle2 className="h-10 w-10 text-success" />
-            </div>
-
-            <h2 className="text-xl font-bold text-foreground text-center mb-2">
-              Transfer Code Ready
-            </h2>
-            <p className="text-muted-foreground text-center mb-6 max-w-xs">
-              Share this code with the new owner. They will enter it on their Patela app.
-            </p>
-
-            {/* Code Display */}
-            <div className="w-full max-w-sm bg-card rounded-2xl patela-shadow-md p-6 mb-4">
-              <p className="text-4xl font-mono font-bold text-center text-primary tracking-widest mb-4">
-                {transferCode}
-              </p>
-              
-              <Button 
-                variant="outline" 
-                className="w-full h-12 rounded-xl"
-                onClick={handleCopyCode}
-              >
-                {copied ? (
-                  <>
-                    <CheckCircle2 className="mr-2 h-5 w-5 text-success" />
-                    Copied!
-                  </>
-                ) : (
-                  <>
-                    <Copy className="mr-2 h-5 w-5" />
-                    Copy Code
-                  </>
-                )}
-              </Button>
-            </div>
-
-            {/* Timer */}
-            <div className={`flex items-center gap-2 px-4 py-2 rounded-full ${
-              timeLeft < 60 ? "bg-destructive/10 text-destructive" : "bg-accent/10 text-accent"
-            }`}>
-              <Clock className="h-4 w-4" />
-              <span className="font-mono font-bold">
-                Expires in {formatTime(timeLeft)}
-              </span>
-            </div>
-
-            {/* Warning */}
-            <div className="w-full max-w-sm mt-6 p-4 bg-accent/10 border border-accent/20 rounded-2xl">
-              <p className="text-sm text-center text-muted-foreground">
-                <strong className="text-foreground">Important:</strong> Your device cannot process payments while transfer is pending.
-              </p>
-            </div>
+        <div className="flex-1 flex flex-col items-center px-6 py-4">
+          <div className="w-16 h-16 rounded-full bg-success/10 flex items-center justify-center mb-3">
+            <CheckCircle2 className="h-8 w-8 text-success" />
           </div>
 
-          {/* Bottom Actions */}
-          <div className="p-6 space-y-3">
+          <h2 className="text-xl font-bold text-foreground text-center mb-1">
+            Transfer Code Ready
+          </h2>
+          <p className="text-muted-foreground text-sm text-center mb-4 max-w-xs">
+            Share this code with the new owner. They will enter it on their Patela app.
+          </p>
+
+          {/* Code Display */}
+          <div className="w-full max-w-sm bg-card rounded-xl patela-shadow-md p-4 mb-3">
+            <p className="text-3xl font-mono font-bold text-center text-primary tracking-widest mb-3">
+              {transferCode}
+            </p>
+            
             <Button 
               variant="outline" 
-              size="lg"
-              className="w-full h-14 rounded-2xl"
+              className="w-full h-10 rounded-lg"
+              onClick={handleCopyCode}
+            >
+              {copied ? (
+                <>
+                  <CheckCircle2 className="mr-1.5 h-4 w-4 text-success" />
+                  Copied!
+                </>
+              ) : (
+                <>
+                  <Copy className="mr-1.5 h-4 w-4" />
+                  Copy Code
+                </>
+              )}
+            </Button>
+          </div>
+
+          {/* Timer */}
+          <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm ${
+            timeLeft < 60 ? "bg-destructive/10 text-destructive" : "bg-accent/10 text-accent"
+          }`}>
+            <Clock className="h-4 w-4" />
+            <span className="font-mono font-bold">
+              Expires in {formatTime(timeLeft)}
+            </span>
+          </div>
+
+          {/* Warning */}
+          <div className="w-full max-w-sm mt-4 p-3 bg-accent/10 border border-accent/20 rounded-xl">
+            <p className="text-xs text-center text-muted-foreground">
+              <strong className="text-foreground">Important:</strong> Your device cannot process payments while transfer is pending.
+            </p>
+          </div>
+
+          {/* Cancel Button */}
+          <div className="mt-4">
+            <Button 
+              variant="outline" 
+              size="default"
+              className="w-[220px]"
               onClick={() => navigate("/device/manage")}
             >
               Cancel Transfer
             </Button>
           </div>
-        </>
+        </div>
       )}
     </div>
   );

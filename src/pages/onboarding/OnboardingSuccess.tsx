@@ -16,30 +16,28 @@ export default function OnboardingSuccess() {
   }, [clearData]);
 
   return (
-    <div className="min-h-screen patela-app-bg flex flex-col items-center justify-center px-6 py-12">
-      <div className="flex flex-col items-center text-center space-y-8 max-w-md animate-patela-bounce-in">
+    <div className="min-h-screen patela-app-bg flex flex-col items-center justify-center px-6">
+      <div className="flex flex-col items-center text-center max-w-md animate-patela-bounce-in">
         {/* Success Icon */}
-        <div className="h-28 w-28 rounded-full patela-gradient-success flex items-center justify-center patela-shadow-success">
-          <Check className="h-14 w-14 text-success-foreground" strokeWidth={3} />
+        <div className="h-20 w-20 rounded-full patela-gradient-success flex items-center justify-center patela-shadow-success mb-4">
+          <Check className="h-10 w-10 text-success-foreground" strokeWidth={3} />
         </div>
 
         {/* Title */}
-        <div className="space-y-2">
-          <h1 className="text-4xl font-bold text-foreground">{t("allSet")}</h1>
-          <p className="text-muted-foreground text-lg">
-            {t("accountReady")}
-          </p>
-        </div>
+        <h1 className="text-2xl font-bold text-foreground mb-1">{t("allSet")}</h1>
+        <p className="text-muted-foreground text-sm mb-4">
+          {t("accountReady")}
+        </p>
 
         {/* What's Next Info */}
-        <div className="w-full pt-4">
-          <p className="text-sm text-muted-foreground text-center mb-3">
+        <div className="w-full mb-4">
+          <p className="text-xs text-muted-foreground text-center mb-2">
             Your next step:
           </p>
-          <div className="bg-muted/30 rounded-xl p-4 border border-border/50">
+          <div className="bg-muted/30 rounded-xl p-3 border border-border/50">
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                <CreditCard className="h-5 w-5 text-primary" />
+              <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                <CreditCard className="h-4 w-4 text-primary" />
               </div>
               <div className="text-left">
                 <p className="text-sm font-medium text-foreground">{t("linkBank")}</p>
@@ -51,16 +49,16 @@ export default function OnboardingSuccess() {
           </div>
         </div>
 
-        {/* Action Button - Premium styling */}
-        <div className="w-full pt-6 flex flex-col items-center gap-4">
+        {/* Action Button */}
+        <div className="flex flex-col items-center gap-2">
           <Button
             variant="default"
-            size="lg"
-            className="w-[240px] shadow-lg hover:shadow-xl border border-primary/10 transition-all duration-200 active:scale-95 hover:scale-[1.02]"
+            size="default"
+            className="w-[220px] shadow-md hover:shadow-lg transition-all duration-200 active:scale-95"
             onClick={() => navigate("/bank/start")}
           >
             Continue
-            <ArrowRight className="ml-2 h-5 w-5" />
+            <ArrowRight className="ml-1.5 h-4 w-4" />
           </Button>
           
           <button
