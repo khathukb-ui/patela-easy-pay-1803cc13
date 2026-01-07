@@ -21,7 +21,10 @@ export default function BankLinkingStart() {
         {/* CSS-only Patela Card */}
         <div className="relative w-80 h-48 mb-6 animate-float">
           {/* Card shape outline - subtle border only */}
-          <div className="absolute inset-0 rounded-2xl bg-white border border-primary/20 shadow-lg" />
+          <div className="absolute inset-0 rounded-2xl bg-white border border-primary/20 shadow-lg overflow-hidden">
+            {/* Shimmer effect */}
+            <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/60 to-transparent" />
+          </div>
           
           {/* Decorative wave accent */}
           <div className="absolute bottom-0 left-0 right-0 h-16 overflow-hidden rounded-b-2xl">
