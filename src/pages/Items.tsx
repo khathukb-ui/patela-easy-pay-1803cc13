@@ -107,7 +107,7 @@ export default function Items() {
   };
 
   return (
-    <div className={cn("min-h-screen patela-app-bg", items.length > 0 ? "pb-44" : "pb-24")}>
+    <div className="min-h-screen patela-app-bg pb-24">
       {/* Header */}
       <header className="sticky top-0 z-40 bg-primary px-6 py-4 patela-shadow-md">
         <div className="flex items-center justify-between mb-4">
@@ -235,24 +235,6 @@ export default function Items() {
         )}
       </main>
 
-      {/* Sticky Action Bar - always visible while scrolling */}
-      {items.length > 0 && (
-        <div
-          className="fixed left-0 right-0 bottom-20 z-40 border-t border-border bg-card px-6 pt-3"
-          style={{ paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom))" }}
-        >
-          <div className="flex gap-3 max-w-lg mx-auto">
-            <Button variant="outline" size="lg" className="flex-1" onClick={handleCancelItems}>
-              <X className="h-4 w-4 mr-2" />
-              Cancel
-            </Button>
-            <Button variant="hero" size="lg" className="flex-1" onClick={handleSaveItems}>
-              <Save className="h-4 w-4 mr-2" />
-              Save Items
-            </Button>
-          </div>
-        </div>
-      )}
 
       {/* Add/Edit Form Modal */}
       {showAddForm && (
