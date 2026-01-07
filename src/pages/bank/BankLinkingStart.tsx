@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ProgressSteps } from "@/components/patela/ProgressSteps";
 import { CreditCard, Building2, Shield, ArrowRight } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
-import bankCardImage from "@/assets/bank-card.png";
+import bankCardImage from "@/assets/bank-card-green.png";
 
 export default function BankLinkingStart() {
   const navigate = useNavigate();
@@ -20,14 +20,11 @@ export default function BankLinkingStart() {
       <div className="flex-1 flex flex-col items-center justify-center px-4">
         {/* Bank Card Image */}
         <div className="relative w-56 h-36 mb-4">
-          <div className="absolute inset-0 rounded-2xl bg-primary/20 blur-xl animate-pulse" />
+          <div className="absolute inset-0 rounded-2xl bg-primary/30 blur-xl animate-pulse" />
           <img 
             src={bankCardImage} 
             alt="Bank card" 
-            className="relative w-full h-full object-contain drop-shadow-2xl animate-[float_3s_ease-in-out_infinite] mix-blend-multiply dark:mix-blend-normal"
-            style={{
-              filter: 'hue-rotate(-10deg) saturate(1.2)',
-            }}
+            className="relative w-full h-full object-contain drop-shadow-2xl animate-float"
           />
         </div>
 
