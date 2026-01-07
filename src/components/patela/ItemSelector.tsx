@@ -26,7 +26,7 @@ export function ItemSelector({ items, cart, onAdd, onRemove }: ItemSelectorProps
   }
 
   return (
-    <div className="grid grid-cols-3 gap-2">
+    <div className="grid grid-cols-3 gap-1.5">
       {inStockItems.map((item) => {
         const qty = getCartQuantity(item.id);
         const isInCart = qty > 0;
@@ -37,7 +37,7 @@ export function ItemSelector({ items, cart, onAdd, onRemove }: ItemSelectorProps
             key={item.id}
             onClick={() => onAdd(item)}
             className={cn(
-              "relative flex flex-col items-center p-3 rounded-xl border transition-all active:scale-95",
+              "relative flex flex-col items-center p-2 rounded-lg border transition-all active:scale-95",
               isInCart
                 ? "bg-accent/10 border-accent"
                 : "bg-card border-border hover:border-accent/50"
@@ -45,23 +45,23 @@ export function ItemSelector({ items, cart, onAdd, onRemove }: ItemSelectorProps
           >
             {/* Quantity Badge */}
             {isInCart && (
-              <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-accent text-accent-foreground text-xs font-bold flex items-center justify-center">
+              <div className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-accent text-accent-foreground text-[10px] font-bold flex items-center justify-center">
                 {qty}
               </div>
             )}
 
             {/* Low Stock Indicator */}
             {isLowStock && (
-              <div className="absolute top-1 left-1 w-2 h-2 rounded-full bg-warning" />
+              <div className="absolute top-0.5 left-0.5 w-1.5 h-1.5 rounded-full bg-warning" />
             )}
 
-            <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center mb-2">
-              <Package className="h-4 w-4 text-accent" />
+            <div className="w-7 h-7 rounded-md bg-accent/10 flex items-center justify-center mb-1">
+              <Package className="h-3.5 w-3.5 text-accent" />
             </div>
-            <span className="text-xs font-medium text-foreground text-center line-clamp-1">
+            <span className="text-[10px] font-medium text-foreground text-center line-clamp-1">
               {item.name}
             </span>
-            <span className="text-sm font-bold text-accent">R{item.price}</span>
+            <span className="text-xs font-bold text-accent">R{item.price}</span>
 
             {/* Remove Button (only when in cart) */}
             {isInCart && (
@@ -70,9 +70,9 @@ export function ItemSelector({ items, cart, onAdd, onRemove }: ItemSelectorProps
                   e.stopPropagation();
                   onRemove(item.id);
                 }}
-                className="absolute bottom-1 right-1 w-6 h-6 rounded-full bg-destructive/10 text-destructive flex items-center justify-center hover:bg-destructive/20 transition-colors"
+                className="absolute bottom-0.5 right-0.5 w-5 h-5 rounded-full bg-destructive/10 text-destructive flex items-center justify-center hover:bg-destructive/20 transition-colors"
               >
-                <Minus className="h-3 w-3" />
+                <Minus className="h-2.5 w-2.5" />
               </button>
             )}
           </button>

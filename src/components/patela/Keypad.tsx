@@ -11,12 +11,13 @@ export function Keypad({ onKeyPress, onDelete, onClear }: KeypadProps) {
   const keys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "0"];
 
   return (
-    <div className="grid grid-cols-3 gap-3 p-4">
+    <div className="grid grid-cols-3 gap-2 p-3">
       {keys.map((key) => (
         <Button
           key={key}
           variant="keypad"
           size="keypad"
+          className="h-14"
           onClick={() => onKeyPress(key)}
         >
           {key}
@@ -25,10 +26,10 @@ export function Keypad({ onKeyPress, onDelete, onClear }: KeypadProps) {
       <Button
         variant="keypad"
         size="keypad"
+        className="h-14"
         onClick={onDelete}
-        className="text-destructive"
       >
-        <Delete className="h-6 w-6" />
+        <Delete className="h-5 w-5 text-destructive" />
       </Button>
     </div>
   );
