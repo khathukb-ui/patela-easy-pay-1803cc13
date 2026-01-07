@@ -10,64 +10,65 @@ export default function BankPending() {
   return (
     <div className="min-h-screen patela-app-bg flex flex-col items-center justify-center px-6">
       <div className="flex flex-col items-center text-center animate-fade-in">
-        <div className="w-24 h-24 rounded-full bg-accent/10 flex items-center justify-center mb-6">
-          <Clock className="h-12 w-12 text-accent" />
+        <div className="w-20 h-20 rounded-full bg-accent/10 flex items-center justify-center mb-4">
+          <Clock className="h-10 w-10 text-accent" />
         </div>
 
-        <h1 className="text-2xl font-bold text-foreground mb-2">
+        <h1 className="text-xl font-bold text-foreground mb-1">
           {t("underReview")}
         </h1>
-        <p className="text-muted-foreground mb-8 max-w-xs">
+        <p className="text-muted-foreground text-sm mb-4 max-w-xs">
           {t("verifying")}
         </p>
 
         {/* Status Timeline */}
-        <div className="w-full max-w-sm bg-card rounded-2xl p-5 patela-shadow-sm mb-8">
-          <div className="space-y-4">
-            <div className="flex items-center gap-4">
-              <div className="w-8 h-8 rounded-full bg-success flex items-center justify-center">
-                <span className="text-success-foreground text-sm">✓</span>
+        <div className="w-full max-w-sm bg-card rounded-xl p-4 patela-shadow-sm mb-4">
+          <div className="space-y-3">
+            <div className="flex items-center gap-3">
+              <div className="w-7 h-7 rounded-full bg-success flex items-center justify-center">
+                <span className="text-success-foreground text-xs">✓</span>
               </div>
               <div className="flex-1">
-                <p className="font-medium text-foreground">{t("done")}</p>
-                <p className="text-sm text-muted-foreground">Just now</p>
+                <p className="font-medium text-foreground text-sm">{t("done")}</p>
+                <p className="text-xs text-muted-foreground">Just now</p>
               </div>
             </div>
 
-            <div className="flex items-center gap-4">
-              <div className="w-8 h-8 rounded-full bg-accent flex items-center justify-center animate-pulse">
-                <span className="text-accent-foreground text-sm">2</span>
+            <div className="flex items-center gap-3">
+              <div className="w-7 h-7 rounded-full bg-accent flex items-center justify-center animate-pulse">
+                <span className="text-accent-foreground text-xs">2</span>
               </div>
               <div className="flex-1">
-                <p className="font-medium text-foreground">{t("verifying")}</p>
-                <p className="text-sm text-muted-foreground">In progress</p>
+                <p className="font-medium text-foreground text-sm">{t("verifying")}</p>
+                <p className="text-xs text-muted-foreground">In progress</p>
               </div>
             </div>
 
-            <div className="flex items-center gap-4">
-              <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
-                <span className="text-muted-foreground text-sm">3</span>
+            <div className="flex items-center gap-3">
+              <div className="w-7 h-7 rounded-full bg-muted flex items-center justify-center">
+                <span className="text-muted-foreground text-xs">3</span>
               </div>
               <div className="flex-1">
-                <p className="font-medium text-muted-foreground">{t("verified")}</p>
-                <p className="text-sm text-muted-foreground">Pending</p>
+                <p className="font-medium text-muted-foreground text-sm">{t("verified")}</p>
+                <p className="text-xs text-muted-foreground">Pending</p>
               </div>
             </div>
           </div>
         </div>
 
         {/* Notification Info */}
-        <div className="w-full max-w-sm flex items-center gap-3 p-4 bg-primary/5 rounded-2xl mb-8">
-          <Bell className="h-5 w-5 text-primary flex-shrink-0" />
-          <p className="text-sm text-foreground">
+        <div className="w-full max-w-sm flex items-center gap-3 p-3 bg-primary/5 rounded-xl mb-4">
+          <Bell className="h-4 w-4 text-primary flex-shrink-0" />
+          <p className="text-xs text-foreground">
             {t("notifications")}
           </p>
         </div>
 
-        <div className="w-full max-w-sm space-y-3">
+        <div className="flex flex-col items-center gap-2">
           <Button 
-            size="xl" 
-            className="w-full patela-gradient-primary text-lg font-bold h-16 rounded-2xl patela-shadow-md"
+            variant="default"
+            size="default" 
+            className="w-[220px] shadow-md hover:shadow-lg transition-all duration-200 active:scale-95"
             onClick={() => navigate("/home")}
           >
             {t("home")}
@@ -75,11 +76,11 @@ export default function BankPending() {
 
           <Button 
             variant="outline"
-            size="lg" 
-            className="w-full h-14 rounded-2xl"
+            size="default" 
+            className="w-[220px]"
             onClick={() => navigate("/help")}
           >
-            <MessageCircle className="mr-2 h-5 w-5" />
+            <MessageCircle className="mr-1.5 h-4 w-4" />
             {t("helpSupport")}
           </Button>
         </div>

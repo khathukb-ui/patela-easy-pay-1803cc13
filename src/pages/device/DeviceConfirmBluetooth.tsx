@@ -42,68 +42,67 @@ export default function DeviceConfirmBluetooth() {
       {/* Content */}
       <div className="flex-1 flex flex-col items-center justify-center px-6">
         {/* Device Card */}
-        <div className="w-full max-w-sm bg-card rounded-3xl patela-shadow-md overflow-hidden mb-8">
-          <div className="patela-gradient-primary p-8 text-center">
-            <div className="w-20 h-20 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <Smartphone className="h-10 w-10 text-primary-foreground" />
+        <div className="w-full max-w-sm bg-card rounded-xl patela-shadow-md overflow-hidden mb-4">
+          <div className="patela-gradient-primary p-5 text-center">
+            <div className="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center mx-auto mb-3">
+              <Smartphone className="h-8 w-8 text-primary-foreground" />
             </div>
-            <h2 className="text-2xl font-bold text-primary-foreground mb-1">{deviceName}</h2>
-            <p className="text-primary-foreground/80">{deviceId}</p>
+            <h2 className="text-xl font-bold text-primary-foreground mb-1">{deviceName}</h2>
+            <p className="text-primary-foreground/80 text-sm">{deviceId}</p>
           </div>
 
-          <div className="p-6 space-y-4">
-            <div className="flex items-center justify-between py-3 border-b border-border">
-              <div className="flex items-center gap-3">
-                <Battery className="h-5 w-5 text-muted-foreground" />
-                <span className="text-muted-foreground">Battery</span>
+          <div className="p-4 space-y-3">
+            <div className="flex items-center justify-between py-2 border-b border-border">
+              <div className="flex items-center gap-2">
+                <Battery className="h-4 w-4 text-muted-foreground" />
+                <span className="text-muted-foreground text-sm">Battery</span>
               </div>
-              <span className={`font-bold ${battery > 20 ? "text-success" : "text-destructive"}`}>
+              <span className={`font-bold text-sm ${battery > 20 ? "text-success" : "text-destructive"}`}>
                 {battery}%
               </span>
             </div>
 
-            <div className="flex items-center justify-between py-3">
-              <div className="flex items-center gap-3">
-                <Bluetooth className="h-5 w-5 text-muted-foreground" />
-                <span className="text-muted-foreground">Connection</span>
+            <div className="flex items-center justify-between py-2">
+              <div className="flex items-center gap-2">
+                <Bluetooth className="h-4 w-4 text-muted-foreground" />
+                <span className="text-muted-foreground text-sm">Connection</span>
               </div>
-              <span className="text-accent font-bold">Bluetooth</span>
+              <span className="text-accent font-bold text-sm">Bluetooth</span>
             </div>
           </div>
         </div>
 
         {/* Instructions */}
-        <div className="w-full max-w-sm bg-accent/10 border border-accent/20 rounded-2xl p-4 mb-8">
+        <div className="w-full max-w-sm bg-accent/10 border border-accent/20 rounded-xl p-3 mb-4">
           <div className="flex items-start gap-3">
-            <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0">
-              <CheckCircle2 className="h-5 w-5 text-accent" />
+            <div className="w-9 h-9 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0">
+              <CheckCircle2 className="h-4 w-4 text-accent" />
             </div>
             <div>
-              <p className="font-semibold text-foreground mb-1">Press the green button</p>
-              <p className="text-sm text-muted-foreground">
+              <p className="font-semibold text-foreground text-sm mb-0.5">Press the green button</p>
+              <p className="text-xs text-muted-foreground">
                 On your Patela device to confirm pairing
               </p>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Bottom Action */}
-      <div className="p-6">
+        {/* Action */}
         <Button 
-          size="xl" 
-          className="w-full patela-gradient-primary text-lg font-bold h-16 rounded-2xl patela-shadow-md"
+          variant="default"
+          size="default" 
+          className="w-[220px] shadow-md hover:shadow-lg transition-all duration-200 active:scale-95"
           onClick={handlePair}
           disabled={isPairing}
         >
           {isPairing ? (
             <>
-              <Loader2 className="mr-3 h-6 w-6 animate-spin" />
+              <Loader2 className="mr-1.5 h-4 w-4 animate-spin" />
               Waiting for confirmation...
             </>
           ) : (
             <>
-              <Bluetooth className="mr-3 h-6 w-6" />
+              <Bluetooth className="mr-1.5 h-4 w-4" />
               Pair This Device
             </>
           )}

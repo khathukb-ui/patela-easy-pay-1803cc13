@@ -156,22 +156,22 @@ export default function PersonalDetails() {
     <div className="min-h-screen patela-app-bg flex flex-col">
       <ProgressSteps currentStep={3} totalSteps={5} />
 
-      <div className="flex-1 flex flex-col patela-form-container py-6">
+      <div className="flex-1 flex flex-col patela-form-container py-4">
         <button
           onClick={handleBack}
-          className="flex items-center gap-2 text-muted-foreground mb-4 hover:text-foreground transition-colors"
+          className="flex items-center gap-2 text-muted-foreground mb-3 hover:text-foreground transition-colors text-sm"
         >
-          <ArrowLeft className="h-5 w-5" />
+          <ArrowLeft className="h-4 w-4" />
           {t("back")}
         </button>
 
         {step === "personal" && (
           <>
-            <div className="text-center mb-6 animate-patela-slide-up">
-              <div className="h-16 w-16 mx-auto mb-3 rounded-full bg-primary flex items-center justify-center patela-shadow-primary">
-                <User className="h-8 w-8 text-primary-foreground" />
+            <div className="text-center mb-4 animate-patela-slide-up">
+              <div className="h-14 w-14 mx-auto mb-3 rounded-full bg-primary flex items-center justify-center patela-shadow-primary">
+                <User className="h-7 w-7 text-primary-foreground" />
               </div>
-              <h1 className="text-2xl font-bold text-foreground mb-1">
+              <h1 className="text-xl font-bold text-foreground mb-1">
                 {t("personalDetailsTitle")}
               </h1>
               <p className="text-muted-foreground text-sm">
@@ -179,8 +179,8 @@ export default function PersonalDetails() {
               </p>
             </div>
 
-            <div className="flex-1 space-y-4 animate-patela-fade-in">
-              <h2 className="text-sm font-semibold text-foreground uppercase tracking-wide">Your Information</h2>
+            <div className="flex-1 space-y-3 animate-patela-fade-in">
+              <h2 className="text-xs font-semibold text-foreground uppercase tracking-wide">Your Information</h2>
               
               <div className="space-y-1.5">
                 <Label htmlFor="firstName" className="text-sm font-medium">First Name</Label>
@@ -237,11 +237,11 @@ export default function PersonalDetails() {
 
         {step === "business" && (
           <>
-            <div className="text-center mb-6 animate-patela-slide-up">
-              <div className="h-16 w-16 mx-auto mb-3 rounded-full bg-accent flex items-center justify-center">
-                <Store className="h-8 w-8 text-accent-foreground" />
+            <div className="text-center mb-4 animate-patela-slide-up">
+              <div className="h-14 w-14 mx-auto mb-3 rounded-full bg-accent flex items-center justify-center">
+                <Store className="h-7 w-7 text-accent-foreground" />
               </div>
-              <h1 className="text-2xl font-bold text-foreground mb-1">
+              <h1 className="text-xl font-bold text-foreground mb-1">
                 {t("businessDetailsTitle")}
               </h1>
               <p className="text-muted-foreground text-sm">
@@ -249,8 +249,8 @@ export default function PersonalDetails() {
               </p>
             </div>
 
-            <div className="flex-1 space-y-4 animate-patela-fade-in">
-              <h2 className="text-sm font-semibold text-foreground uppercase tracking-wide">Business Information</h2>
+            <div className="flex-1 space-y-3 animate-patela-fade-in">
+              <h2 className="text-xs font-semibold text-foreground uppercase tracking-wide">Business Information</h2>
               
               <div className="space-y-1.5">
                 <Label htmlFor="businessName" className="text-sm font-medium">Business Name</Label>
@@ -298,11 +298,11 @@ export default function PersonalDetails() {
 
         {step === "communication" && (
           <>
-            <div className="text-center mb-6 animate-patela-slide-up">
-              <div className="h-16 w-16 mx-auto mb-3 rounded-full bg-success flex items-center justify-center">
-                <MessageSquare className="h-8 w-8 text-success-foreground" />
+            <div className="text-center mb-4 animate-patela-slide-up">
+              <div className="h-14 w-14 mx-auto mb-3 rounded-full bg-success flex items-center justify-center">
+                <MessageSquare className="h-7 w-7 text-success-foreground" />
               </div>
-              <h1 className="text-2xl font-bold text-foreground mb-1">
+              <h1 className="text-xl font-bold text-foreground mb-1">
                 {t("communicationTitle")}
               </h1>
               <p className="text-muted-foreground text-sm">
@@ -310,8 +310,8 @@ export default function PersonalDetails() {
               </p>
             </div>
 
-            <div className="flex-1 space-y-3 animate-patela-fade-in">
-              <h2 className="text-sm font-semibold text-foreground uppercase tracking-wide">Contact Preferences</h2>
+            <div className="flex-1 space-y-2 animate-patela-fade-in">
+              <h2 className="text-xs font-semibold text-foreground uppercase tracking-wide">Contact Preferences</h2>
               
               {communicationMethods.map((method) => {
                 const isSelected = selectedMethods.includes(method.id);
@@ -385,23 +385,23 @@ export default function PersonalDetails() {
           </>
         )}
 
-        <div className="pt-6 pb-4">
+        <div className="pt-4 pb-4 flex flex-col items-center">
           <Button
-            variant="hero"
-            size="xl"
-            className="w-full"
+            variant="default"
+            size="default"
+            className="w-[220px] shadow-md hover:shadow-lg transition-all duration-200 active:scale-95"
             onClick={handleNext}
             disabled={isLoading || isNextDisabled()}
           >
             {isLoading ? (
               <>
-                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                <Loader2 className="mr-1.5 h-4 w-4 animate-spin" />
                 Saving...
               </>
             ) : (
               <>
                 {step === "communication" ? "Complete Setup" : "Continue"}
-                <ArrowRight className="ml-2 h-5 w-5" />
+                <ArrowRight className="ml-1.5 h-4 w-4" />
               </>
             )}
           </Button>
