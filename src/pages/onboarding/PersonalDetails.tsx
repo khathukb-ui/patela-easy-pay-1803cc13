@@ -168,13 +168,13 @@ export default function PersonalDetails() {
         {step === "personal" && (
           <>
             <div className="text-center mb-4 animate-patela-slide-up">
-              <div className="h-14 w-14 mx-auto mb-3 rounded-full bg-primary flex items-center justify-center patela-shadow-primary">
-                <User className="h-7 w-7 text-primary-foreground" />
+              <div className="h-20 w-20 mx-auto mb-3 rounded-full bg-primary flex items-center justify-center patela-shadow-primary">
+                <User className="h-10 w-10 text-primary-foreground" />
               </div>
-              <h1 className="text-xl font-bold text-foreground mb-1">
+              <h1 className="text-2xl font-bold text-foreground mb-1">
                 {t("personalDetailsTitle")}
               </h1>
-              <p className="text-muted-foreground text-sm">
+              <p className="text-muted-foreground text-base">
                 {t("personalDetailsDesc")}
               </p>
             </div>
@@ -238,13 +238,13 @@ export default function PersonalDetails() {
         {step === "business" && (
           <>
             <div className="text-center mb-4 animate-patela-slide-up">
-              <div className="h-14 w-14 mx-auto mb-3 rounded-full bg-accent flex items-center justify-center">
-                <Store className="h-7 w-7 text-accent-foreground" />
+              <div className="h-20 w-20 mx-auto mb-3 rounded-full bg-accent flex items-center justify-center">
+                <Store className="h-10 w-10 text-accent-foreground" />
               </div>
-              <h1 className="text-xl font-bold text-foreground mb-1">
+              <h1 className="text-2xl font-bold text-foreground mb-1">
                 {t("businessDetailsTitle")}
               </h1>
-              <p className="text-muted-foreground text-sm">
+              <p className="text-muted-foreground text-base">
                 {t("businessDetailsDesc")}
               </p>
             </div>
@@ -299,13 +299,13 @@ export default function PersonalDetails() {
         {step === "communication" && (
           <>
             <div className="text-center mb-4 animate-patela-slide-up">
-              <div className="h-14 w-14 mx-auto mb-3 rounded-full bg-success flex items-center justify-center">
-                <MessageSquare className="h-7 w-7 text-success-foreground" />
+              <div className="h-20 w-20 mx-auto mb-3 rounded-full bg-success flex items-center justify-center">
+                <MessageSquare className="h-10 w-10 text-success-foreground" />
               </div>
-              <h1 className="text-xl font-bold text-foreground mb-1">
+              <h1 className="text-2xl font-bold text-foreground mb-1">
                 {t("communicationTitle")}
               </h1>
-              <p className="text-muted-foreground text-sm">
+              <p className="text-muted-foreground text-base">
                 {t("communicationDesc")}
               </p>
             </div>
@@ -388,20 +388,20 @@ export default function PersonalDetails() {
         <div className="pt-4 pb-4 flex flex-col items-center">
           <Button
             variant="default"
-            size="default"
-            className="w-[220px] shadow-md hover:shadow-lg transition-all duration-200 active:scale-95"
+            size="xl"
+            className="w-[300px] shadow-md hover:shadow-lg transition-all duration-200 active:scale-95"
             onClick={handleNext}
             disabled={isLoading || isNextDisabled()}
           >
             {isLoading ? (
               <>
-                <Loader2 className="mr-1.5 h-4 w-4 animate-spin" />
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                 Saving...
               </>
             ) : (
               <>
                 {step === "communication" ? "Complete Setup" : "Continue"}
-                <ArrowRight className="ml-1.5 h-4 w-4" />
+                <ArrowRight className="ml-2 h-5 w-5" />
               </>
             )}
           </Button>

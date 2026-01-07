@@ -17,19 +17,19 @@ export default function BankLinkingStart() {
 
       {/* Content - Single connected section */}
       <div className="flex-1 flex flex-col items-center justify-center px-4">
-        <div className="w-14 h-14 rounded-full bg-primary flex items-center justify-center mb-3 patela-shadow-primary animate-fade-in">
-          <Building2 className="h-7 w-7 text-primary-foreground" />
+        <div className="w-20 h-20 rounded-full bg-primary flex items-center justify-center mb-3 patela-shadow-primary animate-fade-in">
+          <Building2 className="h-10 w-10 text-primary-foreground" />
         </div>
 
-        <h1 className="text-xl font-bold text-foreground text-center mb-1">
+        <h1 className="text-3xl font-bold text-foreground text-center mb-1">
           {t("linkBank")}
         </h1>
         
-        <p className="text-muted-foreground text-center text-sm mb-2 max-w-xs">
+        <p className="text-muted-foreground text-center text-lg mb-2 max-w-sm">
           {t("linkBankDesc")}
         </p>
 
-        <p className="text-xs text-muted-foreground text-center mb-4">
+        <p className="text-base text-muted-foreground text-center mb-4">
           Choose how you'd like to add your bank details:
         </p>
 
@@ -37,18 +37,18 @@ export default function BankLinkingStart() {
         <div className="flex flex-col items-center gap-2">
           <Button 
             variant="default"
-            size="default" 
-            className="w-[220px] shadow-md hover:shadow-lg border border-primary/10 transition-all duration-200 active:scale-95"
+            size="xl" 
+            className="w-[300px] shadow-md hover:shadow-lg border border-primary/10 transition-all duration-200 active:scale-95"
             onClick={() => navigate("/bank/scan")}
           >
-            <CreditCard className="mr-1.5 h-4 w-4" />
+            <CreditCard className="mr-2 h-5 w-5" />
             {t("scanBankCard")}
           </Button>
           
           <Button 
             variant="default" 
-            size="default"
-            className="w-[220px] shadow-md hover:shadow-lg border border-primary/10 transition-all duration-200 active:scale-95"
+            size="xl"
+            className="w-[300px] shadow-md hover:shadow-lg border border-primary/10 transition-all duration-200 active:scale-95"
             onClick={() => navigate("/bank/manual")}
           >
             {t("enterManually")}

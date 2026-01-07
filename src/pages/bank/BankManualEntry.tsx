@@ -57,10 +57,10 @@ export default function BankManualEntry() {
 
       {/* Content */}
       <div className="flex-1 patela-form-container py-3 pb-4">
-        <h1 className="text-xl font-bold text-foreground mb-1">
+        <h1 className="text-2xl font-bold text-foreground mb-1">
           Enter Bank Details
         </h1>
-        <p className="text-muted-foreground text-sm mb-3">
+        <p className="text-muted-foreground text-base mb-3">
           Link your bank account to receive payments
         </p>
 
@@ -175,13 +175,13 @@ export default function BankManualEntry() {
           <div className="pt-3 flex flex-col items-center">
             <Button
               variant="default"
-              size="default"
-              className="w-[220px] shadow-md hover:shadow-lg transition-all duration-200 active:scale-95"
+              size="xl"
+              className="w-[300px] shadow-md hover:shadow-lg transition-all duration-200 active:scale-95"
               onClick={handleContinue}
               disabled={!isValid}
             >
               Continue to Verify
-              <ArrowRight className="ml-1.5 h-4 w-4" />
+              <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
           </div>
         </div>

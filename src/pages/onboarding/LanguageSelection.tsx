@@ -45,11 +45,11 @@ export default function LanguageSelection() {
         {showResumePrompt ? (
           <div className="flex-1 flex flex-col items-center justify-center animate-patela-fade-in">
             <div className="text-center mb-4">
-              <div className="text-4xl mb-3">👋</div>
-              <h1 className="text-xl font-bold text-foreground mb-1">
+              <div className="text-5xl mb-3">👋</div>
+              <h1 className="text-2xl font-bold text-foreground mb-1">
                 {t("welcomeBack")}
               </h1>
-              <p className="text-muted-foreground text-sm">
+              <p className="text-muted-foreground text-base">
                 {t("resumeOnboardingDesc")}
               </p>
             </div>
@@ -57,21 +57,21 @@ export default function LanguageSelection() {
             <div className="w-full max-w-sm flex flex-col items-center gap-2">
               <Button
                 variant="default"
-                size="default"
-                className="w-[220px] shadow-md hover:shadow-lg transition-all duration-200 active:scale-95"
+                size="xl"
+                className="w-[300px] shadow-md hover:shadow-lg transition-all duration-200 active:scale-95"
                 onClick={handleResume}
               >
-                <Play className="mr-1.5 h-4 w-4" />
+                <Play className="mr-2 h-5 w-5" />
                 Continue Setup
               </Button>
               
               <Button
                 variant="outline"
-                size="default"
-                className="w-[220px] border-border hover:bg-muted"
+                size="xl"
+                className="w-[300px] border-border hover:bg-muted"
                 onClick={handleStartFresh}
               >
-                <RotateCcw className="mr-1.5 h-4 w-4" />
+                <RotateCcw className="mr-2 h-5 w-5" />
                 Start Over
               </Button>
             </div>
@@ -79,10 +79,10 @@ export default function LanguageSelection() {
         ) : (
           <>
             <div className="text-center mb-4 animate-patela-slide-up">
-              <h1 className="text-xl font-bold text-foreground mb-1">
+              <h1 className="text-2xl font-bold text-foreground mb-1">
                 {t("selectLanguage")}
               </h1>
-              <p className="text-muted-foreground text-sm">
+              <p className="text-muted-foreground text-base">
                 {t("selectLanguageDesc")}
               </p>
             </div>
@@ -97,12 +97,12 @@ export default function LanguageSelection() {
             <div className="pt-4 pb-4 flex flex-col items-center" style={{ animationDelay: "0.2s" }}>
               <Button
                 variant="default"
-                size="default"
-                className="w-[220px] shadow-md hover:shadow-lg transition-all duration-200 active:scale-95"
+                size="xl"
+                className="w-[300px] shadow-md hover:shadow-lg transition-all duration-200 active:scale-95"
                 onClick={() => navigate("/onboarding/phone")}
               >
                 Continue
-                <ArrowRight className="ml-1.5 h-4 w-4" />
+                <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </div>
           </>

@@ -39,10 +39,10 @@ export default function BankConfirm() {
           )}
         </div>
         
-        <h1 className="text-xl font-bold text-foreground mb-1">
+        <h1 className="text-2xl font-bold text-foreground mb-1">
           Confirm Bank Details
         </h1>
-        <p className="text-muted-foreground text-sm mb-4">
+        <p className="text-muted-foreground text-base mb-4">
           Please verify the information below is correct
         </p>
 
@@ -90,15 +90,15 @@ export default function BankConfirm() {
       <div className="p-4 flex flex-col items-center gap-2">
         <Button 
           variant="default"
-          size="default" 
-          className="w-[220px] shadow-md hover:shadow-lg transition-all duration-200 active:scale-95"
+          size="xl" 
+          className="w-[300px] shadow-md hover:shadow-lg transition-all duration-200 active:scale-95"
           onClick={() => navigate("/bank/verify")}
         >
           Verify Account
-          <ArrowRight className="ml-1.5 h-4 w-4" />
+          <ArrowRight className="ml-2 h-5 w-5" />
         </Button>
         
-        <p className="text-center text-xs text-muted-foreground">
+        <p className="text-center text-sm text-muted-foreground">
           We'll verify your account with your bank
         </p>
       </div>

@@ -59,17 +59,17 @@ export default function CreatePin() {
         </button>
 
         <div className="text-center mb-4 animate-patela-slide-up">
-          <div className="h-14 w-14 mx-auto mb-3 rounded-full bg-primary flex items-center justify-center patela-shadow-primary">
+          <div className="h-20 w-20 mx-auto mb-3 rounded-full bg-primary flex items-center justify-center patela-shadow-primary">
             {step === "create" ? (
-              <Lock className="h-7 w-7 text-primary-foreground" />
+              <Lock className="h-10 w-10 text-primary-foreground" />
             ) : (
-              <Shield className="h-7 w-7 text-primary-foreground" />
+              <Shield className="h-10 w-10 text-primary-foreground" />
             )}
           </div>
-          <h1 className="text-xl font-bold text-foreground mb-1">
+          <h1 className="text-2xl font-bold text-foreground mb-1">
             {step === "create" ? "Create Your PIN" : "Confirm Your PIN"}
           </h1>
-          <p className="text-muted-foreground text-sm">
+          <p className="text-muted-foreground text-base">
             {step === "create" ? "Enter a 4-digit PIN to secure your account" : "Re-enter your PIN to confirm"}
           </p>
         </div>

@@ -36,7 +36,7 @@ export default function DeviceFound() {
       <div className="flex flex-col items-center text-center animate-fade-in">
         {/* Device Visual */}
         <div className="relative mb-4">
-          <div className="w-24 h-24 rounded-2xl overflow-hidden shadow-xl border-2 border-primary/20">
+          <div className="w-32 h-32 rounded-2xl overflow-hidden shadow-xl border-2 border-primary/20">
             <img 
               src={patelaDeviceBox} 
               alt="Patela payment device" 
@@ -45,13 +45,13 @@ export default function DeviceFound() {
           </div>
           
           {/* Connection Status Badge */}
-          <div className={`absolute -bottom-2 -right-2 w-10 h-10 rounded-full flex items-center justify-center ${
+          <div className={`absolute -bottom-2 -right-2 w-12 h-12 rounded-full flex items-center justify-center ${
             isConnecting ? "bg-accent" : "bg-success"
           }`}>
             {isConnecting ? (
-              <Loader2 className="h-5 w-5 text-accent-foreground animate-spin" />
+              <Loader2 className="h-6 w-6 text-accent-foreground animate-spin" />
             ) : (
-              <CheckCircle2 className="h-5 w-5 text-success-foreground" />
+              <CheckCircle2 className="h-6 w-6 text-success-foreground" />
             )}
           </div>
 
@@ -64,28 +64,28 @@ export default function DeviceFound() {
         {/* Status Text */}
         {isConnecting ? (
           <>
-            <h1 className="text-xl font-bold text-foreground mb-1">
+            <h1 className="text-2xl font-bold text-foreground mb-1">
               Connecting...
             </h1>
-            <p className="text-muted-foreground text-sm mb-4">
+            <p className="text-muted-foreground text-base mb-4">
               Please wait while we connect to your device
             </p>
 
             {/* Progress Bar */}
-            <div className="w-full max-w-xs h-2 bg-muted rounded-full overflow-hidden mb-2">
+            <div className="w-full max-w-xs h-2.5 bg-muted rounded-full overflow-hidden mb-2">
               <div 
                 className="h-full bg-accent transition-all duration-200"
                 style={{ width: `${connectionProgress}%` }}
               />
             </div>
-            <p className="text-xs text-muted-foreground">{connectionProgress}%</p>
+            <p className="text-sm text-muted-foreground">{connectionProgress}%</p>
           </>
         ) : (
           <>
-            <h1 className="text-xl font-bold text-foreground mb-1">
+            <h1 className="text-2xl font-bold text-foreground mb-1">
               Device Connected!
             </h1>
-            <p className="text-muted-foreground text-sm mb-4">
+            <p className="text-muted-foreground text-base mb-4">
               Your Patela device is ready to use
             </p>
 
@@ -119,11 +119,11 @@ export default function DeviceFound() {
 
             <Button 
               variant="default"
-              size="default" 
-              className="w-[220px] shadow-md hover:shadow-lg transition-all duration-200 active:scale-95"
+              size="xl" 
+              className="w-[300px] shadow-md hover:shadow-lg transition-all duration-200 active:scale-95"
               onClick={() => navigate("/device/success")}
             >
-              <CheckCircle2 className="mr-1.5 h-4 w-4" />
+              <CheckCircle2 className="mr-2 h-5 w-5" />
               Continue
             </Button>
           </>

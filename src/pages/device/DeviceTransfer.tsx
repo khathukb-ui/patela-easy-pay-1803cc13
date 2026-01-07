@@ -75,14 +75,14 @@ export default function DeviceTransfer() {
 
       {step === "pin" ? (
         <div className="flex-1 flex flex-col items-center px-6 py-4">
-          <div className="w-16 h-16 rounded-full bg-accent/10 flex items-center justify-center mb-3">
-            <Share2 className="h-8 w-8 text-accent" />
+          <div className="w-20 h-20 rounded-full bg-accent/10 flex items-center justify-center mb-3">
+            <Share2 className="h-10 w-10 text-accent" />
           </div>
 
-          <h2 className="text-xl font-bold text-foreground text-center mb-1">
+          <h2 className="text-2xl font-bold text-foreground text-center mb-1">
             Transfer to Another Account
           </h2>
-          <p className="text-muted-foreground text-sm text-center mb-4 max-w-xs">
+          <p className="text-muted-foreground text-base text-center mb-4 max-w-xs">
             Generate a one-time code to transfer this device to another Patela account
           </p>
 
@@ -107,19 +107,19 @@ export default function DeviceTransfer() {
           <div className="mt-4">
             <Button 
               variant="default"
-              size="default" 
-              className="w-[220px] shadow-md hover:shadow-lg transition-all duration-200 active:scale-95"
+              size="xl" 
+              className="w-[300px] shadow-md hover:shadow-lg transition-all duration-200 active:scale-95"
               onClick={handleGenerateCode}
               disabled={pin.length !== 4 || isGenerating}
             >
               {isGenerating ? (
                 <>
-                  <Loader2 className="mr-1.5 h-4 w-4 animate-spin" />
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                   Generating Code...
                 </>
               ) : (
                 <>
-                  <Share2 className="mr-1.5 h-4 w-4" />
+                  <Share2 className="mr-2 h-5 w-5" />
                   Generate Transfer Code
                 </>
               )}

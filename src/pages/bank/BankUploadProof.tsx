@@ -128,12 +128,12 @@ export default function BankUploadProof() {
       <div className="p-4 flex flex-col items-center">
         <Button 
           variant="default"
-          size="default" 
-          className="w-[220px] shadow-md hover:shadow-lg transition-all duration-200 active:scale-95"
+          size="xl" 
+          className="w-[300px] shadow-md hover:shadow-lg transition-all duration-200 active:scale-95"
           onClick={handleSubmit}
           disabled={!uploadedFile}
         >
-          <Upload className="mr-1.5 h-4 w-4" />
+          <Upload className="mr-2 h-5 w-5" />
           {t("confirm")}
         </Button>
       </div>
