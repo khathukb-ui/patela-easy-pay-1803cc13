@@ -1,8 +1,9 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { BottomNav } from "@/components/patela/BottomNav";
 import { Button } from "@/components/ui/button";
 import { useCatalog, CatalogItem } from "@/hooks/use-catalog";
-import { Plus, Package, AlertTriangle, PackageX, Pencil, Trash2, X, Check } from "lucide-react";
+import { Plus, Package, AlertTriangle, PackageX, Pencil, Trash2, X, Check, Save } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -10,11 +11,13 @@ import { toast } from "sonner";
 type ViewMode = "all" | "low" | "out";
 
 export default function Items() {
+  const navigate = useNavigate();
   const { t } = useLanguage();
   const { items, addItem, updateItem, deleteItem, getLowStockItems, getOutOfStockItems } = useCatalog();
   const [viewMode, setViewMode] = useState<ViewMode>("all");
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingItem, setEditingItem] = useState<CatalogItem | null>(null);
+  const [hasChanges, setHasChanges] = useState(false);
 
   // Form state
   const [formName, setFormName] = useState("");
@@ -61,7 +64,19 @@ export default function Items() {
       });
       toast.success("Item added successfully!");
     }
+
+    setHasChanges(true);
     resetForm();
+  };
+
+  const handleSaveItems = () => {
+    toast.success("Items saved successfully!");
+    setHasChanges(false);
+  };
+
+  const handleCancelItems = () => {
+    if (hasChanges && !confirm("Discard unsaved changes?")) return;
+    navigate(-1);
   };
 
   const handleCancel = () => {
@@ -80,6 +95,7 @@ export default function Items() {
   const handleDelete = (id: string) => {
     if (confirm("Delete this item?")) {
       deleteItem(id);
+      setHasChanges(true);
       toast.success("Item deleted");
     }
   };
@@ -91,9 +107,9 @@ export default function Items() {
   };
 
   return (
-    <div className="min-h-screen patela-app-bg pb-24">
+    <div className={cn("min-h-screen patela-app-bg", items.length > 0 ? "pb-44" : "pb-24")}>
       {/* Header */}
-      <header className="bg-primary px-6 py-4 patela-shadow-md">
+      <header className="sticky top-0 z-40 bg-primary px-6 py-4 patela-shadow-md">
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-2xl font-bold text-primary-foreground">My Items</h1>
           <Button
@@ -103,7 +119,7 @@ export default function Items() {
             onClick={() => setShowAddForm(true)}
           >
             <Plus className="h-4 w-4" />
-            Add
+            Add New Item
           </Button>
         </div>
 
@@ -219,11 +235,31 @@ export default function Items() {
         )}
       </main>
 
+      {/* Sticky Action Bar - always visible while scrolling */}
+      {items.length > 0 && (
+        <div
+          className="fixed left-0 right-0 bottom-20 z-40 border-t border-border bg-card px-6 pt-3"
+          style={{ paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom))" }}
+        >
+          <div className="flex gap-3 max-w-lg mx-auto">
+            <Button variant="outline" size="lg" className="flex-1" onClick={handleCancelItems}>
+              <X className="h-4 w-4 mr-2" />
+              Cancel
+            </Button>
+            <Button variant="hero" size="lg" className="flex-1" onClick={handleSaveItems}>
+              <Save className="h-4 w-4 mr-2" />
+              Save Items
+            </Button>
+          </div>
+        </div>
+      )}
+
       {/* Add/Edit Form Modal */}
       {showAddForm && (
-        <div className="fixed inset-0 bg-black/50 flex items-end justify-center z-50">
-          <div className="bg-card w-full max-w-lg max-h-[85vh] rounded-t-2xl p-5 animate-patela-slide-up overflow-y-auto">
-            <div className="flex items-center justify-between mb-4">
+        <div className="fixed inset-0 bg-black/50 flex items-end justify-center z-[60]">
+          <div className="bg-card w-full max-w-lg max-h-[85vh] rounded-t-2xl animate-patela-slide-up overflow-hidden flex flex-col">
+            {/* Modal header (fixed) */}
+            <div className="flex items-center justify-between px-5 py-4 border-b border-border bg-card">
               <h2 className="text-lg font-bold text-foreground">
                 {editingItem ? "Edit Item" : "Add New Item"}
               </h2>
@@ -235,71 +271,67 @@ export default function Items() {
               </button>
             </div>
 
-            <div className="patela-form-section">
-              <h3 className="patela-section-heading">Item Details</h3>
-              
-              <div className="patela-form-field">
-                <label className="patela-label">
-                  Item Name *
-                </label>
-                <input
-                  type="text"
-                  value={formName}
-                  onChange={(e) => setFormName(e.target.value)}
-                  placeholder="e.g. Bread"
-                  className="w-full px-4 py-3 rounded-xl border-2 border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
-                />
-              </div>
+            {/* Modal body (scrolls) */}
+            <div className="flex-1 overflow-y-auto px-5 py-4">
+              <div className="patela-form-section">
+                <h3 className="patela-section-heading">Item Details</h3>
 
-              <div className="grid grid-cols-2 gap-3">
                 <div className="patela-form-field">
-                  <label className="patela-label">
-                    Price (R) *
-                  </label>
+                  <label className="patela-label">Item Name *</label>
                   <input
-                    type="number"
-                    value={formPrice}
-                    onChange={(e) => setFormPrice(e.target.value)}
-                    placeholder="0.00"
+                    type="text"
+                    value={formName}
+                    onChange={(e) => setFormName(e.target.value)}
+                    placeholder="e.g. Bread"
                     className="w-full px-4 py-3 rounded-xl border-2 border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
                   />
                 </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="patela-form-field">
+                    <label className="patela-label">Price (R) *</label>
+                    <input
+                      type="number"
+                      value={formPrice}
+                      onChange={(e) => setFormPrice(e.target.value)}
+                      placeholder="0.00"
+                      className="w-full px-4 py-3 rounded-xl border-2 border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                    />
+                  </div>
+
+                  <div className="patela-form-field">
+                    <label className="patela-label">Stock Qty</label>
+                    <input
+                      type="number"
+                      value={formStock}
+                      onChange={(e) => setFormStock(e.target.value)}
+                      placeholder="0"
+                      className="w-full px-4 py-3 rounded-xl border-2 border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                    />
+                    <p className="patela-helper-text">Current inventory count</p>
+                  </div>
+                </div>
+
                 <div className="patela-form-field">
                   <label className="patela-label">
-                    Stock Qty
+                    Category <span className="text-muted-foreground font-normal text-xs">(optional)</span>
                   </label>
                   <input
-                    type="number"
-                    value={formStock}
-                    onChange={(e) => setFormStock(e.target.value)}
-                    placeholder="0"
+                    type="text"
+                    value={formCategory}
+                    onChange={(e) => setFormCategory(e.target.value)}
+                    placeholder="e.g. Groceries"
                     className="w-full px-4 py-3 rounded-xl border-2 border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
                   />
-                  <p className="patela-helper-text">Current inventory count</p>
+                  <p className="patela-helper-text">Helps organize your items</p>
                 </div>
               </div>
+            </div>
 
-              <div className="patela-form-field">
-                <label className="patela-label">
-                  Category <span className="text-muted-foreground font-normal text-xs">(optional)</span>
-                </label>
-                <input
-                  type="text"
-                  value={formCategory}
-                  onChange={(e) => setFormCategory(e.target.value)}
-                  placeholder="e.g. Groceries"
-                  className="w-full px-4 py-3 rounded-xl border-2 border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
-                />
-                <p className="patela-helper-text">Helps organize your items</p>
-              </div>
-
-              <div className="flex gap-3 mt-4">
-                <Button
-                  variant="outline"
-                  size="lg"
-                  className="flex-1"
-                  onClick={handleCancel}
-                >
+            {/* Modal footer (fixed) */}
+            <div className="px-5 py-4 border-t border-border bg-card">
+              <div className="flex gap-3">
+                <Button variant="outline" size="lg" className="flex-1" onClick={handleCancel}>
                   <X className="h-4 w-4 mr-2" />
                   Cancel
                 </Button>
