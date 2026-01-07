@@ -1,10 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ProgressSteps } from "@/components/patela/ProgressSteps";
-import { CreditCard, Building2, Shield, ArrowRight } from "lucide-react";
+import { CreditCard } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import patelaCardImage from "@/assets/patela-card.png";
-import { PatelaLogo } from "@/components/patela/PatelaLogo";
 
 export default function BankLinkingStart() {
   const navigate = useNavigate();
@@ -22,23 +21,11 @@ export default function BankLinkingStart() {
         {/* Patela Card Image */}
         <div className="relative w-80 h-52 mb-4">
           <div className="absolute inset-4 rounded-2xl bg-primary/40 blur-2xl" />
-          <div className="relative w-full h-full animate-float">
-            <img 
-              src={patelaCardImage} 
-              alt="Patela payment card" 
-              className="w-full h-full object-contain drop-shadow-2xl"
-            />
-            {/* Card content overlay */}
-            <div className="absolute inset-0 flex flex-col justify-between p-8">
-              <PatelaLogo size="md" variant="dark" className="drop-shadow-md" />
-              <div className="space-y-1">
-                <p className="font-mono text-base tracking-widest text-foreground/80 drop-shadow-sm">
-                  4532 •••• •••• 7891
-                </p>
-                <p className="text-sm text-muted-foreground">VALID THRU 12/28</p>
-              </div>
-            </div>
-          </div>
+          <img 
+            src={patelaCardImage} 
+            alt="Patela payment card" 
+            className="relative w-full h-full object-contain drop-shadow-2xl animate-float"
+          />
         </div>
 
         <h1 className="text-3xl font-bold text-foreground text-center mb-1">
