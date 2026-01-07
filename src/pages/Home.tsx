@@ -86,36 +86,36 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="px-4 py-4 space-y-4">
+      <main className="px-5 py-5 space-y-5">
         {/* Take Payment - Primary CTA */}
         <div className="animate-patela-slide-up">
           <Button
             variant="hero"
             size="xl"
-            className="w-full h-20 text-xl animate-patela-pulse"
+            className="w-full h-24 text-2xl animate-patela-pulse"
             onClick={() => navigate("/payment")}
           >
-            <CreditCard className="h-7 w-7 mr-2" />
+            <CreditCard className="h-8 w-8 mr-3" />
             {t("takePayment")}
           </Button>
         </div>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-2 gap-3 animate-patela-slide-up" style={{ animationDelay: "0.1s" }}>
+        <div className="grid grid-cols-2 gap-4 animate-patela-slide-up" style={{ animationDelay: "0.1s" }}>
           <Button
             variant="outline"
-            className="h-16 flex-col gap-1 border-primary/20 hover:border-accent/50 hover:bg-accent/5"
+            className="h-20 flex-col gap-2 border-primary/20 hover:border-accent/50 hover:bg-accent/5"
             onClick={() => navigate("/payment-link")}
           >
-            <QrCode className="h-5 w-5 text-accent" />
+            <QrCode className="h-6 w-6 text-accent" />
             <span className="text-sm font-medium">Payment Link</span>
           </Button>
           <Button
             variant="outline"
-            className="h-16 flex-col gap-1 border-primary/20 hover:border-accent/50 hover:bg-accent/5"
+            className="h-20 flex-col gap-2 border-primary/20 hover:border-accent/50 hover:bg-accent/5"
             onClick={() => navigate("/sales")}
           >
-            <CreditCard className="h-5 w-5 text-accent" />
+            <CreditCard className="h-6 w-6 text-accent" />
             <span className="text-sm font-medium">{t("salesHistory")}</span>
           </Button>
         </div>
@@ -127,20 +127,20 @@ export default function Home() {
 
         {/* Quick Services */}
         <div className="animate-patela-slide-up" style={{ animationDelay: "0.25s" }}>
-          <div className="flex items-center justify-between mb-2">
-            <h2 className="text-xs font-semibold text-primary uppercase tracking-wide">Services</h2>
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-sm font-semibold text-primary uppercase tracking-wide">Services</h2>
           </div>
-          <div className="grid grid-cols-4 gap-2">
+          <div className="grid grid-cols-4 gap-3">
             {quickServices.map((service) => (
               <button 
                 key={service.label}
-                className="flex flex-col items-center p-2 bg-card rounded-xl border border-primary/10 hover:bg-accent/5 hover:border-accent/30 transition-colors"
+                className="flex flex-col items-center p-3 bg-card rounded-xl border border-primary/10 hover:bg-accent/5 hover:border-accent/30 transition-colors"
               >
-                <div className="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center mb-1">
-                  <service.icon className="h-4 w-4 text-accent" />
+                <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center mb-2">
+                  <service.icon className="h-5 w-5 text-accent" />
                 </div>
-                <span className="text-[11px] font-medium text-foreground">{service.label}</span>
-                <span className="text-[9px] text-muted-foreground">{service.desc}</span>
+                <span className="text-xs font-medium text-foreground">{service.label}</span>
+                <span className="text-[10px] text-muted-foreground">{service.desc}</span>
               </button>
             ))}
           </div>
@@ -149,30 +149,30 @@ export default function Home() {
         {/* Upgrade Banner */}
         <div className="animate-patela-slide-up" style={{ animationDelay: "0.3s" }}>
           <button 
-            className="w-full bg-gradient-to-r from-primary to-primary/80 rounded-xl p-3 flex items-center gap-3 text-left"
+            className="w-full bg-gradient-to-r from-primary to-primary/80 rounded-2xl p-4 flex items-center gap-4 text-left"
             onClick={() => navigate("/")}
           >
-            <div className="w-10 h-10 rounded-lg bg-accent flex items-center justify-center flex-shrink-0">
-              <Zap className="h-5 w-5 text-accent-foreground" />
+            <div className="w-12 h-12 rounded-xl bg-accent flex items-center justify-center flex-shrink-0">
+              <Zap className="h-6 w-6 text-accent-foreground" />
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="font-semibold text-primary-foreground text-sm">Upgrade to Patela Pro</p>
-              <p className="text-xs text-primary-foreground/70">Get a printer & larger screen</p>
+            <div className="flex-1">
+              <p className="font-semibold text-primary-foreground">Upgrade to Patela Pro</p>
+              <p className="text-sm text-primary-foreground/70">Get a printer & larger screen</p>
             </div>
-            <ChevronRight className="h-4 w-4 text-primary-foreground/50 flex-shrink-0" />
+            <ChevronRight className="h-5 w-5 text-primary-foreground/50" />
           </button>
         </div>
 
         {/* Payout Info */}
         <div className="animate-patela-slide-up" style={{ animationDelay: "0.35s" }}>
-          <div className="bg-success/10 rounded-xl p-3 border border-success/20">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-success/20 flex items-center justify-center flex-shrink-0">
-                <Banknote className="h-4 w-4 text-success" />
+          <div className="bg-success/10 rounded-2xl p-4 border border-success/20">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-success/20 flex items-center justify-center">
+                <Banknote className="h-5 w-5 text-success" />
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-xs text-muted-foreground">Next payout</p>
-                <p className="font-bold text-sm text-foreground">R2,400.00 <span className="text-xs font-normal text-success">Tomorrow</span></p>
+              <div className="flex-1">
+                <p className="text-sm text-muted-foreground">Next payout</p>
+                <p className="font-bold text-foreground">R2,400.00 <span className="text-sm font-normal text-success">Tomorrow</span></p>
               </div>
             </div>
           </div>

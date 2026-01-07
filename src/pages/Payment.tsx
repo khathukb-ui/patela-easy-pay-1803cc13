@@ -156,14 +156,14 @@ export default function Payment() {
       </header>
 
       {/* Amount Display */}
-      <div className="px-4 py-3">
-        <div className="text-center mb-2">
-          <p className="text-muted-foreground text-xs mb-1">
+      <div className="px-6 py-4">
+        <div className="text-center mb-4">
+          <p className="text-muted-foreground text-sm mb-2">
             {inputMode === "items" ? "Cart Total" : t("enterAmount")}
           </p>
           <div className="flex items-baseline justify-center">
-            <span className="text-2xl font-bold text-muted-foreground mr-1">R</span>
-            <span className="text-4xl font-bold text-foreground tracking-tight">
+            <span className="text-3xl font-bold text-muted-foreground mr-1">R</span>
+            <span className="text-5xl font-bold text-foreground tracking-tight">
               {formattedAmount}
             </span>
           </div>
@@ -171,16 +171,16 @@ export default function Payment() {
 
         {/* Cart Summary (Items Mode) */}
         {inputMode === "items" && cart.length > 0 && (
-          <div className="bg-accent/10 rounded-lg p-2 mb-2">
-            <div className="flex items-center justify-between mb-1">
-              <span className="text-xs font-medium text-foreground">
+          <div className="bg-accent/10 rounded-xl p-3 mb-4">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-medium text-foreground">
                 {cartCount} item{cartCount !== 1 ? "s" : ""} in cart
               </span>
               <button
                 onClick={clearCart}
-                className="text-[10px] text-destructive hover:underline flex items-center gap-0.5"
+                className="text-xs text-destructive hover:underline flex items-center gap-1"
               >
-                <X className="h-2.5 w-2.5" />
+                <X className="h-3 w-3" />
                 Clear
               </button>
             </div>
@@ -188,7 +188,7 @@ export default function Payment() {
               {cart.map((item) => (
                 <span
                   key={item.id}
-                  className="text-[10px] bg-accent/20 text-accent px-1.5 py-0.5 rounded-full"
+                  className="text-xs bg-accent/20 text-accent px-2 py-1 rounded-full"
                 >
                   {item.quantity}× {item.name}
                 </span>
@@ -204,10 +204,10 @@ export default function Payment() {
               const newNote = prompt(t("addNote"), note);
               if (newNote !== null) setNote(newNote);
             }}
-            className="flex items-center justify-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors w-full"
+            className="flex items-center justify-center gap-2 text-muted-foreground hover:text-foreground transition-colors w-full"
           >
-            <MessageSquare className="h-3.5 w-3.5" />
-            <span className="text-xs">{note || t("addNote")}</span>
+            <MessageSquare className="h-4 w-4" />
+            <span className="text-sm">{note || t("addNote")}</span>
           </button>
         )}
       </div>
@@ -215,7 +215,7 @@ export default function Payment() {
       {/* Main Input Area */}
       <div className="flex-1 overflow-hidden">
         {inputMode === "items" ? (
-          <div className="px-3 pb-2 h-full overflow-y-auto">
+          <div className="px-4 pb-4 h-full overflow-y-auto">
             <ItemSelector
               items={items}
               cart={cart}
@@ -226,7 +226,7 @@ export default function Payment() {
         ) : (
           <>
             {/* Quick Amounts */}
-            <div className="flex items-center gap-2 px-4 mb-2 flex-wrap justify-center">
+            <div className="flex items-center gap-3 px-6 mb-4 flex-wrap justify-center">
               {quickAmounts.map((quickAmount) => (
                 <QuickAmountButton
                   key={quickAmount}
@@ -250,15 +250,15 @@ export default function Payment() {
         )}
 
         {/* Charge Button */}
-        <div className="px-4 pb-4 pt-2">
+        <div className="px-4 pb-6">
           <Button
             variant="hero"
-            size="lg"
+            size="xl"
             className="w-full"
             onClick={handleCharge}
             disabled={currentAmount <= 0}
           >
-            <CreditCard className="h-5 w-5 mr-1.5" />
+            <CreditCard className="h-6 w-6 mr-2" />
             {t("chargeCustomer")} R{formattedAmount}
           </Button>
         </div>
