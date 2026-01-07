@@ -169,8 +169,9 @@ export default function BankManualEntry() {
       {/* Bottom Action */}
       <div className="p-6">
         <Button 
+          variant="hero"
           size="xl" 
-          className="w-full bg-accent text-accent-foreground text-lg font-bold h-16 rounded-2xl patela-shadow-accent hover:bg-accent/90"
+          className="w-full"
           onClick={handleContinue}
           disabled={!isValid}
         >

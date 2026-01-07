@@ -268,21 +268,27 @@ export default function PersonalDetails() {
                   {t("businessTypeLabel")} <span className="text-muted-foreground font-normal">({t("optional")})</span>
                 </Label>
                 <div className="grid grid-cols-2 gap-3">
-                  {businessTypes.map((type) => (
-                    <button
-                      key={type.id}
-                      onClick={() => setBusinessType(type.id)}
-                      className={cn(
-                        "flex items-center gap-3 p-4 rounded-xl border-2 transition-all",
-                        businessType === type.id
-                          ? "border-primary bg-primary/10"
-                          : "border-border bg-card hover:border-primary/50"
-                      )}
-                    >
-                      <span className="text-2xl">{type.icon}</span>
-                      <span className="font-medium text-foreground">{type.label}</span>
-                    </button>
-                  ))}
+                  {businessTypes.map((type) => {
+                    const isSelected = businessType === type.id;
+                    return (
+                      <button
+                        key={type.id}
+                        onClick={() => setBusinessType(type.id)}
+                        className={cn(
+                          "flex items-center gap-3 p-4 rounded-xl border-2 transition-all",
+                          isSelected
+                            ? "border-primary bg-primary/10 ring-2 ring-primary/20"
+                            : "border-border bg-card hover:border-muted-foreground/30"
+                        )}
+                      >
+                        <span className="text-2xl">{type.icon}</span>
+                        <span className={cn(
+                          "font-medium",
+                          isSelected ? "text-primary" : "text-foreground"
+                        )}>{type.label}</span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -314,12 +320,12 @@ export default function PersonalDetails() {
                     className={cn(
                       "w-full flex items-center gap-4 p-5 rounded-xl border-2 transition-all text-left",
                       isSelected
-                        ? "border-primary bg-primary/10"
-                        : "border-border bg-card hover:border-primary/50"
+                        ? "border-primary bg-primary/10 ring-2 ring-primary/20"
+                        : "border-border bg-card hover:border-muted-foreground/30"
                     )}
                   >
                     <div className={cn(
-                      "h-12 w-12 rounded-full flex items-center justify-center",
+                      "h-12 w-12 rounded-full flex items-center justify-center transition-colors",
                       isSelected ? "bg-primary" : "bg-muted"
                     )}>
                       <Icon className={cn(
@@ -328,7 +334,10 @@ export default function PersonalDetails() {
                       )} />
                     </div>
                     <div className="flex-1">
-                      <p className="font-semibold text-foreground text-lg">{method.label}</p>
+                      <p className={cn(
+                        "font-semibold text-lg",
+                        isSelected ? "text-primary" : "text-foreground"
+                      )}>{method.label}</p>
                       <p className="text-muted-foreground">{method.description}</p>
                     </div>
                     {isSelected && (
