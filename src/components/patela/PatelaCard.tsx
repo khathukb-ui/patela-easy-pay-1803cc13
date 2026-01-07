@@ -21,9 +21,12 @@ export function PatelaCard({ className = "", size = "lg" }: PatelaCardProps) {
   const chipTop = size === "sm" ? "top-12" : "top-16";
 
   return (
-    <div className={`relative ${sizeClasses[size]} animate-float transition-transform duration-300 hover:-translate-y-2 hover:scale-[1.02] cursor-pointer ${className}`}>
+    <div className={`relative ${sizeClasses[size]} animate-float transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] cursor-pointer group ${className}`}>
+      {/* Hover glow effect */}
+      <div className="absolute inset-0 rounded-2xl bg-primary/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10" />
+      
       {/* Card background */}
-      <div className="absolute inset-0 rounded-2xl bg-white border border-primary/20 shadow-lg overflow-hidden">
+      <div className="absolute inset-0 rounded-2xl bg-white border border-primary/20 shadow-lg overflow-hidden group-hover:shadow-xl group-hover:border-primary/30 transition-all duration-300">
         {/* Shimmer effect */}
         <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/60 to-transparent" />
       </div>
