@@ -20,7 +20,7 @@ export default function BankLinkingStart() {
       {/* Content - Single connected section */}
       <div className="flex-1 flex flex-col items-center justify-center px-4">
         {/* Patela Card Image */}
-        <div className="relative w-64 h-44 mb-4">
+        <div className="relative w-80 h-52 mb-4">
           <div className="absolute inset-4 rounded-2xl bg-primary/40 blur-2xl" />
           <div className="relative w-full h-full animate-float">
             <img 
@@ -29,13 +29,13 @@ export default function BankLinkingStart() {
               className="w-full h-full object-contain drop-shadow-2xl"
             />
             {/* Card content overlay */}
-            <div className="absolute inset-0 flex flex-col justify-between p-6">
-              <PatelaLogo size="sm" variant="dark" className="drop-shadow-md" />
+            <div className="absolute inset-0 flex flex-col justify-between p-8">
+              <PatelaLogo size="md" variant="dark" className="drop-shadow-md" />
               <div className="space-y-1">
-                <p className="font-mono text-sm tracking-widest text-foreground/80 drop-shadow-sm">
+                <p className="font-mono text-base tracking-widest text-foreground/80 drop-shadow-sm">
                   4532 •••• •••• 7891
                 </p>
-                <p className="text-xs text-muted-foreground">VALID THRU 12/28</p>
+                <p className="text-sm text-muted-foreground">VALID THRU 12/28</p>
               </div>
             </div>
           </div>
