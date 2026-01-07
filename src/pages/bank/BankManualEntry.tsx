@@ -56,15 +56,15 @@ export default function BankManualEntry() {
       </div>
 
       {/* Content */}
-      <div className="flex-1 patela-form-container py-3">
+      <div className="flex-1 patela-form-container py-3 pb-4">
         <h1 className="text-xl font-bold text-foreground mb-1">
           Enter Bank Details
         </h1>
-        <p className="text-muted-foreground text-sm mb-4">
+        <p className="text-muted-foreground text-sm mb-3">
           Link your bank account to receive payments
         </p>
 
-        <div className="space-y-4">
+        <div className="space-y-3">
           {/* Bank Selection */}
           <div className="space-y-1.5">
             <label className="text-sm font-medium text-foreground">
@@ -76,7 +76,7 @@ export default function BankManualEntry() {
             >
               {selectedBankData ? (
                 <div className="flex items-center gap-3">
-                  <div 
+                  <div
                     className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm"
                     style={{ backgroundColor: selectedBankData.color }}
                   >
@@ -87,9 +87,11 @@ export default function BankManualEntry() {
               ) : (
                 <span className="text-muted-foreground">Choose a bank</span>
               )}
-              <ChevronDown className={`h-5 w-5 text-muted-foreground transition-transform ${showBankList ? "rotate-180" : ""}`} />
+              <ChevronDown
+                className={`h-5 w-5 text-muted-foreground transition-transform ${showBankList ? "rotate-180" : ""}`}
+              />
             </button>
-            
+
             {showBankList && (
               <div className="mt-1 bg-card border-2 border-border rounded-xl overflow-hidden">
                 {BANKS.map((bank) => (
@@ -101,7 +103,7 @@ export default function BankManualEntry() {
                     }}
                     className="w-full flex items-center gap-3 p-3 hover:bg-muted transition-colors border-b border-border last:border-b-0"
                   >
-                    <div 
+                    <div
                       className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm"
                       style={{ backgroundColor: bank.color }}
                     >
@@ -127,7 +129,9 @@ export default function BankManualEntry() {
               onChange={(e) => setAccountNumber(e.target.value.replace(/\D/g, ""))}
               className="h-12"
             />
-            <p className="text-xs text-muted-foreground">Your bank account number (8-12 digits)</p>
+            <p className="text-xs text-muted-foreground">
+              Your bank account number (8-12 digits)
+            </p>
           </div>
 
           {/* Account Type */}
@@ -144,9 +148,11 @@ export default function BankManualEntry() {
               ) : (
                 <span className="text-muted-foreground">Select account type</span>
               )}
-              <ChevronDown className={`h-5 w-5 text-muted-foreground transition-transform ${showAccountTypes ? "rotate-180" : ""}`} />
+              <ChevronDown
+                className={`h-5 w-5 text-muted-foreground transition-transform ${showAccountTypes ? "rotate-180" : ""}`}
+              />
             </button>
-            
+
             {showAccountTypes && (
               <div className="mt-1 bg-card border-2 border-border rounded-xl overflow-hidden">
                 {ACCOUNT_TYPES.map((type) => (
@@ -164,21 +170,21 @@ export default function BankManualEntry() {
               </div>
             )}
           </div>
-        </div>
-      </div>
 
-      {/* Bottom Action */}
-      <div className="p-4 flex flex-col items-center">
-        <Button 
-          variant="default"
-          size="default" 
-          className="w-[220px] shadow-md hover:shadow-lg transition-all duration-200 active:scale-95"
-          onClick={handleContinue}
-          disabled={!isValid}
-        >
-          Continue to Verify
-          <ArrowRight className="ml-1.5 h-4 w-4" />
-        </Button>
+          {/* Action (kept close to inputs) */}
+          <div className="pt-3 flex flex-col items-center">
+            <Button
+              variant="default"
+              size="default"
+              className="w-[220px] shadow-md hover:shadow-lg transition-all duration-200 active:scale-95"
+              onClick={handleContinue}
+              disabled={!isValid}
+            >
+              Continue to Verify
+              <ArrowRight className="ml-1.5 h-4 w-4" />
+            </Button>
+          </div>
+        </div>
       </div>
     </div>
   );
