@@ -20,11 +20,10 @@ export default function BankLinkingStart() {
       <div className="flex-1 flex flex-col items-center justify-center px-4">
         {/* Patela Card Image */}
         <div className="relative w-80 h-52 mb-4">
-          <div className="absolute inset-4 rounded-2xl bg-primary/40 blur-2xl" />
           <img 
             src={patelaCardImage} 
             alt="Patela payment card" 
-            className="relative w-full h-full object-contain drop-shadow-2xl animate-float"
+            className="w-full h-full object-contain drop-shadow-xl animate-float"
           />
         </div>
 
