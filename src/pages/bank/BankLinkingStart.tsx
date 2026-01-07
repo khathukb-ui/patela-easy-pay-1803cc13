@@ -42,7 +42,7 @@ export default function BankLinkingStart() {
         <Button 
           variant="default"
           size="lg" 
-          className="w-auto min-w-[200px]"
+          className="w-auto min-w-[200px] shadow-md hover:shadow-lg border border-primary/20"
           onClick={() => navigate("/bank/scan")}
         >
           <CreditCard className="mr-2 h-5 w-5" />
@@ -52,7 +52,7 @@ export default function BankLinkingStart() {
         <Button 
           variant="default" 
           size="default"
-          className="w-auto min-w-[200px]"
+          className="w-auto min-w-[200px] shadow-md hover:shadow-lg border border-primary/20"
           onClick={() => navigate("/bank/manual")}
         >
           {t("enterManually")}
