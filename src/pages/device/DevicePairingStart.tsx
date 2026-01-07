@@ -22,8 +22,8 @@ export default function DevicePairingStart() {
       {/* Content - Single connected section */}
       <div className="flex-1 flex flex-col items-center justify-center px-4">
         {/* Device Image */}
-        <div className="relative w-32 h-32 mb-3 animate-patela-bounce-in">
-          <div className="absolute inset-0 rounded-xl overflow-hidden shadow-lg border-2 border-primary/20">
+        <div className="relative w-40 h-40 mb-3 animate-patela-bounce-in">
+          <div className="absolute inset-0 rounded-2xl overflow-hidden shadow-xl border-2 border-primary/20">
             <img 
               src={patelaDeviceBox} 
               alt="Patela payment device" 
@@ -31,18 +31,18 @@ export default function DevicePairingStart() {
             />
           </div>
           {/* Pulse ring */}
-          <div className="absolute -inset-2 rounded-xl border-2 border-accent/50 animate-ping" style={{ animationDuration: "2s" }} />
+          <div className="absolute -inset-2.5 rounded-2xl border-2 border-accent/50 animate-ping" style={{ animationDuration: "2s" }} />
         </div>
 
-        <h1 className="text-2xl font-bold text-foreground text-center mb-1">
+        <h1 className="text-3xl font-bold text-foreground text-center mb-1">
           {t("pairDevice")}
         </h1>
         
-        <p className="text-muted-foreground text-center text-base mb-2 max-w-xs">
+        <p className="text-muted-foreground text-center text-lg mb-2 max-w-sm">
           {t("pairDeviceDesc")}
         </p>
 
-        <p className="text-sm text-muted-foreground text-center mb-4">
+        <p className="text-base text-muted-foreground text-center mb-4">
           Choose how you'd like to pair your device:
         </p>
 
@@ -50,20 +50,21 @@ export default function DevicePairingStart() {
         <div className="flex flex-col items-center gap-2">
           <Button 
             variant="default"
-            size="lg" 
-            className="w-[260px] shadow-md hover:shadow-lg border border-primary/10 transition-all duration-200 active:scale-95"
+            size="xl" 
+            className="w-[300px] shadow-md hover:shadow-lg border border-primary/10 transition-all duration-200 active:scale-95"
             onClick={() => navigate("/device/qr")}
           >
-            <QrCode className="mr-2 h-5 w-5" />
+            <QrCode className="mr-2 h-6 w-6" />
             {t("scanQrCode")}
           </Button>
           
           <Button 
             variant="default" 
-            size="lg"
-            className="w-[260px] shadow-md hover:shadow-lg border border-primary/10 transition-all duration-200 active:scale-95"
+            size="xl"
+            className="w-[300px] shadow-md hover:shadow-lg border border-primary/10 transition-all duration-200 active:scale-95"
             onClick={() => navigate("/device/bluetooth")}
           >
+            <Bluetooth className="mr-2 h-6 w-6" />
             {t("useBluetooth")}
           </Button>
         </div>
