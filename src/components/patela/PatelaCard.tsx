@@ -21,7 +21,7 @@ export function PatelaCard({ className = "", size = "lg" }: PatelaCardProps) {
   const chipTop = size === "sm" ? "top-12" : "top-16";
 
   return (
-    <div className={`relative ${sizeClasses[size]} animate-float transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] cursor-pointer group ${className}`}>
+    <div className={`relative ${sizeClasses[size]} animate-float group ${className}`}>
       {/* Hover glow effect */}
       <div className="absolute inset-0 rounded-2xl bg-primary/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10" />
       
