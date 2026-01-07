@@ -4,6 +4,7 @@ import { ProgressSteps } from "@/components/patela/ProgressSteps";
 import { CreditCard, Building2, Shield, ArrowRight } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import patelaCardImage from "@/assets/patela-card.png";
+import { PatelaLogo } from "@/components/patela/PatelaLogo";
 
 export default function BankLinkingStart() {
   const navigate = useNavigate();
@@ -21,11 +22,17 @@ export default function BankLinkingStart() {
         {/* Patela Card Image */}
         <div className="relative w-64 h-44 mb-4">
           <div className="absolute inset-4 rounded-2xl bg-primary/40 blur-2xl" />
-          <img 
-            src={patelaCardImage} 
-            alt="Patela payment card" 
-            className="relative w-full h-full object-contain drop-shadow-2xl animate-float"
-          />
+          <div className="relative w-full h-full animate-float">
+            <img 
+              src={patelaCardImage} 
+              alt="Patela payment card" 
+              className="w-full h-full object-contain drop-shadow-2xl"
+            />
+            {/* Logo overlay */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <PatelaLogo size="lg" variant="dark" className="drop-shadow-lg" />
+            </div>
+          </div>
         </div>
 
         <h1 className="text-3xl font-bold text-foreground text-center mb-1">
