@@ -222,7 +222,7 @@ export default function Items() {
       {/* Add/Edit Form Modal */}
       {showAddForm && (
         <div className="fixed inset-0 bg-black/50 flex items-end justify-center z-50">
-          <div className="bg-card w-full max-w-lg rounded-t-2xl p-5 animate-patela-slide-up">
+          <div className="bg-card w-full max-w-lg max-h-[85vh] rounded-t-2xl p-5 animate-patela-slide-up overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-bold text-foreground">
                 {editingItem ? "Edit Item" : "Add New Item"}
