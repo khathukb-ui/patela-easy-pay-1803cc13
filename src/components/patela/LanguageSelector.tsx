@@ -33,8 +33,8 @@ export function LanguageSelector({ selectedLanguage, onSelect }: LanguageSelecto
             className={cn(
               "relative flex flex-col items-center justify-center p-5 rounded-2xl border-2 transition-all duration-200",
               isSelected
-                ? "border-primary bg-primary/5 patela-shadow-md"
-                : "border-border bg-card hover:border-primary/30 hover:bg-secondary/50"
+                ? "border-primary bg-primary/10 ring-2 ring-primary/20"
+                : "border-border bg-card hover:border-muted-foreground/30"
             )}
           >
             {isSelected && (
@@ -42,7 +42,10 @@ export function LanguageSelector({ selectedLanguage, onSelect }: LanguageSelecto
                 <Check className="h-4 w-4 text-primary-foreground" />
               </div>
             )}
-            <span className="text-lg font-bold text-foreground">{lang.nativeName}</span>
+            <span className={cn(
+              "text-lg font-bold",
+              isSelected ? "text-primary" : "text-foreground"
+            )}>{lang.nativeName}</span>
             <span className="text-sm text-muted-foreground">{lang.name}</span>
           </button>
         );
