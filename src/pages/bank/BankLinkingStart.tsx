@@ -23,7 +23,7 @@ export default function BankLinkingStart() {
           <img 
             src={patelaCardImage} 
             alt="Patela payment card" 
-            className="w-full h-full object-contain drop-shadow-md animate-float"
+            className="w-full h-full object-contain animate-float"
           />
         </div>
 
