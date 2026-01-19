@@ -328,8 +328,15 @@ export default function Auth() {
             )}
           </div>
 
-          {/* Back to landing */}
-          <div className="mt-6 text-center">
+          {/* Skip for testing */}
+          <div className="mt-6 text-center space-y-2">
+            <Button
+              variant="outline"
+              className="w-full border-dashed border-muted-foreground/50 text-muted-foreground"
+              onClick={() => navigate("/home")}
+            >
+              Skip for now (Testing)
+            </Button>
             <Button
               variant="ghost"
               className="text-muted-foreground"
