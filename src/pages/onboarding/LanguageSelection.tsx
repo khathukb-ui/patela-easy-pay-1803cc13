@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { LanguageSelector } from "@/components/patela/LanguageSelector";
-import { ProgressSteps } from "@/components/patela/ProgressSteps";
+import { OnboardingHeader } from "@/components/patela/OnboardingHeader";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, RotateCcw, Play, X } from "lucide-react";
+import { ArrowRight, RotateCcw, Play } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useOnboardingData } from "@/hooks/use-onboarding-data";
 
@@ -37,24 +37,11 @@ export default function LanguageSelection() {
     setShowResumePrompt(false);
   };
 
-  const handleExit = () => {
-    // Progress is auto-saved, just navigate to landing
-    navigate("/");
-  };
-
   return (
     <div className="min-h-screen patela-app-bg flex flex-col">
-      <ProgressSteps currentStep={1} totalSteps={5} />
+      <OnboardingHeader currentStep={1} totalSteps={5} />
       
       <div className="flex-1 flex flex-col patela-form-container py-4">
-        {/* Exit button - always visible */}
-        <button
-          onClick={handleExit}
-          className="self-end flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors text-sm mb-2"
-        >
-          <X className="h-4 w-4" />
-          Exit
-        </button>
 
         {showResumePrompt ? (
           <div className="flex-1 flex flex-col items-center justify-center animate-patela-fade-in">
