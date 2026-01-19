@@ -4,13 +4,14 @@ import { Keypad } from "@/components/patela/Keypad";
 import { QuickAmountButton } from "@/components/patela/QuickAmountButton";
 import { OfflineBanner } from "@/components/patela/OfflineBanner";
 import { ItemSelector } from "@/components/patela/ItemSelector";
+import { PaymentMethodSelector, PaymentMethod } from "@/components/patela/PaymentMethodSelector";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, CreditCard, Loader2, MessageSquare, ShoppingCart, Calculator, X, Package } from "lucide-react";
+import { ArrowLeft, CreditCard, Loader2, MessageSquare, ShoppingCart, Calculator, X, Package, Banknote, CheckCircle2 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useCatalog, useCart } from "@/hooks/use-catalog";
 import { cn } from "@/lib/utils";
 
-type PaymentStep = "amount" | "processing" | "success" | "failed";
+type PaymentStep = "amount" | "processing" | "cash_confirm" | "success" | "failed";
 type InputMode = "manual" | "items";
 
 export default function Payment() {
@@ -21,6 +22,7 @@ export default function Payment() {
   const [step, setStep] = useState<PaymentStep>("amount");
   const [isOffline] = useState(false);
   const [inputMode, setInputMode] = useState<InputMode>("manual");
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("card");
 
   const { items } = useCatalog();
   const { cart, addToCart, removeFromCart, clearCart, cartTotal, cartCount } = useCart();
@@ -49,22 +51,36 @@ export default function Payment() {
     const chargeAmount = inputMode === "items" ? cartTotal : parseFloat(amount);
     if (!chargeAmount || chargeAmount <= 0) return;
 
-    setStep("processing");
-
-    // Simulate payment processing
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-
-    // Random success/fail for demo
-    const success = Math.random() > 0.2;
     const itemsNote = inputMode === "items" && cart.length > 0
       ? cart.map(c => `${c.quantity}x ${c.name}`).join(", ")
       : note;
 
+    if (paymentMethod === "cash") {
+      setStep("cash_confirm");
+      return;
+    }
+
+    setStep("processing");
+
+    // Simulate card payment processing
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+
+    // Random success/fail for demo (card only)
+    const success = Math.random() > 0.2;
+
     if (success) {
-      navigate("/payment/success", { state: { amount: chargeAmount, note: itemsNote } });
+      navigate("/payment/success", { state: { amount: chargeAmount, note: itemsNote, method: "card" } });
     } else {
       navigate("/payment/failed", { state: { amount: chargeAmount } });
     }
+  };
+
+  const handleCashConfirm = () => {
+    const chargeAmount = inputMode === "items" ? cartTotal : parseFloat(amount);
+    const itemsNote = inputMode === "items" && cart.length > 0
+      ? cart.map(c => `${c.quantity}x ${c.name}`).join(", ")
+      : note;
+    navigate("/payment/success", { state: { amount: chargeAmount, note: itemsNote, method: "cash" } });
   };
 
   const currentAmount = inputMode === "items" ? cartTotal : (amount ? parseFloat(amount) : 0);
@@ -72,6 +88,46 @@ export default function Payment() {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
+
+  if (step === "cash_confirm") {
+    return (
+      <div className="min-h-screen patela-app-bg flex flex-col items-center justify-center px-6">
+        <div className="flex flex-col items-center text-center space-y-8 animate-patela-fade-in">
+          <div className="h-32 w-32 rounded-full bg-accent flex items-center justify-center patela-shadow-accent">
+            <Banknote className="h-16 w-16 text-accent-foreground" />
+          </div>
+          
+          <div className="space-y-2">
+            <p className="text-muted-foreground text-lg">Cash Payment</p>
+            <p className="text-5xl font-bold text-foreground">R{formattedAmount}</p>
+          </div>
+
+          <p className="text-muted-foreground max-w-xs">
+            Confirm that you have received the cash payment from the customer
+          </p>
+
+          <div className="flex flex-col gap-3 w-full max-w-xs">
+            <Button
+              variant="hero"
+              size="xl"
+              onClick={handleCashConfirm}
+              className="w-full"
+            >
+              <CheckCircle2 className="h-6 w-6 mr-2" />
+              Confirm Cash Received
+            </Button>
+            <Button
+              variant="ghost"
+              size="lg"
+              onClick={() => setStep("amount")}
+            >
+              {t("cancel")}
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (step === "processing") {
     return (
@@ -241,6 +297,14 @@ export default function Payment() {
 
       {/* Bottom Section */}
       <div className="bg-card border-t border-border">
+        {/* Payment Method Selector */}
+        <div className="px-4 pt-4">
+          <PaymentMethodSelector 
+            selected={paymentMethod} 
+            onChange={setPaymentMethod} 
+          />
+        </div>
+
         {inputMode === "manual" && (
           <Keypad
             onKeyPress={handleKeyPress}
@@ -258,8 +322,12 @@ export default function Payment() {
             onClick={handleCharge}
             disabled={currentAmount <= 0}
           >
-            <CreditCard className="h-6 w-6 mr-2" />
-            {t("chargeCustomer")} R{formattedAmount}
+            {paymentMethod === "card" ? (
+              <CreditCard className="h-6 w-6 mr-2" />
+            ) : (
+              <Banknote className="h-6 w-6 mr-2" />
+            )}
+            {paymentMethod === "card" ? t("chargeCustomer") : "Record Cash"} R{formattedAmount}
           </Button>
         </div>
       </div>
