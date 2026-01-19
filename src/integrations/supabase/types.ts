@@ -14,16 +14,241 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      catalog_items: {
+        Row: {
+          category: string | null
+          created_at: string
+          id: string
+          low_stock_threshold: number
+          name: string
+          price: number
+          stock: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          id?: string
+          low_stock_threshold?: number
+          name: string
+          price: number
+          stock?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          id?: string
+          low_stock_threshold?: number
+          name?: string
+          price?: number
+          stock?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      payout_settings: {
+        Row: {
+          bank_linked: boolean
+          created_at: string
+          device_paired: boolean
+          id: string
+          payout_speed: string
+          same_day_fee_percent: number
+          standard_fee_percent: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          bank_linked?: boolean
+          created_at?: string
+          device_paired?: boolean
+          id?: string
+          payout_speed?: string
+          same_day_fee_percent?: number
+          standard_fee_percent?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          bank_linked?: boolean
+          created_at?: string
+          device_paired?: boolean
+          id?: string
+          payout_speed?: string
+          same_day_fee_percent?: number
+          standard_fee_percent?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          business_name: string | null
+          business_type: string | null
+          created_at: string
+          email: string | null
+          first_name: string | null
+          id: string
+          id_number: string | null
+          last_name: string | null
+          phone: string | null
+          pin_hash: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          business_name?: string | null
+          business_type?: string | null
+          created_at?: string
+          email?: string | null
+          first_name?: string | null
+          id?: string
+          id_number?: string | null
+          last_name?: string | null
+          phone?: string | null
+          pin_hash?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          business_name?: string | null
+          business_type?: string | null
+          created_at?: string
+          email?: string | null
+          first_name?: string | null
+          id?: string
+          id_number?: string | null
+          last_name?: string | null
+          phone?: string | null
+          pin_hash?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      sales: {
+        Row: {
+          amount: number
+          cashier_id: string | null
+          created_at: string
+          id: string
+          last_four_digits: string | null
+          note: string | null
+          payment_method: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          cashier_id?: string | null
+          created_at?: string
+          id?: string
+          last_four_digits?: string | null
+          note?: string | null
+          payment_method?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          cashier_id?: string | null
+          created_at?: string
+          id?: string
+          last_four_digits?: string | null
+          note?: string | null
+          payment_method?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      team_members: {
+        Row: {
+          accepted_at: string | null
+          created_at: string
+          email: string | null
+          id: string
+          invited_at: string
+          is_active: boolean
+          member_user_id: string | null
+          name: string
+          owner_user_id: string
+          phone: string | null
+          role: Database["public"]["Enums"]["app_role"]
+          updated_at: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          invited_at?: string
+          is_active?: boolean
+          member_user_id?: string | null
+          name: string
+          owner_user_id: string
+          phone?: string | null
+          role?: Database["public"]["Enums"]["app_role"]
+          updated_at?: string
+        }
+        Update: {
+          accepted_at?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          invited_at?: string
+          is_active?: boolean
+          member_user_id?: string | null
+          name?: string
+          owner_user_id?: string
+          phone?: string | null
+          role?: Database["public"]["Enums"]["app_role"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      is_team_member: {
+        Args: { _owner_id: string; _user_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "manager" | "cashier"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +375,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "manager", "cashier"],
+    },
   },
 } as const
