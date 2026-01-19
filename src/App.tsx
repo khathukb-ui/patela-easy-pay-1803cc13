@@ -56,8 +56,9 @@ import DeviceTransfer from "./pages/device/DeviceTransfer";
 import UsersAccess from "./pages/settings/UsersAccess";
 import PayoutPreferences from "./pages/settings/PayoutPreferences";
 
-// Documentation
+// Documentation & Demo
 import CustomerJourneyMap from "./pages/CustomerJourneyMap";
+import Demo from "./pages/Demo";
 
 const queryClient = new QueryClient();
 
@@ -125,8 +126,9 @@ function AppContent() {
           <Route path="/settings/users" element={<UsersAccess />} />
           <Route path="/settings/payouts" element={<PayoutPreferences />} />
           
-          {/* Documentation */}
+          {/* Documentation & Demo */}
           <Route path="/customer-journey" element={<CustomerJourneyMap />} />
+          <Route path="/demo" element={<Demo />} />
           
           {/* Main App */}
           <Route path="/home" element={<Home />} />
