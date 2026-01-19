@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { PinInput } from "@/components/patela/PinInput";
 import { ProgressSteps } from "@/components/patela/ProgressSteps";
-import { ArrowLeft, Lock, Shield } from "lucide-react";
+import { ArrowLeft, Lock, Shield, X } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 type Step = "create" | "confirm";
@@ -41,6 +41,15 @@ export default function CreatePin() {
       <ProgressSteps currentStep={4} totalSteps={5} />
 
       <div className="flex-1 flex flex-col patela-form-container py-4">
+        {/* Exit button - always visible */}
+        <button
+          onClick={() => navigate("/")}
+          className="self-end flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors text-sm mb-2"
+        >
+          <X className="h-4 w-4" />
+          Exit
+        </button>
+
         <button
           onClick={() => {
             if (step === "confirm") {
