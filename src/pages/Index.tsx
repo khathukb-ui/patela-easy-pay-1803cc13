@@ -224,6 +224,7 @@ export default function Index() {
                   <Button
                     size="xl"
                     className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 font-semibold"
+                    onClick={() => navigate("/demo")}
                   >
                     <Play className="mr-2 h-5 w-5" />
                     Watch Demo
