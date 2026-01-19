@@ -1,306 +1,642 @@
-# Patela Customer Journey
+# Patela Customer Journey Map
 
-> **"Built for the Hustle"** - A payment solution designed for street vendors with low literacy, supporting multiple languages and offline-first operation.
-
----
-
-## 📱 Overview
-
-Patela guides vendors through three core journeys:
-
-1. **Onboarding** - Getting started with the app
-2. **Taking Payments** - Processing customer transactions
-3. **Viewing Sales** - Tracking business performance
+> **"Built for the Hustle"** - How vendors register and start using Patela, even before linking a bank account or pairing a device.
 
 ---
 
-## 🚀 Journey 1: Onboarding
+## 👥 User Personas
 
-### Flow Diagram
+### 1. Admin Merchant (Business Owner)
 
-```mermaid
-flowchart TD
-    A[🌍 Language Selection] --> B{Returning User?}
-    B -->|Yes| C[👋 Welcome Back Prompt]
-    B -->|No| D[📱 Phone Number Entry]
-    C -->|Continue| E[Resume from Last Step]
-    C -->|Start Fresh| D
-    D --> F[🔐 OTP Verification]
-    F -->|Correct Code| G[👤 Personal Details]
-    F -->|Wrong Code| F
-    G --> H[🏪 Business Details]
-    H --> I[📧 Communication Preferences]
-    I --> J[🔑 Create PIN]
-    J --> K[🔑 Confirm PIN]
-    K -->|Match| L[✅ Success!]
-    K -->|No Match| J
-    L --> M{Next Steps}
-    M --> N[🏦 Link Bank Account]
-    M --> O[🏠 Go to Home]
-```
+| Attribute | Description |
+|-----------|-------------|
+| **Who they are** | The vendor who owns the business |
+| **What they can do** | Everything — take payments, view all sales, add team members, link bank account, pair devices, request payouts |
+| **Their goal** | Grow their business and get paid easily |
+| **Challenges** | May have low literacy, limited tech experience, inconsistent internet |
+| **Motivations** | Accept card payments, track earnings, build trust with customers |
 
-### Step-by-Step Process
+### 2. Cashier (Team Member)
 
-| Step | Screen | User Action | Design Principle |
-|------|--------|-------------|------------------|
-| 1 | **Language Selection** | Tap preferred language (English, isiZulu, Sesotho, Xitsonga) | Large buttons, flag icons |
-| 2 | **Phone Entry** | Enter 10-digit SA mobile number | Big keypad, clear format hint |
-| 3 | **OTP Verification** | Enter 6-digit code from SMS | Auto-focus, resend option |
-| 4 | **Personal Details** | Enter name, optional ID number | One field at a time |
-| 5 | **Business Details** | Select business type, enter name | Icon-based categories |
-| 6 | **Communication Prefs** | Choose SMS, WhatsApp, or Email | Multiple selection allowed |
-| 7 | **Create PIN** | Enter 4-digit PIN | Secure dots, keypad only |
-| 8 | **Confirm PIN** | Re-enter same PIN | Error if mismatch |
-| 9 | **Success** | View completion message | Green checkmark, celebration |
-
-### Resume Onboarding Feature
-
-```mermaid
-flowchart LR
-    A[User Returns] --> B{Has Saved Progress?}
-    B -->|Yes| C[Show Welcome Back Card]
-    B -->|No| D[Start Fresh]
-    C --> E[Continue Button]
-    C --> F[Start Fresh Button]
-    E --> G[Navigate to Last Step]
-    F --> H[Clear Data & Restart]
-```
-
-**Key Features:**
-- Progress saved to local storage automatically
-- Resume prompt shows on Language Selection page
-- Option to continue or start fresh
-- Data cleared on successful completion
+| Attribute | Description |
+|-----------|-------------|
+| **Who they are** | A helper or employee added by the Admin |
+| **What they can do** | Take payments, view today's sales, add items |
+| **What they can't do** | Change bank details, request payouts, add other team members |
+| **Their goal** | Help process sales quickly and accurately |
+| **Challenges** | Need simple interface, may share device with others |
+| **Motivations** | Do their job well, avoid mistakes |
 
 ---
 
-## 💳 Journey 2: Taking a Payment
+## 🗺️ Journey Stages
 
-### Flow Diagram
+---
 
-```mermaid
-flowchart TD
-    A[🏠 Home Screen] --> B[💳 Take Payment Button]
-    B --> C[🔢 Enter Amount]
-    C --> D{Quick Amount?}
-    D -->|Yes| E[Tap R20/R50/R100]
-    D -->|No| F[Use Keypad]
-    E --> G[📝 Add Note - Optional]
-    F --> G
-    G --> H[Charge Customer Button]
-    H --> I[⏳ Processing...]
-    I --> J{Payment Result}
-    J -->|Success| K[✅ Green Success Screen]
-    J -->|Failed| L[❌ Red Failed Screen]
-    K --> M{Send Receipt?}
-    M -->|SMS| N[Send via SMS]
-    M -->|WhatsApp| O[Send via WhatsApp]
-    M -->|Email| P[Send via Email]
-    M -->|No Receipt| Q[Skip]
-    N --> R[Done - Return Home]
-    O --> R
-    P --> R
-    Q --> R
-    L --> S{Retry Options}
-    S -->|Try Again| I
-    S -->|Another Card| C
-    S -->|Cancel| A
+### Stage 1: Discover Patela
+
+**User Goal:**  
+Learn what Patela is and decide if it's right for their business.
+
+**User Actions:**
+- Sees Patela ad, hears from a friend, or meets a Patela agent
+- Visits the Patela website or downloads the app
+- Browses the landing page to understand features
+
+**Patela System Response:**
+- Shows a friendly, visual landing page with:
+  - Clear benefits (accept card payments, get paid fast)
+  - Device options and pricing (Patela Phanda R499, Patela Pro R899)
+  - Simple "Get Started" button
+  - Success stories from other vendors
+  - "How It Works" step-by-step section
+
+**Key Screens:**
+- Landing page (Index)
+- Device comparison cards
+- Features grid
+- Testimonials section
+
+**Pain Points & How UX Addresses Them:**
+
+| Pain Point | UX Solution |
+|------------|-------------|
+| "I don't understand what this does" | Big icons, simple language, visual demos |
+| "Is this for someone like me?" | Show relatable vendor testimonials |
+| "What does it cost?" | Clear pricing, no hidden fees messaging |
+| "I can't read well" | Icon-heavy design, minimal text |
+
+---
+
+### Stage 2: Sign Up
+
+**User Goal:**  
+Create an account quickly without confusion.
+
+**User Actions:**
+- Taps "Get Started" or "Create Account"
+- Chooses to sign up with phone number OR email (toggle)
+- Enters their phone/email and creates a password
+- Confirms password
+
+**Patela System Response:**
+- Shows Phone/Email toggle for flexibility (phone is default)
+- Validates input in real-time with friendly messages
+- Shows clear error messages if something's wrong
+- Moves to verification step after successful entry
+
+**Key Screens:**
+- Auth page (Sign Up mode)
+- Phone/Email toggle selector
+- Password creation fields
+- Confirm password field
+
+**Pain Points & How UX Addresses Them:**
+
+| Pain Point | UX Solution |
+|------------|-------------|
+| "I don't have email" | Phone number sign-up is the default option |
+| "I forget passwords" | Simple 6+ character requirement, not complex rules |
+| "Forms confuse me" | Large input fields, one focus at a time |
+| "I typed wrong" | Clear validation, easy to correct |
+
+---
+
+### Stage 3: Verify Phone Number
+
+**User Goal:**  
+Prove they own the phone number they entered.
+
+**User Actions:**
+- Receives SMS with 6-digit code
+- Enters the code in the app
+- If code doesn't arrive, taps "Resend"
+
+**Patela System Response:**
+- Sends OTP via SMS immediately
+- Auto-reads code where phone allows
+- Shows countdown timer for resend (60 seconds)
+- Clear error if wrong code entered
+- Green success on correct code
+
+**Key Screens:**
+- OTP input screen (6 boxes)
+- Resend code button with countdown
+- Success confirmation animation
+
+**Pain Points & How UX Addresses Them:**
+
+| Pain Point | UX Solution |
+|------------|-------------|
+| "I didn't get the SMS" | Resend button appears after countdown |
+| "I typed the wrong code" | Friendly error: "That code didn't match. Try again." |
+| "I can't find the code" | Auto-read feature (where phone supports it) |
+| "The code expired" | Clear message with option to get new code |
+
+---
+
+### Stage 4: Choose Language
+
+**User Goal:**  
+Use the app in a language they understand.
+
+**User Actions:**
+- Sees language options displayed prominently
+- Taps their preferred language
+- Proceeds to next step
+
+**Patela System Response:**
+- Shows 4 language options with native names:
+  - English
+  - isiZulu
+  - Sesotho
+  - Xitsonga
+- Immediately applies the selection
+- All future screens use chosen language
+
+**Key Screens:**
+- Language selection screen
+- Each language shown in its own script
+- Progress indicator (Step 1 of 5)
+
+**Pain Points & How UX Addresses Them:**
+
+| Pain Point | UX Solution |
+|------------|-------------|
+| "I can't read English well" | Each language label written in that language |
+| "What if I choose wrong?" | Can change anytime in Account settings |
+| "I don't see my language" | Future: add more SA languages |
+
+---
+
+### Stage 5: Create PIN
+
+**User Goal:**  
+Set up a secure way to access their account.
+
+**User Actions:**
+- Enters a 4-digit PIN using large keypad
+- Confirms the PIN by entering it again
+- Submits to save
+
+**Patela System Response:**
+- Shows large number keypad filling the screen
+- Dots fill in as digits entered (secure, not visible)
+- Checks PINs match on confirmation
+- Saves securely (hashed, never stored in plain text)
+- Shows success message
+
+**Key Screens:**
+- PIN creation screen with keypad
+- 4 empty dots that fill as user types
+- PIN confirmation screen (same layout)
+- Success message with checkmark
+
+**Pain Points & How UX Addresses Them:**
+
+| Pain Point | UX Solution |
+|------------|-------------|
+| "I might forget my PIN" | Simple 4 digits, same as phone/ATM |
+| "I can't see what I'm typing" | Visual dots show progress without revealing numbers |
+| "What if they don't match?" | Clear message: "PINs don't match. Try again." |
+| "Someone might see my PIN" | Dots hide actual numbers |
+
+---
+
+### Stage 6: Provide Basic Details (KYC)
+
+**User Goal:**  
+Tell Patela who they are so they can use the service.
+
+**User Actions:**
+- **Step 1 - Personal:** Enters first name, last name, optional SA ID number
+- **Step 2 - Business:** Enters business name, selects business type
+- **Step 3 - Communication:** Chooses how they want to be contacted
+
+**Patela System Response:**
+- Shows one substep at a time (not overwhelming)
+- Progress indicator shows 1/3, 2/3, 3/3
+- Validates ID format if entered (optional field)
+- Business types shown with icons:
+  - 🍔 Food
+  - 👕 Clothing
+  - 📱 Electronics
+  - 🔧 Services
+  - 📦 Other
+- Communication options: SMS, WhatsApp, Email (can select multiple)
+- Saves all information to their profile
+
+**Key Screens:**
+- Personal details form (3 fields)
+- Business details form (2 fields with icon selector)
+- Communication preferences (3 checkboxes)
+- Progress bar showing substeps
+
+**Pain Points & How UX Addresses Them:**
+
+| Pain Point | UX Solution |
+|------------|-------------|
+| "Forms are too long" | Split into 3 short substeps with progress |
+| "I don't have formal business name" | Hint: "What do people call your business?" |
+| "I don't know my business type" | Simple categories with familiar icons |
+| "ID is scary to share" | Marked as optional, explain why it helps |
+
+---
+
+### Stage 7: Account Ready - Home Dashboard
+
+**User Goal:**  
+See their account is set up and understand what they can do.
+
+**User Actions:**
+- Lands on the Home screen after onboarding
+- Sees today's sales summary (starts at R0.00)
+- Notices the big "Take Payment" button
+- May see gentle reminders to link bank/device (non-blocking)
+
+**Patela System Response:**
+- Shows welcoming home screen with greeting
+- Displays TodayStats component:
+  - Total sales: R0.00
+  - Number of sales: 0
+  - Queued offline: 0
+- Shows SetupReminder cards as friendly suggestions:
+  - "Pair a device for tap payments"
+  - "Link bank to receive payouts"
+- Both reminders have "Do this later" option
+- "Take Payment" button is prominent and always available
+
+**Key Screens:**
+- Home dashboard
+- TodayStats card at top
+- Take Payment button (large, accent color)
+- SetupReminder cards (skippable)
+- Bottom navigation (Home, Sales, Items, Account)
+
+**Pain Points & How UX Addresses Them:**
+
+| Pain Point | UX Solution |
+|------------|-------------|
+| "I can't use it without a device?" | WRONG! Take Payment works immediately |
+| "Too many things to do" | One clear primary action: Take Payment |
+| "Do I have to link bank now?" | No — reminders are skippable, appear later |
+| "I'm confused where to go" | Simple bottom navigation with 4 options |
+
+---
+
+### Stage 8: Add Items to Sell
+
+**User Goal:**  
+Set up products/services they sell for faster checkout.
+
+**User Actions:**
+- Goes to Items tab in bottom navigation
+- Taps "Add Item" button
+- Enters item name and price
+- Optionally selects category
+- Saves the item
+- Repeats for more items
+
+**Patela System Response:**
+- Shows simple item entry form:
+  - Item name (text)
+  - Price (number with R prefix)
+  - Category (optional dropdown)
+- Saves to their personal item list
+- Items appear in a visual grid
+- Items can be tapped during payment for quick entry
+- Can edit or delete items anytime
+
+**Key Screens:**
+- Items page (grid of items)
+- Add Item form (simple, 2-3 fields)
+- Edit Item form
+- Empty state with "Add your first item" prompt
+
+**Pain Points & How UX Addresses Them:**
+
+| Pain Point | UX Solution |
+|------------|-------------|
+| "I sell many things" | Quick add form, easy repeat |
+| "I don't know exact prices" | Can edit anytime, no commitment |
+| "What's a catalog/inventory?" | Never use technical words — just "Your Items" |
+| "I forgot to add something" | Add items anytime, even during payment |
+
+---
+
+### Stage 9: Make First Sale
+
+**User Goal:**  
+Accept their first payment from a customer.
+
+**User Actions:**
+- Taps "Take Payment" on Home screen
+- Either:
+  - Types amount using big keypad, OR
+  - Taps items from their list to auto-add prices
+  - Uses quick amount buttons (R20, R50, R100)
+- Optionally adds a note
+- Taps "Charge" button
+- Customer pays (tap card, insert card, or enter details)
+- Sees success or failed screen
+
+**Patela System Response:**
+- Shows large, finger-friendly keypad
+- Displays running total prominently
+- Quick amount buttons for common values
+- Item selector shows their saved items
+- Processing animation during payment
+- Success: Big green screen with amount and checkmark
+- Failed: Red screen with clear error and retry options
+- Automatically records the sale in history
+
+**Key Screens:**
+- Payment amount entry (keypad + display)
+- Item selector overlay (optional)
+- Quick amount buttons
+- Processing animation
+- Success result screen (green, celebration)
+- Failed result screen (red, simple retry)
+
+**Pain Points & How UX Addresses Them:**
+
+| Pain Point | UX Solution |
+|------------|-------------|
+| "I pressed wrong number" | Clear/backspace button is large and visible |
+| "Did it work?" | Big green checkmark, celebration animation |
+| "What if payment fails?" | Red screen with simple message and retry button |
+| "I don't remember the price" | Use saved items to auto-fill |
+| "Customer is waiting" | Quick amount buttons for speed |
+
+---
+
+### Stage 10: View Sales History
+
+**User Goal:**  
+See how much they've made and track their sales.
+
+**User Actions:**
+- Taps "Sales" in bottom navigation
+- Sees list of today's transactions
+- Can tap date filter to see other days
+- Can tap individual sale to see details
+- Can download statement (PDF/CSV)
+
+**Patela System Response:**
+- Shows sales list with key info:
+  - Amount (R120.00)
+  - Time (14:32)
+  - Status icon (✓ green, ⏳ yellow, ✗ red)
+  - Last 4 digits of card (if applicable)
+- Date filter at top
+- Summary totals:
+  - Today's total
+  - This week
+  - This month
+- Export button for statements
+
+**Key Screens:**
+- Sales history list
+- Date filter picker
+- Individual sale detail
+- Summary statistics card
+- Export options (PDF, CSV)
+
+**Pain Points & How UX Addresses Them:**
+
+| Pain Point | UX Solution |
+|------------|-------------|
+| "Too many numbers" | Clean cards with large, clear amounts |
+| "I want to see last week" | Easy date picker at top |
+| "What's this payment for?" | Shows item names if items were used |
+| "I need proof for records" | Export to PDF for printing/sharing |
+
+---
+
+### Stage 11: Prompted to Link Device or Bank (Optional)
+
+**User Goal:**  
+Understand why linking is helpful, but not feel forced.
+
+**User Actions:**
+- Sees gentle reminder cards on Home dashboard
+- Can tap to start linking, OR
+- Can tap "Do this later" to dismiss
+- Reminders may reappear periodically
+
+**Patela System Response:**
+- Shows friendly, non-blocking reminder cards:
+  - 📱 "Pair a device to accept tap payments anywhere"
+  - 🏦 "Link your bank to get your money"
+- Each card has:
+  - Clear benefit explanation
+  - "Set up now" button
+  - "Do this later" link
+- Dismissing stores preference temporarily
+- Reminders don't block any functionality
+
+**Key Screens:**
+- SetupReminder components on Home
+- Bank linking start page (with "Do this later" skip)
+- Device pairing start page (with "Skip for now")
+
+**Pain Points & How UX Addresses Them:**
+
+| Pain Point | UX Solution |
+|------------|-------------|
+| "I'm not ready for this" | Skip options on every setup step |
+| "Will I lose my sales?" | No — sales are tracked regardless |
+| "I don't have a bank account" | Can still use Patela, link later when ready |
+| "This is annoying" | Reminders are gentle, not popups or blockers |
+
+---
+
+### Stage 12: Request Payout (Requires Bank Link)
+
+**User Goal:**  
+Get their money sent to their bank account.
+
+**User Actions:**
+- Goes to Account → Payout Preferences
+- If bank not linked: sees prompt to link first
+- If bank linked: sees available balance
+- Chooses payout speed:
+  - Standard (free, next business day)
+  - Same Day (small fee, arrives today)
+- Confirms request
+
+**Patela System Response:**
+- If no bank linked:
+  - Shows friendly explanation why bank is needed
+  - "Link Bank Now" button
+  - "Your sales are safe — link when ready"
+- If bank linked:
+  - Shows available balance
+  - Shows fee calculation for Same Day
+  - Payout speed toggle
+  - Confirmation button
+- After request: Shows estimated arrival time
+
+**Key Screens:**
+- Payout Preferences page
+- Bank linking flow (if needed)
+- Payout speed selector
+- Fee breakdown
+- Confirmation screen
+- Success message with arrival estimate
+
+**Pain Points & How UX Addresses Them:**
+
+| Pain Point | UX Solution |
+|------------|-------------|
+| "Why can't I get my money?" | Clear explanation: need bank account for payout |
+| "Fees confuse me" | Shows exact fee amount before confirming |
+| "When will I get paid?" | Clear timeline: "Tomorrow by 5pm" or "Today by 6pm" |
+| "I don't trust giving bank details" | Explain security, show trust badges |
+
+---
+
+## 📊 Can I Use Patela Without Device/Bank?
+
+| Feature | Without Device | Without Bank |
+|---------|----------------|--------------|
+| Sign Up | ✅ Yes | ✅ Yes |
+| Verify Phone | ✅ Yes | ✅ Yes |
+| Choose Language | ✅ Yes | ✅ Yes |
+| Create PIN | ✅ Yes | ✅ Yes |
+| Provide Details | ✅ Yes | ✅ Yes |
+| View Dashboard | ✅ Yes | ✅ Yes |
+| Add Items | ✅ Yes | ✅ Yes |
+| Make Sale | ✅ Yes (manual card entry) | ✅ Yes |
+| View Sales History | ✅ Yes | ✅ Yes |
+| Export Statements | ✅ Yes | ✅ Yes |
+| Request Payout | ✅ Yes | ❌ Need bank linked |
+
+**Bottom Line:** Vendors can start selling on Day 1. Device and bank are only needed for tap payments and withdrawals.
+
+---
+
+## 🎯 Key Design Principles
+
+| Principle | How We Apply It |
+|-----------|-----------------|
+| **No Blocking Gates** | Users can start selling immediately without device or bank |
+| **One Thing at a Time** | Each screen has one clear purpose and action |
+| **Friendly Language** | No jargon, no technical terms, conversational tone |
+| **Gentle Nudges** | Remind users about setup, never force them |
+| **Visual Feedback** | Big icons, meaningful colors (green = good, red = problem) |
+| **Progress Visibility** | Always show how far along they are in multi-step flows |
+| **Error Recovery** | When things go wrong, explain simply and offer clear next step |
+| **Offline First** | App works without internet, syncs when connected |
+
+---
+
+## 🌍 Multi-Language Support
+
+All journey stages fully support these languages:
+
+| Language | Native Name | Status |
+|----------|-------------|--------|
+| English | English | ✅ Complete |
+| isiZulu | isiZulu | ✅ Complete |
+| Sesotho | Sesotho | ✅ Complete |
+| Xitsonga | Xitsonga | ✅ Complete |
+
+Users can change language anytime in Account settings.
+
+---
+
+## 🔄 Complete Journey Flow
+
 ```
-
-### Payment Screen States
-
-| State | Visual | User Action |
-|-------|--------|-------------|
-| **Amount Entry** | Large display showing R0.00 | Tap keypad or quick amounts |
-| **Processing** | Spinning loader, amount shown | Wait for card tap/insert |
-| **Success** | Big green screen, checkmark | Choose receipt option |
-| **Failed** | Big red screen, X icon | Retry, try another card, or cancel |
-
-### Quick Amount Buttons
-
-```mermaid
-flowchart LR
-    A[R20] --> D[Amount Display]
-    B[R50] --> D
-    C[R100] --> D
-    E[Custom via Keypad] --> D
-```
-
-### Offline Payment Handling
-
-```mermaid
-flowchart TD
-    A[Payment Created] --> B{Online?}
-    B -->|Yes| C[Process Immediately]
-    B -->|No| D[Queue Transaction]
-    D --> E[Show Offline Banner]
-    E --> F[Store Encrypted Locally]
-    F --> G{Connection Restored?}
-    G -->|Yes| H[Auto-Sync Queue]
-    G -->|No| I[Keep in Queue]
-    H --> J[Update Status]
+┌─────────────────────────────────────────────────────────────┐
+│                     DISCOVER PATELA                         │
+│   See ad → Visit website → Browse features → Get Started    │
+└────────────────────────────┬────────────────────────────────┘
+                             ▼
+┌─────────────────────────────────────────────────────────────┐
+│                        SIGN UP                              │
+│   Choose phone/email → Enter details → Create password      │
+└────────────────────────────┬────────────────────────────────┘
+                             ▼
+┌─────────────────────────────────────────────────────────────┐
+│                    VERIFY & SETUP                           │
+│   OTP → Language → PIN → Personal Details → Business Info   │
+└────────────────────────────┬────────────────────────────────┘
+                             ▼
+┌─────────────────────────────────────────────────────────────┐
+│                   ACCOUNT READY! 🎉                         │
+│   Home Dashboard → See R0 balance → Ready to sell           │
+└────────────────────────────┬────────────────────────────────┘
+                             ▼
+         ┌───────────────────┴───────────────────┐
+         ▼                                       ▼
+┌─────────────────┐                   ┌─────────────────────┐
+│   ADD ITEMS     │                   │   TAKE PAYMENT      │
+│   (Optional)    │                   │   (Start selling!)  │
+└────────┬────────┘                   └──────────┬──────────┘
+         │                                       │
+         └───────────────────┬───────────────────┘
+                             ▼
+┌─────────────────────────────────────────────────────────────┐
+│                     VIEW SALES                              │
+│   See history → Filter by date → Export statements          │
+└────────────────────────────┬────────────────────────────────┘
+                             ▼
+         ┌───────────────────┴───────────────────┐
+         ▼                                       ▼
+┌─────────────────────┐               ┌─────────────────────┐
+│   LINK DEVICE       │               │   LINK BANK         │
+│   (When ready)      │               │   (For payouts)     │
+│   "Do this later" ✓ │               │   "Do this later" ✓ │
+└─────────────────────┘               └──────────┬──────────┘
+                                                 ▼
+                                      ┌─────────────────────┐
+                                      │   REQUEST PAYOUT    │
+                                      │   Get your money!   │
+                                      └─────────────────────┘
 ```
 
 ---
 
-## 📊 Journey 3: Viewing Payment History
+## 📋 Screen Inventory
 
-### Flow Diagram
+### Onboarding Screens (8)
+1. Landing Page
+2. Auth (Sign Up / Sign In)
+3. OTP Verification
+4. Language Selection
+5. PIN Creation
+6. PIN Confirmation
+7. Personal Details (3 substeps)
+8. Onboarding Success
 
-```mermaid
-flowchart TD
-    A[🏠 Home Screen] --> B[📊 Today's Stats Card]
-    B --> C[View Sales History]
-    A --> D[📋 Sales Tab in Navigation]
-    D --> E[Sales List Screen]
-    E --> F[Filter by Date]
-    E --> G[Download Statement]
-    E --> H[View Individual Sale]
-    H --> I{Sale Status}
-    I -->|Success| J[Green Check Icon]
-    I -->|Pending| K[Spinning Icon]
-    I -->|Failed| L[Warning Icon]
-    I -->|Refunded| M[Strikethrough Amount]
-    H --> N[Sale Details]
-    N --> O[Issue Refund - Requires PIN]
-```
-
-### Sales Dashboard Components
-
-```mermaid
-flowchart LR
-    subgraph "Today's Stats"
-        A[Total Amount]
-        B[Number of Sales]
-        C[Queued Offline]
-    end
-    subgraph "Sale Item"
-        D[Amount]
-        E[Time]
-        F[Card Last 4]
-        G[Status Badge]
-    end
-```
-
-### Sale Status Types
-
-| Status | Icon | Color | Description |
-|--------|------|-------|-------------|
-| **Success** | ✓ Checkmark | Green | Payment completed |
-| **Pending** | ↻ Spinning | Yellow | Processing |
-| **Failed** | ⚠ Warning | Red | Declined/Error |
-| **Queued** | 🕐 Clock | Gray | Waiting for sync |
-| **Refunded** | ↻ Arrow | Gray | Money returned |
-
----
-
-## 🎨 Design Principles Applied
-
-### Visual Hierarchy
-
-```mermaid
-flowchart TD
-    A[One Primary Action per Screen] --> B[Large Touch Targets]
-    B --> C[High Contrast Colors]
-    C --> D[Minimal Text]
-    D --> E[Icon-First Design]
-    E --> F[Progress Indicators]
-```
-
-### Color Coding System
-
-| Context | Color | Meaning |
-|---------|-------|---------|
-| **Success** | 🟢 Green | Money received, action complete |
-| **Error** | 🔴 Red | Declined, failed, needs attention |
-| **Warning** | 🟡 Yellow | Processing, pending |
-| **Neutral** | ⚪ Gray | Inactive, historical |
-| **Primary** | 🟣 Purple | Brand, main actions |
-| **Accent** | 🔵 Cyan | Highlights, secondary actions |
-
-### Accessibility Features
-
-- **Large Buttons**: Minimum 48px touch targets
-- **High Contrast**: WCAG AA compliant
-- **Multi-Language**: 4 SA languages supported
-- **Voice Prompts**: Optional audio guidance
-- **Offline First**: Works without internet
-
----
-
-## 🔄 Complete User Flow
-
-```mermaid
-flowchart TD
-    subgraph "First Time"
-        A1[Download App] --> A2[Complete Onboarding]
-        A2 --> A3[Link Bank Account]
-        A3 --> A4[Pair Device]
-    end
-    
-    subgraph "Daily Use"
-        B1[Open App] --> B2[View Dashboard]
-        B2 --> B3[Take Payments]
-        B3 --> B4[Check Sales]
-        B4 --> B5[Review Settlements]
-    end
-    
-    subgraph "End of Day"
-        C1[View Total Sales]
-        C2[Export Statement]
-        C3[Check Pending Payouts]
-    end
-    
-    A4 --> B1
-    B5 --> C1
-```
-
----
-
-## 📱 Screen Inventory
-
-### Onboarding Screens
-1. Splash Screen
-2. Language Selection
-3. Phone Number Entry
-4. OTP Verification
-5. Personal Details (3 substeps)
-6. PIN Creation
-7. PIN Confirmation
-8. Success Screen
-
-### Payment Screens
+### Core App Screens (8)
 1. Home Dashboard
-2. Payment Amount Entry
+2. Take Payment (Amount Entry)
 3. Payment Processing
 4. Payment Success
 5. Payment Failed
-6. Receipt Options
+6. Sales History
+7. Items List
+8. Account Settings
 
-### Sales Screens
-1. Sales List
-2. Sale Detail
-3. Refund Confirmation
-4. Export Options
+### Setup Screens (6)
+1. Bank Linking Start
+2. Bank Details Entry
+3. Bank Verification
+4. Device Pairing Start
+5. Device Bluetooth Scan
+6. Device Success
 
-### Account Screens
-1. Account Settings
-2. Bank Account Management
-3. Device Management
-4. Help & Support
-
----
-
-## 📋 Summary
-
-Patela's customer journey is designed around three core principles:
-
-1. **Simplicity** - One action per screen, minimal text
-2. **Accessibility** - Large buttons, multiple languages, offline support
-3. **Trust** - Clear feedback, secure PIN protection, transparent status
-
-The flow prioritizes getting vendors up and running quickly while providing the tools they need to manage their business effectively.
+### Settings Screens (4)
+1. Users & Access
+2. Payout Preferences
+3. Help & Support
+4. Language Change
 
 ---
 
-*Document generated for Patela - "Built for the Hustle"*
+*Document Version: 2.0*  
+*Last Updated: January 2026*  
+*Patela - "Built for the Hustle"*
