@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ProgressSteps } from "@/components/patela/ProgressSteps";
+import { OnboardingHeader } from "@/components/patela/OnboardingHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowRight, ArrowLeft, Loader2, User, Store, MessageSquare, Mail, Phone, Check, X } from "lucide-react";
+import { ArrowRight, ArrowLeft, Loader2, User, Store, MessageSquare, Mail, Phone, Check } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { cn } from "@/lib/utils";
 import { useOnboardingData } from "@/hooks/use-onboarding-data";
@@ -154,18 +154,9 @@ export default function PersonalDetails() {
 
   return (
     <div className="min-h-screen patela-app-bg flex flex-col">
-      <ProgressSteps currentStep={3} totalSteps={5} />
+      <OnboardingHeader currentStep={3} totalSteps={5} />
 
       <div className="flex-1 flex flex-col patela-form-container py-4">
-        {/* Exit button - always visible */}
-        <button
-          onClick={() => navigate("/")}
-          className="self-end flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors text-sm mb-2"
-        >
-          <X className="h-4 w-4" />
-          Exit
-        </button>
-
         <button
           onClick={handleBack}
           className="flex items-center gap-2 text-muted-foreground mb-3 hover:text-foreground transition-colors text-sm"

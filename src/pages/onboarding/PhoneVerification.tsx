@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { PhoneInput } from "@/components/patela/PhoneInput";
 import { OtpInput } from "@/components/patela/OtpInput";
-import { ProgressSteps } from "@/components/patela/ProgressSteps";
+import { OnboardingHeader } from "@/components/patela/OnboardingHeader";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, ArrowLeft, Loader2, X } from "lucide-react";
+import { ArrowRight, ArrowLeft, Loader2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useOnboardingData } from "@/hooks/use-onboarding-data";
@@ -82,18 +82,9 @@ export default function PhoneVerification() {
 
   return (
     <div className="min-h-screen patela-app-bg flex flex-col">
-      <ProgressSteps currentStep={2} totalSteps={5} />
+      <OnboardingHeader currentStep={2} totalSteps={5} />
 
       <div className="flex-1 flex flex-col patela-form-container py-4">
-        {/* Exit button - always visible */}
-        <button
-          onClick={() => navigate("/")}
-          className="self-end flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors text-sm mb-2"
-        >
-          <X className="h-4 w-4" />
-          Exit
-        </button>
-
         {step === "phone" ? (
           <>
             <button
