@@ -6,12 +6,15 @@ import { Label } from "@/components/ui/label";
 import { PatelaLogo } from "@/components/patela/PatelaLogo";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { Mail, Lock, Eye, EyeOff, ArrowRight, Loader2 } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, ArrowRight, Loader2, Phone } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
 
 const emailSchema = z.string().email("Please enter a valid email address");
+const phoneSchema = z.string().regex(/^(\+27|0)[6-8][0-9]{8}$/, "Please enter a valid SA phone number");
 const passwordSchema = z.string().min(6, "Password must be at least 6 characters");
+
+type LoginMethod = "email" | "phone";
 
 export default function Auth() {
   const navigate = useNavigate();
@@ -19,12 +22,14 @@ export default function Auth() {
   const { t } = useLanguage();
   
   const [isSignUp, setIsSignUp] = useState(false);
+  const [loginMethod, setLoginMethod] = useState<LoginMethod>("phone");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState<{ email?: string; password?: string; confirmPassword?: string }>({});
+  const [errors, setErrors] = useState<{ identifier?: string; password?: string; confirmPassword?: string }>({});
 
   // Redirect if already logged in
   useEffect(() => {
@@ -34,11 +39,18 @@ export default function Auth() {
   }, [user, authLoading, navigate]);
 
   const validate = () => {
-    const newErrors: { email?: string; password?: string; confirmPassword?: string } = {};
+    const newErrors: { identifier?: string; password?: string; confirmPassword?: string } = {};
     
-    const emailResult = emailSchema.safeParse(email);
-    if (!emailResult.success) {
-      newErrors.email = emailResult.error.errors[0].message;
+    if (loginMethod === "email") {
+      const emailResult = emailSchema.safeParse(email);
+      if (!emailResult.success) {
+        newErrors.identifier = emailResult.error.errors[0].message;
+      }
+    } else {
+      const phoneResult = phoneSchema.safeParse(phone);
+      if (!phoneResult.success) {
+        newErrors.identifier = phoneResult.error.errors[0].message;
+      }
     }
     
     const passwordResult = passwordSchema.safeParse(password);
@@ -54,19 +66,32 @@ export default function Auth() {
     return Object.keys(newErrors).length === 0;
   };
 
+  // Convert phone to email format for Supabase auth (phone@patela.app)
+  const getAuthEmail = () => {
+    if (loginMethod === "email") {
+      return email;
+    }
+    // Normalize phone number and use as email
+    const normalizedPhone = phone.startsWith("+27") ? phone : `+27${phone.slice(1)}`;
+    return `${normalizedPhone.replace("+", "")}@patela.app`;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!validate()) return;
     
     setLoading(true);
+    const authEmail = getAuthEmail();
     
     try {
       if (isSignUp) {
-        const { error } = await signUp(email, password);
+        const { error } = await signUp(authEmail, password);
         if (error) {
           if (error.message.includes("already registered")) {
-            toast.error("This email is already registered. Please sign in instead.");
+            toast.error(loginMethod === "phone" 
+              ? "This phone number is already registered. Please sign in instead."
+              : "This email is already registered. Please sign in instead.");
           } else {
             toast.error(error.message);
           }
@@ -75,10 +100,12 @@ export default function Auth() {
           navigate("/onboarding/language");
         }
       } else {
-        const { error } = await signIn(email, password);
+        const { error } = await signIn(authEmail, password);
         if (error) {
           if (error.message.includes("Invalid login")) {
-            toast.error("Invalid email or password. Please try again.");
+            toast.error(loginMethod === "phone"
+              ? "Invalid phone number or password. Please try again."
+              : "Invalid email or password. Please try again.");
           } else {
             toast.error(error.message);
           }
@@ -114,27 +141,83 @@ export default function Auth() {
 
       <main className="flex-1 px-6 py-8">
         <div className="max-w-sm mx-auto">
+          {/* Login Method Toggle */}
+          <div className="flex mb-6 bg-muted rounded-xl p-1">
+            <button
+              type="button"
+              onClick={() => {
+                setLoginMethod("phone");
+                setErrors({});
+              }}
+              className={`flex-1 py-3 px-4 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2 ${
+                loginMethod === "phone"
+                  ? "bg-background text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <Phone className="h-4 w-4" />
+              Phone
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setLoginMethod("email");
+                setErrors({});
+              }}
+              className={`flex-1 py-3 px-4 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2 ${
+                loginMethod === "email"
+                  ? "bg-background text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <Mail className="h-4 w-4" />
+              Email
+            </button>
+          </div>
+
           <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Email */}
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-foreground font-semibold">
-                Email Address
-              </Label>
-              <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="you@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="pl-12 h-14 text-lg"
-                />
+            {/* Phone or Email based on toggle */}
+            {loginMethod === "phone" ? (
+              <div className="space-y-2">
+                <Label htmlFor="phone" className="text-foreground font-semibold">
+                  Phone Number
+                </Label>
+                <div className="relative">
+                  <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                  <Input
+                    id="phone"
+                    type="tel"
+                    placeholder="081 234 5678"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    className="pl-12 h-14 text-lg"
+                  />
+                </div>
+                {errors.identifier && (
+                  <p className="text-sm text-destructive">{errors.identifier}</p>
+                )}
               </div>
-              {errors.email && (
-                <p className="text-sm text-destructive">{errors.email}</p>
-              )}
-            </div>
+            ) : (
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-foreground font-semibold">
+                  Email Address
+                </Label>
+                <div className="relative">
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="you@example.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="pl-12 h-14 text-lg"
+                  />
+                </div>
+                {errors.identifier && (
+                  <p className="text-sm text-destructive">{errors.identifier}</p>
+                )}
+              </div>
+            )}
 
             {/* Password */}
             <div className="space-y-2">
