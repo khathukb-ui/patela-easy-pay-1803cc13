@@ -12,7 +12,7 @@ import { z } from "zod";
 
 const emailSchema = z.string().email("Please enter a valid email address");
 const phoneSchema = z.string().regex(/^(\+27|0)[6-8][0-9]{8}$/, "Please enter a valid SA phone number");
-const passwordSchema = z.string().min(6, "Password must be at least 6 characters");
+const pinSchema = z.string().length(4, "PIN must be exactly 4 digits").regex(/^\d{4}$/, "PIN must be 4 digits");
 
 type LoginMethod = "email" | "phone";
 
@@ -25,11 +25,11 @@ export default function Auth() {
   const [loginMethod, setLoginMethod] = useState<LoginMethod>("phone");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
+  const [pin, setPin] = useState("");
+  const [confirmPin, setConfirmPin] = useState("");
+  const [showPin, setShowPin] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState<{ identifier?: string; password?: string; confirmPassword?: string }>({});
+  const [errors, setErrors] = useState<{ identifier?: string; pin?: string; confirmPin?: string }>({});
 
   // Redirect if already logged in
   useEffect(() => {
@@ -39,7 +39,7 @@ export default function Auth() {
   }, [user, authLoading, navigate]);
 
   const validate = () => {
-    const newErrors: { identifier?: string; password?: string; confirmPassword?: string } = {};
+    const newErrors: { identifier?: string; pin?: string; confirmPin?: string } = {};
     
     if (loginMethod === "email") {
       const emailResult = emailSchema.safeParse(email);
@@ -53,13 +53,13 @@ export default function Auth() {
       }
     }
     
-    const passwordResult = passwordSchema.safeParse(password);
-    if (!passwordResult.success) {
-      newErrors.password = passwordResult.error.errors[0].message;
+    const pinResult = pinSchema.safeParse(pin);
+    if (!pinResult.success) {
+      newErrors.pin = pinResult.error.errors[0].message;
     }
     
-    if (isSignUp && password !== confirmPassword) {
-      newErrors.confirmPassword = "Passwords don't match";
+    if (isSignUp && pin !== confirmPin) {
+      newErrors.confirmPin = "PINs don't match";
     }
     
     setErrors(newErrors);
@@ -86,7 +86,7 @@ export default function Auth() {
     
     try {
       if (isSignUp) {
-        const { error } = await signUp(authEmail, password);
+        const { error } = await signUp(authEmail, pin);
         if (error) {
           if (error.message.includes("already registered")) {
             toast.error(loginMethod === "phone" 
@@ -100,12 +100,12 @@ export default function Auth() {
           navigate("/onboarding/language");
         }
       } else {
-        const { error } = await signIn(authEmail, password);
+        const { error } = await signIn(authEmail, pin);
         if (error) {
           if (error.message.includes("Invalid login")) {
             toast.error(loginMethod === "phone"
-              ? "Invalid phone number or password. Please try again."
-              : "Invalid email or password. Please try again.");
+              ? "Invalid phone number or PIN. Please try again."
+              : "Invalid email or PIN. Please try again.");
           } else {
             toast.error(error.message);
           }
@@ -219,53 +219,63 @@ export default function Auth() {
               </div>
             )}
 
-            {/* Password */}
+            {/* PIN */}
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-foreground font-semibold">
-                Password
+              <Label htmlFor="pin" className="text-foreground font-semibold">
+                4-Digit PIN
               </Label>
               <div className="relative">
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                 <Input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="pl-12 pr-12 h-14 text-lg"
+                  id="pin"
+                  type={showPin ? "text" : "password"}
+                  placeholder="••••"
+                  value={pin}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/\D/g, '').slice(0, 4);
+                    setPin(value);
+                  }}
+                  className="pl-12 pr-12 h-14 text-lg tracking-widest text-center"
+                  inputMode="numeric"
+                  maxLength={4}
                 />
                 <button
                   type="button"
-                  onClick={() => setShowPassword(!showPassword)}
+                  onClick={() => setShowPin(!showPin)}
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                 >
-                  {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                  {showPin ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                 </button>
               </div>
-              {errors.password && (
-                <p className="text-sm text-destructive">{errors.password}</p>
+              {errors?.pin && (
+                <p className="text-sm text-destructive">{errors.pin}</p>
               )}
             </div>
 
-            {/* Confirm Password (Sign Up only) */}
+            {/* Confirm PIN (Sign Up only) */}
             {isSignUp && (
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword" className="text-foreground font-semibold">
-                  Confirm Password
+                <Label htmlFor="confirmPin" className="text-foreground font-semibold">
+                  Confirm PIN
                 </Label>
                 <div className="relative">
                   <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                   <Input
-                    id="confirmPassword"
-                    type={showPassword ? "text" : "password"}
-                    placeholder="••••••••"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="pl-12 h-14 text-lg"
+                    id="confirmPin"
+                    type={showPin ? "text" : "password"}
+                    placeholder="••••"
+                    value={confirmPin}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/\D/g, '').slice(0, 4);
+                      setConfirmPin(value);
+                    }}
+                    className="pl-12 h-14 text-lg tracking-widest text-center"
+                    inputMode="numeric"
+                    maxLength={4}
                   />
                 </div>
-                {errors.confirmPassword && (
-                  <p className="text-sm text-destructive">{errors.confirmPassword}</p>
+                {errors?.confirmPin && (
+                  <p className="text-sm text-destructive">{errors.confirmPin}</p>
                 )}
               </div>
             )}
