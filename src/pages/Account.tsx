@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { BottomNav } from "@/components/patela/BottomNav";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { useAuth } from "@/contexts/AuthContext";
 import { 
   User, 
   Smartphone, 
@@ -11,9 +12,12 @@ import {
   LogOut,
   Building2,
   Wallet,
-  Palette
+  Palette,
+  Users,
+  Zap
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { toast } from "sonner";
 
 interface SettingsItemProps {
   icon: typeof User;
@@ -21,9 +25,10 @@ interface SettingsItemProps {
   description?: string;
   onClick?: () => void;
   danger?: boolean;
+  badge?: string;
 }
 
-function SettingsItem({ icon: Icon, label, description, onClick, danger }: SettingsItemProps) {
+function SettingsItem({ icon: Icon, label, description, onClick, danger, badge }: SettingsItemProps) {
   return (
     <button
       onClick={onClick}
@@ -33,7 +38,14 @@ function SettingsItem({ icon: Icon, label, description, onClick, danger }: Setti
         <Icon className={`h-5 w-5 ${danger ? "text-destructive" : "text-accent"}`} />
       </div>
       <div className="flex-1">
-        <p className={`font-medium ${danger ? "text-destructive" : "text-foreground"}`}>{label}</p>
+        <div className="flex items-center gap-2">
+          <p className={`font-medium ${danger ? "text-destructive" : "text-foreground"}`}>{label}</p>
+          {badge && (
+            <span className="text-xs bg-accent/10 text-accent px-2 py-0.5 rounded-full font-medium">
+              {badge}
+            </span>
+          )}
+        </div>
         {description && <p className="text-sm text-muted-foreground">{description}</p>}
       </div>
       <ChevronRight className="h-5 w-5 text-primary/50" />
@@ -44,6 +56,13 @@ function SettingsItem({ icon: Icon, label, description, onClick, danger }: Setti
 export default function Account() {
   const navigate = useNavigate();
   const { t } = useLanguage();
+  const { user, signOut, userRole } = useAuth();
+
+  const handleLogout = async () => {
+    await signOut();
+    toast.success("Logged out successfully");
+    navigate("/");
+  };
 
   return (
     <div className="min-h-screen patela-app-bg pb-24">
@@ -54,8 +73,17 @@ export default function Account() {
             <User className="h-8 w-8 text-primary-foreground" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-primary-foreground">Sipho's Spaza</h1>
-            <p className="text-primary-foreground/70">+27 82 123 4567</p>
+            <h1 className="text-xl font-bold text-primary-foreground">
+              {user?.email ? user.email.split("@")[0] : "Sipho's Spaza"}
+            </h1>
+            <p className="text-primary-foreground/70">
+              {user?.email || "+27 82 123 4567"}
+            </p>
+            {userRole && (
+              <span className="inline-block mt-1 text-xs bg-primary-foreground/20 text-primary-foreground px-2 py-0.5 rounded-full capitalize">
+                {userRole}
+              </span>
+            )}
           </div>
         </div>
       </header>
@@ -77,6 +105,7 @@ export default function Account() {
               icon={Wallet}
               label={t("payouts")}
               description={`${t("nextPayout")}: Tomorrow`}
+              onClick={() => navigate("/settings/payouts")}
             />
           </div>
         </div>
@@ -92,6 +121,39 @@ export default function Account() {
               label="Patela Pro"
               description={t("connected")}
               onClick={() => navigate("/device/manage")}
+            />
+          </div>
+        </div>
+
+        {/* Team & Access (Admin only) */}
+        {userRole === "admin" && (
+          <div>
+            <h2 className="text-sm font-semibold text-primary uppercase tracking-wide mb-3">
+              Team
+            </h2>
+            <div className="space-y-2">
+              <SettingsItem
+                icon={Users}
+                label="Users & Access"
+                description="Manage team members and roles"
+                onClick={() => navigate("/settings/users")}
+                badge="Admin"
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Payout Preferences */}
+        <div>
+          <h2 className="text-sm font-semibold text-primary uppercase tracking-wide mb-3">
+            Payout Settings
+          </h2>
+          <div className="space-y-2">
+            <SettingsItem
+              icon={Zap}
+              label="Payout Preferences"
+              description="Same-day or next-day payouts"
+              onClick={() => navigate("/settings/payouts")}
             />
           </div>
         </div>
@@ -129,6 +191,7 @@ export default function Account() {
             icon={LogOut}
             label={t("logOut")}
             danger
+            onClick={handleLogout}
           />
         </div>
 

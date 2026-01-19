@@ -1,13 +1,17 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ProgressSteps } from "@/components/patela/ProgressSteps";
-import { CreditCard } from "lucide-react";
+import { CreditCard, Clock } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { PatelaCard } from "@/components/patela/PatelaCard";
 
 export default function BankLinkingStart() {
   const navigate = useNavigate();
   const { t } = useLanguage();
+
+  const handleSkip = () => {
+    navigate("/home");
+  };
 
   return (
     <div className="min-h-screen patela-app-bg flex flex-col">
@@ -55,6 +59,21 @@ export default function BankLinkingStart() {
           >
             {t("enterManually")}
           </Button>
+        </div>
+
+        {/* Skip Option */}
+        <div className="mt-8 text-center">
+          <Button
+            variant="ghost"
+            className="text-muted-foreground hover:text-foreground"
+            onClick={handleSkip}
+          >
+            <Clock className="mr-2 h-4 w-4" />
+            Do this later
+          </Button>
+          <p className="text-xs text-muted-foreground mt-2 max-w-xs mx-auto">
+            You can still make sales without linking a bank, but payouts require a linked account.
+          </p>
         </div>
       </div>
     </div>
