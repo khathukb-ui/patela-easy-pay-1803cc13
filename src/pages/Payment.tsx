@@ -4,14 +4,14 @@ import { Keypad } from "@/components/patela/Keypad";
 import { QuickAmountButton } from "@/components/patela/QuickAmountButton";
 import { OfflineBanner } from "@/components/patela/OfflineBanner";
 import { ItemSelector } from "@/components/patela/ItemSelector";
-import { PaymentMethodSelector, PaymentMethod } from "@/components/patela/PaymentMethodSelector";
+import { PaymentMethodModal, PaymentMethod } from "@/components/patela/PaymentMethodModal";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, CreditCard, Loader2, MessageSquare, ShoppingCart, Calculator, X, Package, Banknote, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, CreditCard, Loader2, MessageSquare, ShoppingCart, Calculator, X, Banknote, CheckCircle2 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useCatalog, useCart } from "@/hooks/use-catalog";
 import { cn } from "@/lib/utils";
 
-type PaymentStep = "amount" | "processing" | "cash_confirm" | "success" | "failed";
+type PaymentStep = "amount" | "select_method" | "processing" | "cash_confirm" | "success" | "failed";
 type InputMode = "manual" | "items";
 
 export default function Payment() {
@@ -22,7 +22,6 @@ export default function Payment() {
   const [step, setStep] = useState<PaymentStep>("amount");
   const [isOffline] = useState(false);
   const [inputMode, setInputMode] = useState<InputMode>("manual");
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("card");
 
   const { items } = useCatalog();
   const { cart, addToCart, removeFromCart, clearCart, cartTotal, cartCount } = useCart();
@@ -47,15 +46,19 @@ export default function Payment() {
     setAmount(value.toString());
   };
 
-  const handleCharge = async () => {
+  const handleChargeClick = () => {
     const chargeAmount = inputMode === "items" ? cartTotal : parseFloat(amount);
     if (!chargeAmount || chargeAmount <= 0) return;
+    setStep("select_method");
+  };
 
+  const handleMethodSelect = async (method: PaymentMethod) => {
+    const chargeAmount = inputMode === "items" ? cartTotal : parseFloat(amount);
     const itemsNote = inputMode === "items" && cart.length > 0
       ? cart.map(c => `${c.quantity}x ${c.name}`).join(", ")
       : note;
 
-    if (paymentMethod === "cash") {
+    if (method === "cash") {
       setStep("cash_confirm");
       return;
     }
@@ -163,6 +166,14 @@ export default function Payment() {
   return (
     <div className="min-h-screen patela-app-bg flex flex-col">
       <OfflineBanner isOffline={isOffline} />
+
+      {/* Payment Method Modal */}
+      <PaymentMethodModal
+        isOpen={step === "select_method"}
+        onClose={() => setStep("amount")}
+        onSelect={handleMethodSelect}
+        amount={currentAmount}
+      />
 
       {/* Header */}
       <header className="flex items-center justify-between px-4 py-4">
@@ -297,14 +308,6 @@ export default function Payment() {
 
       {/* Bottom Section */}
       <div className="bg-card border-t border-border">
-        {/* Payment Method Selector */}
-        <div className="px-4 pt-4">
-          <PaymentMethodSelector 
-            selected={paymentMethod} 
-            onChange={setPaymentMethod} 
-          />
-        </div>
-
         {inputMode === "manual" && (
           <Keypad
             onKeyPress={handleKeyPress}
@@ -319,15 +322,11 @@ export default function Payment() {
             variant="hero"
             size="xl"
             className="w-full"
-            onClick={handleCharge}
+            onClick={handleChargeClick}
             disabled={currentAmount <= 0}
           >
-            {paymentMethod === "card" ? (
-              <CreditCard className="h-6 w-6 mr-2" />
-            ) : (
-              <Banknote className="h-6 w-6 mr-2" />
-            )}
-            {paymentMethod === "card" ? t("chargeCustomer") : "Record Cash"} R{formattedAmount}
+            <CreditCard className="h-6 w-6 mr-2" />
+            {t("chargeCustomer")} R{formattedAmount}
           </Button>
         </div>
       </div>
