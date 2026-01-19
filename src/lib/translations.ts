@@ -216,6 +216,24 @@ export const translations = {
     emailPlaceholder: "Enter your email address",
     emailError: "Please enter a valid email address",
     communicationNote: "Select at least one way to receive important updates",
+    
+    // New: Users & Access
+    usersAccess: "Users & Access",
+    teamMembers: "Team Members",
+    addTeamMember: "Add Team Member",
+    roleAdmin: "Admin",
+    roleManager: "Manager",
+    roleCashier: "Cashier",
+    
+    // New: Payout Preferences
+    payoutPreferences: "Payout Preferences",
+    sameDayPayout: "Same-Day Payout",
+    nextDayPayout: "Next-Day Payout",
+    payoutFee: "Payout Fee",
+    
+    // New: Skip options
+    doThisLater: "Do this later",
+    skipForNow: "Skip for now",
   },
   
   zu: {

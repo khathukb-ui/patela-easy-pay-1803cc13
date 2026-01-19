@@ -1,10 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { BottomNav } from "@/components/patela/BottomNav";
 import { OfflineBanner } from "@/components/patela/OfflineBanner";
 import { TodayStats } from "@/components/patela/TodayStats";
 import { PatelaLogo } from "@/components/patela/PatelaLogo";
+import { SetupReminder } from "@/components/patela/SetupReminder";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import { 
   CreditCard, 
   QrCode, 
@@ -24,8 +27,37 @@ import { useLanguage } from "@/contexts/LanguageContext";
 export default function Home() {
   const navigate = useNavigate();
   const { t } = useLanguage();
+  const { user } = useAuth();
   const [isOffline, setIsOffline] = useState(false);
   const [queuedCount] = useState(isOffline ? 3 : 0);
+  const [bankLinked, setBankLinked] = useState(true);
+  const [devicePaired, setDevicePaired] = useState(true);
+
+  // Check setup status
+  useEffect(() => {
+    if (user) {
+      checkSetupStatus();
+    }
+  }, [user]);
+
+  const checkSetupStatus = async () => {
+    if (!user) return;
+    
+    try {
+      const { data } = await supabase
+        .from("payout_settings")
+        .select("bank_linked, device_paired")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      
+      if (data) {
+        setBankLinked(data.bank_linked);
+        setDevicePaired(data.device_paired);
+      }
+    } catch (e) {
+      console.error("Failed to check setup status:", e);
+    }
+  };
 
   // Mock data
   const todayStats = {
@@ -36,7 +68,7 @@ export default function Home() {
   };
 
   const deviceStatus = {
-    connected: true,
+    connected: devicePaired,
     battery: 85,
     name: "Patela Pro",
   };
@@ -87,6 +119,14 @@ export default function Home() {
       </header>
 
       <main className="px-5 py-5 space-y-5">
+        {/* Setup Reminders (non-blocking) */}
+        {(!bankLinked || !devicePaired) && (
+          <div className="space-y-3 animate-patela-slide-up">
+            {!bankLinked && <SetupReminder type="bank" />}
+            {!devicePaired && <SetupReminder type="device" />}
+          </div>
+        )}
+
         {/* Take Payment - Primary CTA */}
         <div className="animate-patela-slide-up">
           <Button

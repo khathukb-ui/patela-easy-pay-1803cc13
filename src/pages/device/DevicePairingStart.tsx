@@ -1,12 +1,16 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { QrCode, Bluetooth, Shield, ArrowRight } from "lucide-react";
+import { QrCode, Bluetooth, Clock } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import patelaDeviceBox from "@/assets/patela-device-box.jpg";
 
 export default function DevicePairingStart() {
   const navigate = useNavigate();
   const { t } = useLanguage();
+
+  const handleSkip = () => {
+    navigate("/home");
+  };
 
   return (
     <div className="min-h-screen patela-app-bg flex flex-col">
@@ -67,6 +71,21 @@ export default function DevicePairingStart() {
             <Bluetooth className="mr-2 h-6 w-6" />
             {t("useBluetooth")}
           </Button>
+        </div>
+
+        {/* Skip Option */}
+        <div className="mt-8 text-center">
+          <Button
+            variant="ghost"
+            className="text-muted-foreground hover:text-foreground"
+            onClick={handleSkip}
+          >
+            <Clock className="mr-2 h-4 w-4" />
+            Skip for now
+          </Button>
+          <p className="text-xs text-muted-foreground mt-2 max-w-xs mx-auto">
+            Pair your device later to accept card and tap-to-pay payments. Cash sales work without a device.
+          </p>
         </div>
       </div>
     </div>

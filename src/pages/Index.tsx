@@ -165,7 +165,7 @@ export default function Index() {
               variant="ghost"
               size="sm"
               className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10 hidden sm:inline-flex"
-              onClick={() => navigate("/home")}
+              onClick={() => navigate("/auth")}
             >
               Sign In
             </Button>

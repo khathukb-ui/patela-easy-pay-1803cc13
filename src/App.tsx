@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { LanguageProvider } from "@/contexts/LanguageContext";
+import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { SplashScreen } from "@/components/patela/SplashScreen";
 
@@ -19,6 +20,8 @@ import Sales from "./pages/Sales";
 import Account from "./pages/Account";
 import Help from "./pages/Help";
 import Items from "./pages/Items";
+import Auth from "./pages/Auth";
+import Welcome from "./pages/Welcome";
 
 // Onboarding
 import LanguageSelection from "./pages/onboarding/LanguageSelection";
@@ -49,6 +52,10 @@ import DeviceUnpair from "./pages/device/DeviceUnpair";
 import DeviceUnpairSuccess from "./pages/device/DeviceUnpairSuccess";
 import DeviceTransfer from "./pages/device/DeviceTransfer";
 
+// Settings
+import UsersAccess from "./pages/settings/UsersAccess";
+import PayoutPreferences from "./pages/settings/PayoutPreferences";
+
 const queryClient = new QueryClient();
 
 function AppContent() {
@@ -77,8 +84,10 @@ function AppContent() {
       )}
       <BrowserRouter>
         <Routes>
-          {/* Landing */}
+          {/* Landing & Auth */}
           <Route path="/" element={<Index />} />
+          <Route path="/welcome" element={<Welcome />} />
+          <Route path="/auth" element={<Auth />} />
           
           {/* Onboarding */}
           <Route path="/onboarding/language" element={<LanguageSelection />} />
@@ -109,6 +118,10 @@ function AppContent() {
           <Route path="/device/unpair-success" element={<DeviceUnpairSuccess />} />
           <Route path="/device/transfer" element={<DeviceTransfer />} />
           
+          {/* Settings */}
+          <Route path="/settings/users" element={<UsersAccess />} />
+          <Route path="/settings/payouts" element={<PayoutPreferences />} />
+          
           {/* Main App */}
           <Route path="/home" element={<Home />} />
           <Route path="/payment" element={<Payment />} />
@@ -130,13 +143,15 @@ function AppContent() {
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-      <LanguageProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <AppContent />
-        </TooltipProvider>
-      </LanguageProvider>
+      <AuthProvider>
+        <LanguageProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <AppContent />
+          </TooltipProvider>
+        </LanguageProvider>
+      </AuthProvider>
     </ThemeProvider>
   </QueryClientProvider>
 );
