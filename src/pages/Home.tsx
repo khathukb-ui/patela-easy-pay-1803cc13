@@ -5,9 +5,12 @@ import { OfflineBanner } from "@/components/patela/OfflineBanner";
 import { TodayStats } from "@/components/patela/TodayStats";
 import { PatelaLogo } from "@/components/patela/PatelaLogo";
 import { SetupReminder } from "@/components/patela/SetupReminder";
+import { SalesTrendChart } from "@/components/patela/SalesTrendChart";
+import { LoanOffers } from "@/components/patela/LoanOffers";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/hooks/use-toast";
 import { 
   CreditCard, 
   QrCode, 
@@ -165,8 +168,25 @@ export default function Home() {
           <TodayStats {...todayStats} />
         </div>
 
-        {/* Quick Services */}
+        {/* Sales Trend Chart */}
         <div className="animate-patela-slide-up" style={{ animationDelay: "0.25s" }}>
+          <SalesTrendChart />
+        </div>
+
+        {/* Loan Offers */}
+        <div className="animate-patela-slide-up" style={{ animationDelay: "0.3s" }}>
+          <LoanOffers 
+            onApply={(offerId) => {
+              toast({
+                title: "Application Started",
+                description: "We'll review your application and get back to you within 24 hours.",
+              });
+            }}
+          />
+        </div>
+
+        {/* Quick Services */}
+        <div className="animate-patela-slide-up" style={{ animationDelay: "0.35s" }}>
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-sm font-semibold text-primary uppercase tracking-wide">Services</h2>
           </div>
@@ -187,7 +207,7 @@ export default function Home() {
         </div>
 
         {/* Upgrade Banner */}
-        <div className="animate-patela-slide-up" style={{ animationDelay: "0.3s" }}>
+        <div className="animate-patela-slide-up" style={{ animationDelay: "0.4s" }}>
           <button 
             className="w-full bg-gradient-to-r from-primary to-primary/80 rounded-2xl p-4 flex items-center gap-4 text-left"
             onClick={() => navigate("/")}
@@ -204,7 +224,7 @@ export default function Home() {
         </div>
 
         {/* Payout Info */}
-        <div className="animate-patela-slide-up" style={{ animationDelay: "0.35s" }}>
+        <div className="animate-patela-slide-up" style={{ animationDelay: "0.45s" }}>
           <div className="bg-success/10 rounded-2xl p-4 border border-success/20">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-success/20 flex items-center justify-center">
