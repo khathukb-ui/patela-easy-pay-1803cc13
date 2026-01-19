@@ -6,6 +6,7 @@ import { TodayStats } from "@/components/patela/TodayStats";
 import { PatelaLogo } from "@/components/patela/PatelaLogo";
 import { SetupReminder } from "@/components/patela/SetupReminder";
 import { SalesTrendChart } from "@/components/patela/SalesTrendChart";
+import { StockLevelChart } from "@/components/patela/StockLevelChart";
 import { LoanOffers } from "@/components/patela/LoanOffers";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
@@ -168,9 +169,10 @@ export default function Home() {
           <TodayStats {...todayStats} />
         </div>
 
-        {/* Sales Trend Chart */}
-        <div className="animate-patela-slide-up" style={{ animationDelay: "0.25s" }}>
+        {/* Charts - Side by Side */}
+        <div className="grid grid-cols-2 gap-4 animate-patela-slide-up" style={{ animationDelay: "0.25s" }}>
           <SalesTrendChart />
+          <StockLevelChart />
         </div>
 
         {/* Loan Offers */}
