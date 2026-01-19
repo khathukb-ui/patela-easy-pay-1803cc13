@@ -298,21 +298,34 @@ export default function Auth() {
             </Button>
           </form>
 
-          {/* Toggle Sign In / Sign Up */}
+          {/* Toggle Sign In / Create Account */}
           <div className="mt-8 text-center">
-            <p className="text-muted-foreground">
-              {isSignUp ? "Already have an account?" : "Don't have an account?"}
-            </p>
-            <Button
-              variant="link"
-              className="text-primary font-semibold"
-              onClick={() => {
-                setIsSignUp(!isSignUp);
-                setErrors({});
-              }}
-            >
-              {isSignUp ? "Sign in instead" : "Create one now"}
-            </Button>
+            {isSignUp ? (
+              <>
+                <p className="text-muted-foreground">Already have an account?</p>
+                <Button
+                  variant="link"
+                  className="text-primary font-semibold"
+                  onClick={() => {
+                    setIsSignUp(false);
+                    setErrors({});
+                  }}
+                >
+                  Sign in instead
+                </Button>
+              </>
+            ) : (
+              <>
+                <p className="text-muted-foreground">Don't have an account?</p>
+                <Button
+                  variant="link"
+                  className="text-primary font-semibold"
+                  onClick={() => navigate("/onboarding/language")}
+                >
+                  Create one now
+                </Button>
+              </>
+            )}
           </div>
 
           {/* Back to landing */}
