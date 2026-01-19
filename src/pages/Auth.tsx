@@ -222,14 +222,14 @@ export default function Auth() {
             </Button>
           </div>
 
-          {/* Skip for now (guest mode) */}
+          {/* Back to landing */}
           <div className="mt-6 text-center">
             <Button
               variant="ghost"
               className="text-muted-foreground"
-              onClick={() => navigate("/onboarding/language")}
+              onClick={() => navigate("/")}
             >
-              Skip for now
+              Back to Home
             </Button>
           </div>
         </div>
