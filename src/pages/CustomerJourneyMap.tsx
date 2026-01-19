@@ -1,5 +1,8 @@
-import { Check, User, Phone, Lock, FileText, Home, ShoppingBag, CreditCard, BarChart3, Smartphone, Banknote, Wallet, ArrowRight } from "lucide-react";
+import { useRef, useState } from "react";
+import { Check, User, Phone, Lock, FileText, Home, ShoppingBag, CreditCard, BarChart3, Smartphone, Wallet, ArrowRight, Download, Loader2 } from "lucide-react";
 import { PatelaLogo } from "@/components/patela/PatelaLogo";
+import { Button } from "@/components/ui/button";
+import html2pdf from "html2pdf.js";
 
 interface JourneyStageProps {
   number: number;
@@ -105,6 +108,40 @@ function PersonaCard({ type, title, description, capabilities }: { type: "admin"
 }
 
 export default function CustomerJourneyMap() {
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  const handleDownloadPDF = async () => {
+    if (!contentRef.current) return;
+    
+    setIsGenerating(true);
+    
+    try {
+      const opt = {
+        margin: [10, 10, 10, 10],
+        filename: 'Patela-Customer-Journey-Map.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { 
+          scale: 2,
+          useCORS: true,
+          letterRendering: true,
+        },
+        jsPDF: { 
+          unit: 'mm', 
+          format: 'a4', 
+          orientation: 'portrait' 
+        },
+        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+      };
+
+      await html2pdf().set(opt).from(contentRef.current).save();
+    } catch (error) {
+      console.error('PDF generation failed:', error);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
   const journeyStages: JourneyStageProps[] = [
     {
       number: 1,
@@ -230,29 +267,52 @@ export default function CustomerJourneyMap() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 print:bg-white">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-primary/20 via-accent/10 to-primary/20 border-b border-primary/20 print:border-gray-200">
-        <div className="max-w-5xl mx-auto px-6 py-8">
-          <div className="flex items-center justify-between">
-            <PatelaLogo className="h-10" />
-            <span className="text-xs text-muted-foreground">Customer Journey Map v1.0</span>
-          </div>
-          <div className="mt-6 text-center">
-            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
-              Onboarding to First Sale
-            </h1>
-            <p className="text-lg text-muted-foreground mt-2">
-              Intelligence in every tap. Growing with you.
-            </p>
-            <div className="flex justify-center gap-2 mt-4">
-              {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div key={i} className="w-2 h-2 rounded-full bg-accent/60" />
-              ))}
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
+      {/* Floating Download Button */}
+      <div className="fixed top-4 right-4 z-50 print:hidden">
+        <Button
+          onClick={handleDownloadPDF}
+          disabled={isGenerating}
+          className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white shadow-lg shadow-primary/30"
+        >
+          {isGenerating ? (
+            <>
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              Generating...
+            </>
+          ) : (
+            <>
+              <Download className="h-4 w-4 mr-2" />
+              Download PDF
+            </>
+          )}
+        </Button>
+      </div>
+
+      {/* PDF Content */}
+      <div ref={contentRef}>
+        {/* Header */}
+        <div className="bg-gradient-to-r from-primary/20 via-accent/10 to-primary/20 border-b border-primary/20">
+          <div className="max-w-5xl mx-auto px-6 py-8">
+            <div className="flex items-center justify-between">
+              <PatelaLogo className="h-10" />
+              <span className="text-xs text-muted-foreground">Customer Journey Map v1.0</span>
+            </div>
+            <div className="mt-6 text-center">
+              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
+                Onboarding to First Sale
+              </h1>
+              <p className="text-lg text-muted-foreground mt-2">
+                Intelligence in every tap. Growing with you.
+              </p>
+              <div className="flex justify-center gap-2 mt-4">
+                {[1, 2, 3, 4, 5, 6].map((i) => (
+                  <div key={i} className="w-2 h-2 rounded-full bg-accent/60" />
+                ))}
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
       {/* Personas Section */}
       <div className="max-w-5xl mx-auto px-6 py-10">
@@ -338,6 +398,7 @@ export default function CustomerJourneyMap() {
           <p>Built for the Hustle. Patela © 2025</p>
           <p className="mt-1">Languages: English • isiZulu • Sesotho • Xitsonga</p>
         </div>
+      </div>
       </div>
     </div>
   );
