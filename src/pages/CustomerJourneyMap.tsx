@@ -287,22 +287,103 @@ function ScreenPaySuccess() {
   );
 }
 
-// Flow arrow component - using brand accent color
+// Modern 2026 flow arrow component - smooth curves with animated gradient
 function FlowArrow({ direction = "right" }: { direction?: "right" | "down" }) {
   if (direction === "down") {
     return (
-      <div className="flex justify-center my-3">
-        <div className="flex flex-col items-center">
-          <div className="w-1 h-6" style={{ backgroundColor: BRAND.accent }} />
-          <ChevronRight className="h-6 w-6 rotate-90" style={{ color: BRAND.accent }} />
+      <div className="flex justify-center my-4">
+        <div className="relative flex flex-col items-center">
+          {/* Gradient glow effect */}
+          <div 
+            className="absolute inset-0 blur-md opacity-40"
+            style={{ 
+              background: `linear-gradient(180deg, ${BRAND.accent}, ${BRAND.primary})`,
+              transform: 'scale(1.5)',
+            }} 
+          />
+          {/* Modern curved arrow SVG */}
+          <svg width="32" height="48" viewBox="0 0 32 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            {/* Gradient definition */}
+            <defs>
+              <linearGradient id="arrowGradientDown" x1="16" y1="0" x2="16" y2="48" gradientUnits="userSpaceOnUse">
+                <stop stopColor={BRAND.accent} />
+                <stop offset="1" stopColor={BRAND.primaryLight} />
+              </linearGradient>
+            </defs>
+            {/* Flowing line with rounded ends */}
+            <path 
+              d="M16 4 L16 32" 
+              stroke="url(#arrowGradientDown)" 
+              strokeWidth="3" 
+              strokeLinecap="round"
+            />
+            {/* Modern arrow head - soft chevron */}
+            <path 
+              d="M8 34 L16 44 L24 34" 
+              stroke="url(#arrowGradientDown)" 
+              strokeWidth="3" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+              fill="none"
+            />
+            {/* Subtle dot at start */}
+            <circle cx="16" cy="4" r="3" fill={BRAND.accent} opacity="0.6" />
+          </svg>
         </div>
       </div>
     );
   }
+  
   return (
-    <div className="flex items-center mx-3">
-      <div className="w-6 h-1" style={{ backgroundColor: BRAND.accent }} />
-      <ChevronRight className="h-6 w-6" style={{ color: BRAND.accent }} />
+    <div className="flex items-center mx-2">
+      <div className="relative flex items-center">
+        {/* Gradient glow effect */}
+        <div 
+          className="absolute inset-0 blur-md opacity-30"
+          style={{ 
+            background: `linear-gradient(90deg, ${BRAND.accent}, ${BRAND.primary})`,
+            transform: 'scale(1.5)',
+          }} 
+        />
+        {/* Modern curved arrow SVG */}
+        <svg width="48" height="32" viewBox="0 0 48 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          {/* Gradient definition */}
+          <defs>
+            <linearGradient id="arrowGradientRight" x1="0" y1="16" x2="48" y2="16" gradientUnits="userSpaceOnUse">
+              <stop stopColor={BRAND.accent} stopOpacity="0.4" />
+              <stop offset="0.3" stopColor={BRAND.accent} />
+              <stop offset="1" stopColor={BRAND.primaryLight} />
+            </linearGradient>
+            <filter id="arrowGlow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="1" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+          {/* Flowing curved line */}
+          <path 
+            d="M4 16 C12 16, 20 16, 32 16" 
+            stroke="url(#arrowGradientRight)" 
+            strokeWidth="2.5" 
+            strokeLinecap="round"
+            filter="url(#arrowGlow)"
+          />
+          {/* Modern arrow head - elegant chevron */}
+          <path 
+            d="M34 8 L44 16 L34 24" 
+            stroke="url(#arrowGradientRight)" 
+            strokeWidth="2.5" 
+            strokeLinecap="round" 
+            strokeLinejoin="round"
+            fill="none"
+            filter="url(#arrowGlow)"
+          />
+          {/* Subtle starting dot */}
+          <circle cx="4" cy="16" r="2.5" fill={BRAND.accent} opacity="0.5" />
+        </svg>
+      </div>
     </div>
   );
 }
