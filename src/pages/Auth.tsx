@@ -133,7 +133,7 @@ export default function Auth() {
     <div className="min-h-screen patela-app-bg flex flex-col">
       {/* Header - Full wordmark for auth pages */}
       <header className="bg-primary px-6 py-8 text-center">
-        <PatelaLogo size="lg" useImage backgroundType="dark" className="mx-auto" />
+        <PatelaLogo size="xl" variant="light" className="mx-auto" />
         <p className="text-primary-foreground/80 mt-4">
           {isSignUp ? "Create your account" : "Welcome back"}
         </p>

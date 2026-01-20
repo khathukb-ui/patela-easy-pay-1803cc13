@@ -46,7 +46,7 @@ export function SplashScreen({ onComplete, duration = 2000 }: SplashScreenProps)
 
         {/* Logo with animation - Full wordmark for splash screens */}
         <div className="animate-patela-bounce-in">
-          <PatelaLogo size="xl" useImage backgroundType="dark" className="drop-shadow-lg" />
+          <PatelaLogo size="2xl" variant="light" className="drop-shadow-lg" />
         </div>
 
         {/* Tagline */}
