@@ -15,6 +15,10 @@ import vendorBanner from "@/assets/vendor-banner.jpg";
 // Visual imagery for account/device linking
 import bankLinkingVisual from "@/assets/bank-linking-visual.png";
 import devicePairingVisual from "@/assets/device-pairing-visual.png";
+// Official Patela logo assets - exact shapes from brand guidelines
+import wordmarkLight from "@/assets/patela-wordmark-light.png";
+import iconLight from "@/assets/patela-icon-light.png";
+
 // Official Patela Brand Colors (from design system)
 // Primary: hsl(261 51% 37%) = #5B3E9E (Deep Purple)
 // Accent: hsl(191 100% 50%) = #00D4FF (Cyan)
@@ -37,21 +41,27 @@ const BRAND = {
   bgDarker: '#0D0A1A',
 };
 
-// Logo text components using official brand colors for PDF export
-// Using inline styles to ensure PDF rendering consistency
+// Logo components using official brand assets for PDF export
+// Using actual image files to ensure exact shape matching
 function LogoFull({ className = "" }: { className?: string }) {
   return (
-    <span className={`font-extrabold tracking-tight ${className}`} style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", color: BRAND.text }}>
-      patela<span style={{ color: BRAND.accent }}>.</span>
-    </span>
+    <img 
+      src={wordmarkLight} 
+      alt="patela." 
+      className={`object-contain ${className}`}
+      draggable={false}
+    />
   );
 }
 
 function LogoIcon({ className = "" }: { className?: string }) {
   return (
-    <span className={`font-extrabold tracking-tight ${className}`} style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", color: BRAND.text }}>
-      p<span style={{ color: BRAND.accent }}>.</span>
-    </span>
+    <img 
+      src={iconLight} 
+      alt="Patela" 
+      className={`object-contain ${className}`}
+      draggable={false}
+    />
   );
 }
 
@@ -241,7 +251,7 @@ function ScreenHome() {
       <div className="bg-[#2D1B69] p-2 rounded-b-xl">
         {/* Icon logo for small navigation areas */}
         <div className="flex items-center mb-1">
-          <LogoIcon className="text-[12px]" />
+          <LogoIcon className="h-4" />
         </div>
         <div className="bg-white/10 rounded p-1.5">
           <p className="text-[5px] text-white/70">Today's Sales</p>
@@ -395,7 +405,7 @@ function StageHeader({ icon, title, subtitle, phase }: { icon: React.ReactNode; 
   return (
     <div className="rounded-lg p-4 mb-4" style={{ backgroundColor: style.bg, borderWidth: '2px', borderStyle: 'solid', borderColor: style.border }}>
       <div className="flex items-center gap-3">
-        {/* Icon container with absolute centering for PDF compatibility */}
+        {/* Icon container with logo image for PDF compatibility */}
         <div 
           style={{ 
             position: 'relative',
@@ -404,23 +414,12 @@ function StageHeader({ icon, title, subtitle, phase }: { icon: React.ReactNode; 
             borderRadius: '10px',
             backgroundColor: BRAND.primaryDark, 
             border: `2px solid ${BRAND.accent}`,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
           }}
         >
-          <span 
-            style={{ 
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              fontFamily: "'Plus Jakarta Sans', sans-serif", 
-              fontWeight: 800,
-              color: BRAND.text,
-              fontSize: '18px',
-              lineHeight: 1,
-            }}
-          >
-            p<span style={{ color: BRAND.accent }}>.</span>
-          </span>
+          <LogoIcon className="h-5" />
         </div>
         <div>
           <div className="flex items-center gap-2">
@@ -539,7 +538,7 @@ export default function CustomerJourneyMap() {
             }}
           />
           <div className="relative px-6 py-10 text-center">
-            <LogoFull className="text-5xl block mb-5" />
+            <LogoFull className="h-14 mx-auto mb-5" />
             <h1 className="text-3xl md:text-4xl font-bold mb-3" style={{ color: BRAND.text }}>
               Onboarding to First Sale
             </h1>
@@ -906,7 +905,7 @@ export default function CustomerJourneyMap() {
               <img src={vendorPortrait2} alt="" className="w-full h-full object-cover" />
             </div>
           </div>
-          <LogoFull className="text-3xl block mb-3" />
+          <LogoFull className="h-10 mx-auto mb-3" />
           <p className="text-sm font-medium" style={{ color: BRAND.textSubtle }}>
             Built for the Hustle. Patela © 2025
           </p>
