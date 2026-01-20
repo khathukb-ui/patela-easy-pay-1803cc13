@@ -29,38 +29,11 @@ import {
 } from "lucide-react";
 import { PatelaLogo } from "@/components/patela/PatelaLogo";
 import { Progress } from "@/components/ui/progress";
-// Logo text components for true transparency
-function LogoFull({ className = "" }: { className?: string }) {
-  return (
-    <span className={`font-extrabold tracking-tight text-[#2D1B69] ${className}`} style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-      patela<span className="text-[#00D4FF]">.</span>
-    </span>
-  );
-}
-
-function LogoFullLight({ className = "" }: { className?: string }) {
-  return (
-    <span className={`font-extrabold tracking-tight text-white ${className}`} style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-      patela<span className="text-[#00D4FF]">.</span>
-    </span>
-  );
-}
-
-function LogoIcon({ className = "" }: { className?: string }) {
-  return (
-    <span className={`font-extrabold tracking-tight text-[#2D1B69] ${className}`} style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-      p<span className="text-[#00D4FF]">.</span>
-    </span>
-  );
-}
-
-function LogoIconLight({ className = "" }: { className?: string }) {
-  return (
-    <span className={`font-extrabold tracking-tight text-white ${className}`} style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-      p<span className="text-[#00D4FF]">.</span>
-    </span>
-  );
-}
+// Logo variants are now handled by the shared PatelaLogo component
+// Use: variant="light" for wordmark on dark bg
+// Use: variant="dark" for wordmark on light bg
+// Use: variant="light-icon" for icon on dark bg
+// Use: variant="icon" for icon on light bg
 
 interface DemoStep {
   id: number;
@@ -139,8 +112,8 @@ function LandingMock() {
         transition={{ type: "spring", delay: 0.2 }}
         className="mb-6"
       >
-        {/* Full wordmark logo for landing/demo screens - CSS text for transparency */}
-        <LogoFullLight className="text-3xl" />
+        {/* Full wordmark logo for landing/demo screens */}
+        <PatelaLogo size="md" variant="light" />
       </motion.div>
       <motion.h2 
         initial={{ opacity: 0, y: 10 }}

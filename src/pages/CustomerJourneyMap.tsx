@@ -37,7 +37,8 @@ const BRAND = {
   bgDarker: '#0D0A1A',
 };
 
-// Logo text components using official brand colors
+// Logo text components using official brand colors for PDF export
+// Using inline styles to ensure PDF rendering consistency
 function LogoFull({ className = "" }: { className?: string }) {
   return (
     <span className={`font-extrabold tracking-tight ${className}`} style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", color: BRAND.text }}>
