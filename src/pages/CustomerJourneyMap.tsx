@@ -12,6 +12,9 @@ import html2pdf from "html2pdf.js";
 import vendorPortrait1 from "@/assets/vendor-portrait-1.jpg";
 import vendorPortrait2 from "@/assets/vendor-portrait-2.jpg";
 import vendorBanner from "@/assets/vendor-banner.jpg";
+// Visual imagery for account/device linking
+import bankLinkingVisual from "@/assets/bank-linking-visual.png";
+import devicePairingVisual from "@/assets/device-pairing-visual.png";
 // Official Patela Brand Colors (from design system)
 // Primary: hsl(261 51% 37%) = #5B3E9E (Deep Purple)
 // Accent: hsl(191 100% 50%) = #00D4FF (Cyan)
@@ -287,103 +290,89 @@ function ScreenPaySuccess() {
   );
 }
 
-// Modern 2026 flow arrow component - smooth curves with animated gradient
+// Modern 2026 flow arrow component - clean SVG with transparent background
 function FlowArrow({ direction = "right" }: { direction?: "right" | "down" }) {
   if (direction === "down") {
     return (
       <div className="flex justify-center my-4">
-        <div className="relative flex flex-col items-center">
-          {/* Gradient glow effect */}
-          <div 
-            className="absolute inset-0 blur-md opacity-40"
-            style={{ 
-              background: `linear-gradient(180deg, ${BRAND.accent}, ${BRAND.primary})`,
-              transform: 'scale(1.5)',
-            }} 
-          />
-          {/* Modern curved arrow SVG */}
-          <svg width="32" height="48" viewBox="0 0 32 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-            {/* Gradient definition */}
-            <defs>
-              <linearGradient id="arrowGradientDown" x1="16" y1="0" x2="16" y2="48" gradientUnits="userSpaceOnUse">
-                <stop stopColor={BRAND.accent} />
-                <stop offset="1" stopColor={BRAND.primaryLight} />
-              </linearGradient>
-            </defs>
-            {/* Flowing line with rounded ends */}
-            <path 
-              d="M16 4 L16 32" 
-              stroke="url(#arrowGradientDown)" 
-              strokeWidth="3" 
-              strokeLinecap="round"
-            />
-            {/* Modern arrow head - soft chevron */}
-            <path 
-              d="M8 34 L16 44 L24 34" 
-              stroke="url(#arrowGradientDown)" 
-              strokeWidth="3" 
-              strokeLinecap="round" 
-              strokeLinejoin="round"
-              fill="none"
-            />
-            {/* Subtle dot at start */}
-            <circle cx="16" cy="4" r="3" fill={BRAND.accent} opacity="0.6" />
-          </svg>
-        </div>
-      </div>
-    );
-  }
-  
-  return (
-    <div className="flex items-center mx-2">
-      <div className="relative flex items-center">
-        {/* Gradient glow effect */}
-        <div 
-          className="absolute inset-0 blur-md opacity-30"
-          style={{ 
-            background: `linear-gradient(90deg, ${BRAND.accent}, ${BRAND.primary})`,
-            transform: 'scale(1.5)',
-          }} 
-        />
-        {/* Modern curved arrow SVG */}
-        <svg width="48" height="32" viewBox="0 0 48 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-          {/* Gradient definition */}
+        {/* Pure SVG arrow - no background elements for PDF transparency */}
+        <svg width="32" height="48" viewBox="0 0 32 48" fill="none" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <linearGradient id="arrowGradientRight" x1="0" y1="16" x2="48" y2="16" gradientUnits="userSpaceOnUse">
-              <stop stopColor={BRAND.accent} stopOpacity="0.4" />
-              <stop offset="0.3" stopColor={BRAND.accent} />
+            <linearGradient id="arrowGradientDown" x1="16" y1="0" x2="16" y2="48" gradientUnits="userSpaceOnUse">
+              <stop stopColor={BRAND.accent} />
               <stop offset="1" stopColor={BRAND.primaryLight} />
             </linearGradient>
-            <filter id="arrowGlow" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur stdDeviation="1" result="blur" />
+            <filter id="arrowGlowDown" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="1.5" result="blur" />
               <feMerge>
                 <feMergeNode in="blur" />
                 <feMergeNode in="SourceGraphic" />
               </feMerge>
             </filter>
           </defs>
-          {/* Flowing curved line */}
+          {/* Flowing line with glow */}
           <path 
-            d="M4 16 C12 16, 20 16, 32 16" 
-            stroke="url(#arrowGradientRight)" 
-            strokeWidth="2.5" 
+            d="M16 4 L16 32" 
+            stroke="url(#arrowGradientDown)" 
+            strokeWidth="3" 
             strokeLinecap="round"
-            filter="url(#arrowGlow)"
+            filter="url(#arrowGlowDown)"
           />
-          {/* Modern arrow head - elegant chevron */}
+          {/* Modern arrow head - soft chevron */}
           <path 
-            d="M34 8 L44 16 L34 24" 
-            stroke="url(#arrowGradientRight)" 
-            strokeWidth="2.5" 
+            d="M8 34 L16 44 L24 34" 
+            stroke="url(#arrowGradientDown)" 
+            strokeWidth="3" 
             strokeLinecap="round" 
             strokeLinejoin="round"
             fill="none"
-            filter="url(#arrowGlow)"
+            filter="url(#arrowGlowDown)"
           />
-          {/* Subtle starting dot */}
-          <circle cx="4" cy="16" r="2.5" fill={BRAND.accent} opacity="0.5" />
+          {/* Subtle dot at start */}
+          <circle cx="16" cy="4" r="3" fill={BRAND.accent} opacity="0.7" />
         </svg>
       </div>
+    );
+  }
+  
+  return (
+    <div className="flex items-center mx-2">
+      {/* Pure SVG arrow - no background elements for PDF transparency */}
+      <svg width="48" height="32" viewBox="0 0 48 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="arrowGradientRight" x1="0" y1="16" x2="48" y2="16" gradientUnits="userSpaceOnUse">
+            <stop stopColor={BRAND.accent} />
+            <stop offset="1" stopColor={BRAND.primaryLight} />
+          </linearGradient>
+          <filter id="arrowGlowRight" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="1" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+        {/* Flowing curved line */}
+        <path 
+          d="M4 16 C12 16, 20 16, 32 16" 
+          stroke="url(#arrowGradientRight)" 
+          strokeWidth="2.5" 
+          strokeLinecap="round"
+          filter="url(#arrowGlowRight)"
+        />
+        {/* Modern arrow head - elegant chevron */}
+        <path 
+          d="M34 8 L44 16 L34 24" 
+          stroke="url(#arrowGradientRight)" 
+          strokeWidth="2.5" 
+          strokeLinecap="round" 
+          strokeLinejoin="round"
+          fill="none"
+          filter="url(#arrowGlowRight)"
+        />
+        {/* Subtle starting dot */}
+        <circle cx="4" cy="16" r="2.5" fill={BRAND.accent} opacity="0.6" />
+      </svg>
     </div>
   );
 }
@@ -682,6 +671,19 @@ export default function CustomerJourneyMap() {
                   <p className="text-sm font-medium" style={{ color: BRAND.warning }}>For payouts</p>
                 </div>
               </div>
+              {/* Bank linking visual imagery */}
+              <div className="flex justify-center mb-4">
+                <img 
+                  src={bankLinkingVisual} 
+                  alt="Bank account linking" 
+                  style={{ 
+                    width: '140px', 
+                    height: '140px', 
+                    objectFit: 'contain',
+                    borderRadius: '12px',
+                  }} 
+                />
+              </div>
               <PhoneMockup><ScreenBank /></PhoneMockup>
               <div className="mt-5 flex items-center justify-center gap-2 text-base font-medium" style={{ color: BRAND.warning }}>
                 <SkipForward className="h-5 w-5" />
@@ -719,6 +721,19 @@ export default function CustomerJourneyMap() {
                   <h4 className="font-bold text-lg" style={{ color: BRAND.text }}>Pair Device</h4>
                   <p className="text-sm font-medium" style={{ color: BRAND.warning }}>For card payments</p>
                 </div>
+              </div>
+              {/* Device pairing visual imagery */}
+              <div className="flex justify-center mb-4">
+                <img 
+                  src={devicePairingVisual} 
+                  alt="Device pairing" 
+                  style={{ 
+                    width: '140px', 
+                    height: '140px', 
+                    objectFit: 'contain',
+                    borderRadius: '12px',
+                  }} 
+                />
               </div>
               <PhoneMockup><ScreenDevice /></PhoneMockup>
               <div className="mt-5 flex items-center justify-center gap-2 text-base font-medium" style={{ color: BRAND.warning }}>
