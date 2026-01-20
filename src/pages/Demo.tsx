@@ -110,7 +110,7 @@ function LandingMock() {
         className="mb-6"
       >
         {/* Full wordmark logo for landing/demo screens */}
-        <img src={patelaLogoFull} alt="Patela" className="h-10 object-contain" />
+        <img src={patelaLogoFull} alt="Patela" className="h-10 object-contain mix-blend-multiply" />
       </motion.div>
       <motion.h2 
         initial={{ opacity: 0, y: 10 }}

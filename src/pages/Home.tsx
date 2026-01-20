@@ -92,7 +92,7 @@ export default function Home() {
       <header className="bg-primary px-6 py-4 patela-shadow-md">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <PatelaLogo size="sm" variant="icon" />
+            <PatelaLogo size="sm" variant="icon" backgroundType="dark" />
             <div>
               <p className="text-sm font-semibold text-primary-foreground">Patela</p>
               <p className="text-xs text-primary-foreground/70">
