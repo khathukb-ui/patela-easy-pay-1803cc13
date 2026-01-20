@@ -88,18 +88,21 @@ export default function Home() {
     <div className="min-h-screen patela-app-bg pb-24">
       <OfflineBanner isOffline={isOffline} queuedCount={queuedCount} />
 
-      {/* Header */}
+      {/* Header - Icon logo for small navigation areas */}
       <header className="bg-primary px-6 py-4 patela-shadow-md">
         <div className="flex items-center justify-between">
-          <div>
-            <PatelaLogo size="md" variant="light" />
-            <p className="text-sm text-primary-foreground/70">
-              {new Date().toLocaleDateString("en-ZA", {
-                weekday: "long",
-                day: "numeric",
-                month: "short",
-              })}
-            </p>
+          <div className="flex items-center gap-3">
+            <PatelaLogo size="sm" variant="icon" />
+            <div>
+              <p className="text-sm font-semibold text-primary-foreground">Patela</p>
+              <p className="text-xs text-primary-foreground/70">
+                {new Date().toLocaleDateString("en-ZA", {
+                  weekday: "long",
+                  day: "numeric",
+                  month: "short",
+                })}
+              </p>
+            </div>
           </div>
           
           {/* Device Status */}

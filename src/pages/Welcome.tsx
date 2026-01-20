@@ -32,9 +32,9 @@ export default function Welcome() {
         <div className="absolute inset-0 bg-gradient-to-b from-primary/90 via-primary/80 to-primary/95" />
         
         <div className="relative z-10 flex-1 flex flex-col px-6 py-8">
-          {/* Logo */}
+          {/* Logo - Full wordmark for welcome/splash screens */}
           <div className="text-center mb-8 pt-4">
-            <PatelaLogo size="lg" variant="light" />
+            <PatelaLogo size="xl" useImage className="mx-auto" />
           </div>
 
           {/* Main Content */}

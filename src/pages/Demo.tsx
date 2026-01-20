@@ -29,6 +29,8 @@ import {
 } from "lucide-react";
 import { PatelaLogo } from "@/components/patela/PatelaLogo";
 import { Progress } from "@/components/ui/progress";
+import patelaLogoFull from "@/assets/patela-logo-full.jpg";
+import patelaLogoIcon from "@/assets/patela-logo-icon.jpg";
 
 interface DemoStep {
   id: number;
@@ -107,9 +109,8 @@ function LandingMock() {
         transition={{ type: "spring", delay: 0.2 }}
         className="mb-6"
       >
-        <span className="text-4xl font-bold text-white" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-          patela<span className="text-[#00D4FF]">.</span>
-        </span>
+        {/* Full wordmark logo for landing/demo screens */}
+        <img src={patelaLogoFull} alt="Patela" className="h-10 object-contain" />
       </motion.div>
       <motion.h2 
         initial={{ opacity: 0, y: 10 }}
