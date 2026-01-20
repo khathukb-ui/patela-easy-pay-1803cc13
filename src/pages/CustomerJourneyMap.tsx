@@ -405,8 +405,28 @@ function StageHeader({ icon, title, subtitle, phase }: { icon: React.ReactNode; 
   return (
     <div className="rounded-xl p-5 mb-5" style={{ backgroundColor: style.bg, borderWidth: '2px', borderStyle: 'solid', borderColor: style.border }}>
       <div className="flex items-center gap-4">
-        <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: BRAND.primaryDark, border: `2px solid ${BRAND.accent}` }}>
-          <LogoIcon className="text-2xl" />
+        <div 
+          className="w-12 h-12 rounded-xl flex items-center justify-center"
+          style={{ 
+            backgroundColor: BRAND.primaryDark, 
+            border: `2px solid ${BRAND.accent}`,
+            lineHeight: 1,
+          }}
+        >
+          <span 
+            className="font-extrabold" 
+            style={{ 
+              fontFamily: "'Plus Jakarta Sans', sans-serif", 
+              color: BRAND.text,
+              fontSize: '20px',
+              lineHeight: 1,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            p<span style={{ color: BRAND.accent }}>.</span>
+          </span>
         </div>
         <div>
           <div className="flex items-center gap-3">
@@ -447,7 +467,7 @@ export default function CustomerJourneyMap() {
     
     try {
       const opt = {
-        margin: [10, 10, 10, 10],
+        margin: 0,
         filename: 'Patela-Customer-Journey-Map.pdf',
         image: { type: 'png', quality: 1 },
         html2canvas: { 
@@ -455,12 +475,15 @@ export default function CustomerJourneyMap() {
           useCORS: true,
           letterRendering: true,
           backgroundColor: BRAND.bgDarker,
+          scrollX: 0,
+          scrollY: 0,
+          windowWidth: contentRef.current.scrollWidth,
         },
         jsPDF: { 
           unit: 'mm', 
           format: 'a4', 
           orientation: 'portrait',
-          compress: true
+          compress: true,
         },
         pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
       };
