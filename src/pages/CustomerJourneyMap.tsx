@@ -7,8 +7,22 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import html2pdf from "html2pdf.js";
-import patelaLogoFull from "@/assets/patela-logo-full.jpg";
-import patelaLogoIcon from "@/assets/patela-logo-icon.jpg";
+// Logo text components for true transparency (no image edges)
+function LogoFull({ className = "" }: { className?: string }) {
+  return (
+    <span className={`font-extrabold tracking-tight text-white ${className}`} style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+      patela<span className="text-[#00D4FF]">.</span>
+    </span>
+  );
+}
+
+function LogoIcon({ className = "" }: { className?: string }) {
+  return (
+    <span className={`font-extrabold tracking-tight text-white ${className}`} style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+      p<span className="text-[#00D4FF]">.</span>
+    </span>
+  );
+}
 
 // Rich phone mockup component for visual journey
 function PhoneMockup({ children, label }: { children: React.ReactNode; label?: string }) {
@@ -195,7 +209,7 @@ function ScreenHome() {
       <div className="bg-[#2D1B69] p-2 rounded-b-xl">
         {/* Icon logo for small navigation areas */}
         <div className="flex items-center gap-1 mb-1">
-          <img src={patelaLogoIcon} alt="p." className="h-4 w-4 rounded mix-blend-multiply" />
+          <LogoIcon className="text-[10px]" />
           <p className="text-[6px] text-white font-bold">Patela</p>
         </div>
         <div className="bg-white/10 rounded p-1.5">
@@ -283,7 +297,9 @@ function StageHeader({ icon, title, subtitle, phase }: { icon: React.ReactNode; 
     <div className={`bg-gradient-to-r ${phaseColors[phase]} border rounded-xl p-4 mb-4`}>
       <div className="flex items-center gap-3">
         {/* Icon logo for platform representation in journey diagrams */}
-        <img src={patelaLogoIcon} alt="p." className="w-10 h-10 rounded-xl object-cover mix-blend-multiply" />
+        <div className="w-10 h-10 rounded-xl bg-[#2D1B69] flex items-center justify-center">
+          <LogoIcon className="text-xl" />
+        </div>
         <div>
           <div className="flex items-center gap-2">
             <h3 className="text-lg font-bold text-foreground">{title}</h3>
@@ -376,7 +392,7 @@ export default function CustomerJourneyMap() {
         <div className="relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-[#2D1B69]/30 via-[#00D4FF]/10 to-[#2D1B69]/30" />
           <div className="relative px-6 py-12 text-center">
-            <img src={patelaLogoFull} alt="Patela" className="h-12 mx-auto mb-6 mix-blend-multiply" />
+            <LogoFull className="text-5xl block mb-6" />
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-3">
               Onboarding to First Sale
             </h1>
@@ -608,7 +624,7 @@ export default function CustomerJourneyMap() {
 
         {/* Footer */}
         <div className="px-6 py-8 text-center border-t border-white/10">
-          <img src={patelaLogoFull} alt="Patela" className="h-8 mx-auto mb-4" />
+          <LogoFull className="text-3xl block mb-4" />
           <p className="text-sm text-white/50">
             Built for the Hustle. Patela © 2025
           </p>
