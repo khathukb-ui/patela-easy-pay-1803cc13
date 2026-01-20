@@ -7,28 +7,41 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import html2pdf from "html2pdf.js";
-// Logo text components for true transparency (no image edges)
-// Using high-contrast colors for PDF export
+// Official Patela Brand Colors (from design system)
+// Primary: hsl(261 51% 37%) = #5B3E9E (Deep Purple)
+// Accent: hsl(191 100% 50%) = #00D4FF (Cyan)
+// Success: hsl(145 65% 42%) = #25A55F (Green)
+// Warning: hsl(38 92% 50%) = #F59E0B (Amber)
+const BRAND = {
+  primary: '#5B3E9E',
+  primaryDark: '#3D2A6B',
+  primaryLight: '#7B5BBE',
+  accent: '#00D4FF',
+  accentDark: '#00A8CC',
+  success: '#25A55F',
+  successLight: '#34D399',
+  warning: '#F59E0B',
+  warningDark: '#D97706',
+  text: '#FFFFFF',
+  textMuted: '#E0E0E0',
+  textSubtle: '#B0B0B0',
+  bgDark: '#1A1040',
+  bgDarker: '#0D0A1A',
+};
+
+// Logo text components using official brand colors
 function LogoFull({ className = "" }: { className?: string }) {
   return (
-    <span className={`font-extrabold tracking-tight text-white ${className}`} style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-      patela<span style={{ color: '#00D4FF' }}>.</span>
-    </span>
-  );
-}
-
-function LogoFullDark({ className = "" }: { className?: string }) {
-  return (
-    <span className={`font-extrabold tracking-tight ${className}`} style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", color: '#2D1B69' }}>
-      patela<span style={{ color: '#00D4FF' }}>.</span>
+    <span className={`font-extrabold tracking-tight ${className}`} style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", color: BRAND.text }}>
+      patela<span style={{ color: BRAND.accent }}>.</span>
     </span>
   );
 }
 
 function LogoIcon({ className = "" }: { className?: string }) {
   return (
-    <span className={`font-extrabold tracking-tight text-white ${className}`} style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-      p<span style={{ color: '#00D4FF' }}>.</span>
+    <span className={`font-extrabold tracking-tight ${className}`} style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", color: BRAND.text }}>
+      p<span style={{ color: BRAND.accent }}>.</span>
     </span>
   );
 }
@@ -38,7 +51,7 @@ function LogoIcon({ className = "" }: { className?: string }) {
 function PhoneMockup({ children, label }: { children: React.ReactNode; label?: string }) {
   return (
     <div className="flex flex-col items-center">
-      <div className="relative w-[120px] h-[240px] rounded-[24px] border-3 shadow-xl overflow-hidden" style={{ backgroundColor: '#1a1040', borderColor: '#4a3a8a', borderWidth: '3px' }}>
+      <div className="relative w-[120px] h-[240px] rounded-[24px] shadow-xl overflow-hidden" style={{ backgroundColor: BRAND.bgDark, borderColor: BRAND.primaryLight, borderWidth: '2px', borderStyle: 'solid' }}>
         {/* Notch */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-12 h-3 bg-black rounded-b-lg z-10" />
         {/* Screen */}
@@ -49,7 +62,7 @@ function PhoneMockup({ children, label }: { children: React.ReactNode; label?: s
         <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-10 h-0.5 rounded-full" style={{ backgroundColor: 'rgba(255,255,255,0.5)' }} />
       </div>
       {label && (
-        <p className="mt-3 text-sm font-bold text-center" style={{ color: '#e0e0e0' }}>{label}</p>
+        <p className="mt-3 text-sm font-bold text-center" style={{ color: BRAND.textMuted }}>{label}</p>
       )}
     </div>
   );
@@ -269,32 +282,32 @@ function ScreenPaySuccess() {
   );
 }
 
-// Flow arrow component - enhanced for PDF visibility
+// Flow arrow component - using brand accent color
 function FlowArrow({ direction = "right" }: { direction?: "right" | "down" }) {
   if (direction === "down") {
     return (
       <div className="flex justify-center my-3">
         <div className="flex flex-col items-center">
-          <div className="w-1 h-6" style={{ backgroundColor: '#00D4FF' }} />
-          <ChevronRight className="h-6 w-6 rotate-90" style={{ color: '#00D4FF' }} />
+          <div className="w-1 h-6" style={{ backgroundColor: BRAND.accent }} />
+          <ChevronRight className="h-6 w-6 rotate-90" style={{ color: BRAND.accent }} />
         </div>
       </div>
     );
   }
   return (
     <div className="flex items-center mx-3">
-      <div className="w-6 h-1" style={{ backgroundColor: '#00D4FF' }} />
-      <ChevronRight className="h-6 w-6" style={{ color: '#00D4FF' }} />
+      <div className="w-6 h-1" style={{ backgroundColor: BRAND.accent }} />
+      <ChevronRight className="h-6 w-6" style={{ color: BRAND.accent }} />
     </div>
   );
 }
 
-// Journey stage header - enhanced contrast for PDF
+// Journey stage header - using official brand colors
 function StageHeader({ icon, title, subtitle, phase }: { icon: React.ReactNode; title: string; subtitle: string; phase: "required" | "optional" | "usage" }) {
   const phaseStyles = {
-    required: { bg: '#2D1B69', border: '#00D4FF', labelBg: 'rgba(0,212,255,0.3)', labelColor: '#00D4FF' },
-    optional: { bg: '#5c4a1f', border: '#f59e0b', labelBg: 'rgba(245,158,11,0.3)', labelColor: '#fbbf24' },
-    usage: { bg: '#1a4a2e', border: '#22c55e', labelBg: 'rgba(34,197,94,0.3)', labelColor: '#4ade80' },
+    required: { bg: BRAND.primary, border: BRAND.accent, labelBg: 'rgba(0,212,255,0.25)', labelColor: BRAND.accent },
+    optional: { bg: BRAND.warningDark, border: BRAND.warning, labelBg: 'rgba(245,158,11,0.25)', labelColor: BRAND.warning },
+    usage: { bg: BRAND.success, border: BRAND.successLight, labelBg: 'rgba(52,211,153,0.25)', labelColor: BRAND.successLight },
   };
   const phaseLabels = {
     required: "Required",
@@ -306,34 +319,33 @@ function StageHeader({ icon, title, subtitle, phase }: { icon: React.ReactNode; 
   return (
     <div className="rounded-xl p-5 mb-5" style={{ backgroundColor: style.bg, borderWidth: '2px', borderStyle: 'solid', borderColor: style.border }}>
       <div className="flex items-center gap-4">
-        {/* Icon logo for platform representation in journey diagrams */}
-        <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#2D1B69', border: '2px solid #00D4FF' }}>
+        <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: BRAND.primaryDark, border: `2px solid ${BRAND.accent}` }}>
           <LogoIcon className="text-2xl" />
         </div>
         <div>
           <div className="flex items-center gap-3">
-            <h3 className="text-xl font-bold" style={{ color: '#ffffff' }}>{title}</h3>
+            <h3 className="text-xl font-bold" style={{ color: BRAND.text }}>{title}</h3>
             <span className="text-xs px-3 py-1 rounded-full font-semibold" style={{ backgroundColor: style.labelBg, color: style.labelColor }}>
               {phaseLabels[phase]}
             </span>
           </div>
-          <p className="text-sm mt-1" style={{ color: '#d0d0d0' }}>{subtitle}</p>
+          <p className="text-sm mt-1" style={{ color: BRAND.textMuted }}>{subtitle}</p>
         </div>
       </div>
     </div>
   );
 }
 
-// Feature availability indicator - enhanced for PDF
+// Feature availability indicator - using brand colors
 function FeatureCheck({ available, label }: { available: boolean; label: string }) {
   return (
     <div className="flex items-center gap-3 text-sm py-1">
       {available ? (
-        <CheckCircle2 className="h-5 w-5" style={{ color: '#22c55e' }} />
+        <CheckCircle2 className="h-5 w-5" style={{ color: BRAND.success }} />
       ) : (
         <XCircle className="h-5 w-5" style={{ color: '#ef4444' }} />
       )}
-      <span className="font-medium" style={{ color: available ? '#ffffff' : '#a0a0a0' }}>{label}</span>
+      <span className="font-medium" style={{ color: available ? BRAND.text : BRAND.textSubtle }}>{label}</span>
     </div>
   );
 }
@@ -349,20 +361,20 @@ export default function CustomerJourneyMap() {
     
     try {
       const opt = {
-      margin: [15, 15, 15, 15],
+        margin: [10, 10, 10, 10],
         filename: 'Patela-Customer-Journey-Map.pdf',
         image: { type: 'png', quality: 1 },
         html2canvas: { 
-          scale: 3,
+          scale: 2,
           useCORS: true,
           letterRendering: true,
-          backgroundColor: '#0d0a1a',
+          backgroundColor: BRAND.bgDarker,
         },
         jsPDF: { 
           unit: 'mm', 
           format: 'a4', 
           orientation: 'portrait',
-          compress: false
+          compress: true
         },
         pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
       };
@@ -376,13 +388,14 @@ export default function CustomerJourneyMap() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0d0a1a] via-[#1a1040] to-[#0d0a1a]">
+    <div className="min-h-screen" style={{ background: `linear-gradient(135deg, ${BRAND.bgDarker} 0%, ${BRAND.bgDark} 50%, ${BRAND.bgDarker} 100%)` }}>
       {/* Floating Download Button */}
       <div className="fixed top-4 right-4 z-50 print:hidden">
         <Button
           onClick={handleDownloadPDF}
           disabled={isGenerating}
-          className="bg-gradient-to-r from-[#2D1B69] to-[#00D4FF] hover:opacity-90 text-white shadow-lg"
+          style={{ background: `linear-gradient(135deg, ${BRAND.primary} 0%, ${BRAND.accent} 100%)` }}
+          className="hover:opacity-90 text-white shadow-lg"
         >
           {isGenerating ? (
             <>
@@ -398,21 +411,21 @@ export default function CustomerJourneyMap() {
         </Button>
       </div>
 
-      {/* PDF Content - using inline styles for reliable PDF export */}
-      <div ref={contentRef} className="max-w-5xl mx-auto" style={{ backgroundColor: '#0d0a1a' }}>
+      {/* PDF Content */}
+      <div ref={contentRef} className="max-w-5xl mx-auto" style={{ backgroundColor: BRAND.bgDarker }}>
         {/* Hero Header */}
-        <div className="relative overflow-hidden" style={{ backgroundColor: '#1a1040' }}>
+        <div className="relative overflow-hidden" style={{ background: `linear-gradient(180deg, ${BRAND.primary} 0%, ${BRAND.bgDark} 100%)` }}>
           <div className="relative px-8 py-14 text-center">
             <LogoFull className="text-6xl block mb-8" />
-            <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{ color: '#ffffff' }}>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{ color: BRAND.text }}>
               Onboarding to First Sale
             </h1>
-            <p className="text-xl font-semibold mb-6" style={{ color: '#00D4FF' }}>
+            <p className="text-xl font-semibold mb-6" style={{ color: BRAND.accent }}>
               Intelligence in every tap. Growing with you.
             </p>
             <div className="flex justify-center gap-3">
               {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div key={i} className="w-3 h-3 rounded-full" style={{ backgroundColor: '#00D4FF' }} />
+                <div key={i} className="w-3 h-3 rounded-full" style={{ backgroundColor: BRAND.accent }} />
               ))}
             </div>
           </div>
@@ -420,19 +433,19 @@ export default function CustomerJourneyMap() {
 
         {/* User Personas */}
         <div className="px-8 py-10">
-          <h2 className="text-2xl font-bold mb-8 flex items-center gap-3" style={{ color: '#ffffff' }}>
-            <User className="h-7 w-7" style={{ color: '#00D4FF' }} />
+          <h2 className="text-2xl font-bold mb-8 flex items-center gap-3" style={{ color: BRAND.text }}>
+            <User className="h-7 w-7" style={{ color: BRAND.accent }} />
             Who Uses Patela?
           </h2>
           <div className="grid md:grid-cols-2 gap-8">
-            <div className="rounded-2xl p-6" style={{ backgroundColor: '#2D1B69', border: '2px solid #4a3a8a' }}>
+            <div className="rounded-2xl p-6" style={{ backgroundColor: BRAND.primary, border: `2px solid ${BRAND.primaryLight}` }}>
               <div className="flex items-center gap-4 mb-5">
-                <div className="w-16 h-16 rounded-2xl flex items-center justify-center" style={{ backgroundColor: '#00D4FF' }}>
-                  <User className="h-8 w-8" style={{ color: '#2D1B69' }} />
+                <div className="w-16 h-16 rounded-2xl flex items-center justify-center" style={{ backgroundColor: BRAND.accent }}>
+                  <User className="h-8 w-8" style={{ color: BRAND.primaryDark }} />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold" style={{ color: '#ffffff' }}>Admin Merchant</h3>
-                  <p className="text-sm font-medium" style={{ color: '#b0b0b0' }}>Business Owner</p>
+                  <h3 className="text-xl font-bold" style={{ color: BRAND.text }}>Admin Merchant</h3>
+                  <p className="text-sm font-medium" style={{ color: BRAND.textSubtle }}>Business Owner</p>
                 </div>
               </div>
               <div className="space-y-2">
@@ -443,14 +456,14 @@ export default function CustomerJourneyMap() {
                 <FeatureCheck available={true} label="Link bank & pair devices" />
               </div>
             </div>
-            <div className="rounded-2xl p-6" style={{ backgroundColor: '#1a3a4a', border: '2px solid #00D4FF' }}>
+            <div className="rounded-2xl p-6" style={{ backgroundColor: BRAND.primaryDark, border: `2px solid ${BRAND.accent}` }}>
               <div className="flex items-center gap-4 mb-5">
-                <div className="w-16 h-16 rounded-2xl flex items-center justify-center" style={{ backgroundColor: '#2D1B69' }}>
-                  <User className="h-8 w-8" style={{ color: '#00D4FF' }} />
+                <div className="w-16 h-16 rounded-2xl flex items-center justify-center" style={{ backgroundColor: BRAND.primary }}>
+                  <User className="h-8 w-8" style={{ color: BRAND.accent }} />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold" style={{ color: '#ffffff' }}>Cashier</h3>
-                  <p className="text-sm font-medium" style={{ color: '#b0b0b0' }}>Team Member</p>
+                  <h3 className="text-xl font-bold" style={{ color: BRAND.text }}>Cashier</h3>
+                  <p className="text-sm font-medium" style={{ color: BRAND.textSubtle }}>Team Member</p>
                 </div>
               </div>
               <div className="space-y-2">
@@ -474,7 +487,7 @@ export default function CustomerJourneyMap() {
           />
           
           {/* Visual Flow */}
-          <div className="rounded-2xl p-8" style={{ backgroundColor: '#1a1040', border: '2px solid #4a3a8a' }}>
+          <div className="rounded-2xl p-8" style={{ backgroundColor: BRAND.bgDark, border: `2px solid ${BRAND.primaryLight}` }}>
             <div className="flex flex-wrap items-center justify-center gap-3">
               <PhoneMockup label="1. Language"><ScreenLanguage /></PhoneMockup>
               <FlowArrow />
@@ -489,8 +502,8 @@ export default function CustomerJourneyMap() {
               <PhoneMockup label="✓ Done!"><ScreenSuccess /></PhoneMockup>
             </div>
             <div className="mt-8 text-center">
-              <p className="text-base font-medium" style={{ color: '#d0d0d0' }}>
-                <span style={{ color: '#00D4FF', fontWeight: 700 }}>5 steps</span> • Takes about <span style={{ color: '#00D4FF', fontWeight: 700 }}>2 minutes</span> • Progress saves automatically
+              <p className="text-base font-medium" style={{ color: BRAND.textMuted }}>
+                <span style={{ color: BRAND.accent, fontWeight: 700 }}>5 steps</span> • Takes about <span style={{ color: BRAND.accent, fontWeight: 700 }}>2 minutes</span> • Progress saves automatically
               </p>
             </div>
           </div>
@@ -507,36 +520,36 @@ export default function CustomerJourneyMap() {
           
           <div className="grid md:grid-cols-2 gap-8">
             {/* Bank Linking */}
-            <div className="rounded-2xl p-6" style={{ backgroundColor: '#3d3220', border: '2px solid #f59e0b' }}>
+            <div className="rounded-2xl p-6" style={{ backgroundColor: BRAND.warningDark, border: `2px solid ${BRAND.warning}` }}>
               <div className="flex items-center gap-4 mb-5">
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#166534' }}>
-                  <Banknote className="h-6 w-6" style={{ color: '#4ade80' }} />
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: BRAND.success }}>
+                  <Banknote className="h-6 w-6" style={{ color: BRAND.text }} />
                 </div>
                 <div>
-                  <h4 className="font-bold text-lg" style={{ color: '#ffffff' }}>Link Bank Account</h4>
-                  <p className="text-sm font-medium" style={{ color: '#fbbf24' }}>For payouts</p>
+                  <h4 className="font-bold text-lg" style={{ color: BRAND.text }}>Link Bank Account</h4>
+                  <p className="text-sm font-medium" style={{ color: BRAND.warning }}>For payouts</p>
                 </div>
               </div>
               <PhoneMockup><ScreenBank /></PhoneMockup>
-              <div className="mt-5 flex items-center justify-center gap-2 text-base font-medium" style={{ color: '#fbbf24' }}>
+              <div className="mt-5 flex items-center justify-center gap-2 text-base font-medium" style={{ color: BRAND.warning }}>
                 <SkipForward className="h-5 w-5" />
                 <span>Can skip and do later</span>
               </div>
             </div>
             
             {/* Device Pairing */}
-            <div className="rounded-2xl p-6" style={{ backgroundColor: '#3d3220', border: '2px solid #f59e0b' }}>
+            <div className="rounded-2xl p-6" style={{ backgroundColor: BRAND.warningDark, border: `2px solid ${BRAND.warning}` }}>
               <div className="flex items-center gap-4 mb-5">
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#1e3a5f' }}>
-                  <Smartphone className="h-6 w-6" style={{ color: '#00D4FF' }} />
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: BRAND.primaryDark }}>
+                  <Smartphone className="h-6 w-6" style={{ color: BRAND.accent }} />
                 </div>
                 <div>
-                  <h4 className="font-bold text-lg" style={{ color: '#ffffff' }}>Pair Device</h4>
-                  <p className="text-sm font-medium" style={{ color: '#fbbf24' }}>For card payments</p>
+                  <h4 className="font-bold text-lg" style={{ color: BRAND.text }}>Pair Device</h4>
+                  <p className="text-sm font-medium" style={{ color: BRAND.warning }}>For card payments</p>
                 </div>
               </div>
               <PhoneMockup><ScreenDevice /></PhoneMockup>
-              <div className="mt-5 flex items-center justify-center gap-2 text-base font-medium" style={{ color: '#fbbf24' }}>
+              <div className="mt-5 flex items-center justify-center gap-2 text-base font-medium" style={{ color: BRAND.warning }}>
                 <SkipForward className="h-5 w-5" />
                 <span>Can skip and do later</span>
               </div>
@@ -544,12 +557,12 @@ export default function CustomerJourneyMap() {
           </div>
           
           {/* Skip explanation */}
-          <div className="mt-8 rounded-xl p-5" style={{ backgroundColor: '#4a3d1a', border: '2px solid #f59e0b' }}>
+          <div className="mt-8 rounded-xl p-5" style={{ backgroundColor: BRAND.warningDark, border: `2px solid ${BRAND.warning}` }}>
             <div className="flex items-start gap-4">
-              <AlertCircle className="h-6 w-6 mt-0.5" style={{ color: '#fbbf24' }} />
+              <AlertCircle className="h-6 w-6 mt-0.5" style={{ color: BRAND.warning }} />
               <div>
-                <p className="text-base font-bold" style={{ color: '#ffffff' }}>Why can I skip these steps?</p>
-                <p className="text-sm mt-2" style={{ color: '#e0e0e0' }}>
+                <p className="text-base font-bold" style={{ color: BRAND.text }}>Why can I skip these steps?</p>
+                <p className="text-sm mt-2" style={{ color: BRAND.textMuted }}>
                   Patela lets you start selling right away! Cash sales work without any additional setup. 
                   You can link your bank and pair your device later when you need card payments or payouts.
                 </p>
@@ -567,7 +580,7 @@ export default function CustomerJourneyMap() {
             phase="usage"
           />
           
-          <div className="rounded-2xl p-8" style={{ backgroundColor: '#1a3a2e', border: '2px solid #22c55e' }}>
+          <div className="rounded-2xl p-8" style={{ backgroundColor: BRAND.success, border: `2px solid ${BRAND.successLight}` }}>
             <div className="flex flex-wrap items-center justify-center gap-3">
               <PhoneMockup label="Dashboard"><ScreenHome /></PhoneMockup>
               <FlowArrow />
@@ -576,8 +589,8 @@ export default function CustomerJourneyMap() {
               <PhoneMockup label="Success!"><ScreenPaySuccess /></PhoneMockup>
             </div>
             <div className="mt-8 text-center">
-              <p className="text-base font-medium" style={{ color: '#d0d0d0' }}>
-                <span style={{ color: '#4ade80', fontWeight: 700 }}>Cash sales</span> work immediately • <span style={{ color: '#4ade80', fontWeight: 700 }}>Card payments</span> require device
+              <p className="text-base font-medium" style={{ color: BRAND.text }}>
+                <span style={{ color: BRAND.text, fontWeight: 700 }}>Cash sales</span> work immediately • <span style={{ color: BRAND.text, fontWeight: 700 }}>Card payments</span> require device
               </p>
             </div>
           </div>
@@ -585,18 +598,18 @@ export default function CustomerJourneyMap() {
 
         {/* Feature Availability Matrix */}
         <div className="px-8 py-10">
-          <h2 className="text-2xl font-bold mb-8 flex items-center gap-3" style={{ color: '#ffffff' }}>
-            <Check className="h-7 w-7" style={{ color: '#00D4FF' }} />
+          <h2 className="text-2xl font-bold mb-8 flex items-center gap-3" style={{ color: BRAND.text }}>
+            <Check className="h-7 w-7" style={{ color: BRAND.accent }} />
             What Works Without Full Setup?
           </h2>
           
           <div className="grid md:grid-cols-3 gap-6">
-            <div className="rounded-xl p-6" style={{ backgroundColor: '#1a3a2e', border: '2px solid #22c55e' }}>
-              <h4 className="font-bold mb-4 flex items-center gap-3 text-lg" style={{ color: '#4ade80' }}>
+            <div className="rounded-xl p-6" style={{ backgroundColor: BRAND.success, border: `2px solid ${BRAND.successLight}` }}>
+              <h4 className="font-bold mb-4 flex items-center gap-3 text-lg" style={{ color: BRAND.text }}>
                 <CheckCircle2 className="h-6 w-6" />
                 Always Available
               </h4>
-              <ul className="space-y-3 text-base" style={{ color: '#e0e0e0' }}>
+              <ul className="space-y-3 text-base" style={{ color: BRAND.text }}>
                 <li>• Record cash sales</li>
                 <li>• Add items to catalog</li>
                 <li>• View sales history</li>
@@ -605,12 +618,12 @@ export default function CustomerJourneyMap() {
               </ul>
             </div>
             
-            <div className="rounded-xl p-6" style={{ backgroundColor: '#1a3a4a', border: '2px solid #00D4FF' }}>
-              <h4 className="font-bold mb-4 flex items-center gap-3 text-lg" style={{ color: '#00D4FF' }}>
+            <div className="rounded-xl p-6" style={{ backgroundColor: BRAND.primaryDark, border: `2px solid ${BRAND.accent}` }}>
+              <h4 className="font-bold mb-4 flex items-center gap-3 text-lg" style={{ color: BRAND.accent }}>
                 <Smartphone className="h-6 w-6" />
                 Needs Device
               </h4>
-              <ul className="space-y-3 text-base" style={{ color: '#e0e0e0' }}>
+              <ul className="space-y-3 text-base" style={{ color: BRAND.textMuted }}>
                 <li>• Accept card payments</li>
                 <li>• Tap to pay (NFC)</li>
                 <li>• QR code payments</li>
@@ -618,12 +631,12 @@ export default function CustomerJourneyMap() {
               </ul>
             </div>
             
-            <div className="rounded-xl p-6" style={{ backgroundColor: '#2D1B69', border: '2px solid #6b5b95' }}>
-              <h4 className="font-bold mb-4 flex items-center gap-3 text-lg" style={{ color: '#ffffff' }}>
-                <Banknote className="h-6 w-6" style={{ color: '#a78bfa' }} />
+            <div className="rounded-xl p-6" style={{ backgroundColor: BRAND.primary, border: `2px solid ${BRAND.primaryLight}` }}>
+              <h4 className="font-bold mb-4 flex items-center gap-3 text-lg" style={{ color: BRAND.text }}>
+                <Banknote className="h-6 w-6" style={{ color: BRAND.accent }} />
                 Needs Bank Account
               </h4>
-              <ul className="space-y-3 text-base" style={{ color: '#e0e0e0' }}>
+              <ul className="space-y-3 text-base" style={{ color: BRAND.textMuted }}>
                 <li>• Request payouts</li>
                 <li>• Same-day transfers</li>
                 <li>• Instant payouts</li>
@@ -634,12 +647,12 @@ export default function CustomerJourneyMap() {
         </div>
 
         {/* Footer */}
-        <div className="px-8 py-10 text-center" style={{ borderTop: '2px solid #4a3a8a' }}>
+        <div className="px-8 py-10 text-center" style={{ borderTop: `2px solid ${BRAND.primaryLight}` }}>
           <LogoFull className="text-4xl block mb-5" />
-          <p className="text-base font-medium" style={{ color: '#b0b0b0' }}>
+          <p className="text-base font-medium" style={{ color: BRAND.textSubtle }}>
             Built for the Hustle. Patela © 2025
           </p>
-          <p className="text-sm mt-3" style={{ color: '#808080' }}>
+          <p className="text-sm mt-3" style={{ color: BRAND.textSubtle }}>
             Languages: English • isiZulu • Sesotho • Xitsonga
           </p>
         </div>
