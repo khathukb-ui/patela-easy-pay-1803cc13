@@ -7,6 +7,11 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import html2pdf from "html2pdf.js";
+
+// Human-focused vendor images
+import vendorPortrait1 from "@/assets/vendor-portrait-1.jpg";
+import vendorPortrait2 from "@/assets/vendor-portrait-2.jpg";
+import vendorBanner from "@/assets/vendor-banner.jpg";
 // Official Patela Brand Colors (from design system)
 // Primary: hsl(261 51% 37%) = #5B3E9E (Deep Purple)
 // Accent: hsl(191 100% 50%) = #00D4FF (Cyan)
@@ -413,8 +418,17 @@ export default function CustomerJourneyMap() {
 
       {/* PDF Content */}
       <div ref={contentRef} className="max-w-5xl mx-auto" style={{ backgroundColor: BRAND.bgDarker }}>
-        {/* Hero Header */}
+        {/* Hero Header with Human Banner */}
         <div className="relative overflow-hidden" style={{ background: `linear-gradient(180deg, ${BRAND.primary} 0%, ${BRAND.bgDark} 100%)` }}>
+          {/* Subtle vendor banner overlay */}
+          <div 
+            className="absolute inset-0 opacity-15"
+            style={{
+              backgroundImage: `url(${vendorBanner})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center top',
+            }}
+          />
           <div className="relative px-8 py-14 text-center">
             <LogoFull className="text-6xl block mb-8" />
             <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{ color: BRAND.text }}>
@@ -440,8 +454,13 @@ export default function CustomerJourneyMap() {
           <div className="grid md:grid-cols-2 gap-8">
             <div className="rounded-2xl p-6" style={{ backgroundColor: BRAND.primary, border: `2px solid ${BRAND.primaryLight}` }}>
               <div className="flex items-center gap-4 mb-5">
-                <div className="w-16 h-16 rounded-2xl flex items-center justify-center" style={{ backgroundColor: BRAND.accent }}>
-                  <User className="h-8 w-8" style={{ color: BRAND.primaryDark }} />
+                {/* Human portrait instead of icon */}
+                <div className="w-16 h-16 rounded-2xl overflow-hidden flex-shrink-0" style={{ border: `2px solid ${BRAND.accent}` }}>
+                  <img 
+                    src={vendorPortrait1} 
+                    alt="Business owner" 
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 <div>
                   <h3 className="text-xl font-bold" style={{ color: BRAND.text }}>Admin Merchant</h3>
@@ -458,8 +477,13 @@ export default function CustomerJourneyMap() {
             </div>
             <div className="rounded-2xl p-6" style={{ backgroundColor: BRAND.primaryDark, border: `2px solid ${BRAND.accent}` }}>
               <div className="flex items-center gap-4 mb-5">
-                <div className="w-16 h-16 rounded-2xl flex items-center justify-center" style={{ backgroundColor: BRAND.primary }}>
-                  <User className="h-8 w-8" style={{ color: BRAND.accent }} />
+                {/* Human portrait instead of icon */}
+                <div className="w-16 h-16 rounded-2xl overflow-hidden flex-shrink-0" style={{ border: `2px solid ${BRAND.accent}` }}>
+                  <img 
+                    src={vendorPortrait2} 
+                    alt="Team member" 
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 <div>
                   <h3 className="text-xl font-bold" style={{ color: BRAND.text }}>Cashier</h3>
@@ -646,8 +670,17 @@ export default function CustomerJourneyMap() {
           </div>
         </div>
 
-        {/* Footer */}
-        <div className="px-8 py-10 text-center" style={{ borderTop: `2px solid ${BRAND.primaryLight}` }}>
+        {/* Footer with Human Touch */}
+        <div className="px-8 py-10 text-center relative" style={{ borderTop: `2px solid ${BRAND.primaryLight}` }}>
+          {/* Subtle human portraits in footer */}
+          <div className="flex justify-center gap-4 mb-6">
+            <div className="w-14 h-14 rounded-full overflow-hidden opacity-80" style={{ border: `2px solid ${BRAND.accent}` }}>
+              <img src={vendorPortrait1} alt="" className="w-full h-full object-cover" />
+            </div>
+            <div className="w-14 h-14 rounded-full overflow-hidden opacity-80" style={{ border: `2px solid ${BRAND.accent}` }}>
+              <img src={vendorPortrait2} alt="" className="w-full h-full object-cover" />
+            </div>
+          </div>
           <LogoFull className="text-4xl block mb-5" />
           <p className="text-base font-medium" style={{ color: BRAND.textSubtle }}>
             Built for the Hustle. Patela © 2025
