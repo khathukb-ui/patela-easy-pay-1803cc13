@@ -92,17 +92,14 @@ export default function Home() {
       <header className="bg-primary px-6 py-4 patela-shadow-md">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <PatelaLogo size="sm" variant="icon" />
-            <div>
-              <p className="text-sm font-semibold text-primary-foreground">Patela</p>
-              <p className="text-xs text-primary-foreground/70">
-                {new Date().toLocaleDateString("en-ZA", {
-                  weekday: "long",
-                  day: "numeric",
-                  month: "short",
-                })}
-              </p>
-            </div>
+            <PatelaLogo size="md" variant="icon" />
+            <p className="text-xs text-primary-foreground/70">
+              {new Date().toLocaleDateString("en-ZA", {
+                weekday: "long",
+                day: "numeric",
+                month: "short",
+              })}
+            </p>
           </div>
           
           {/* Device Status */}
