@@ -92,7 +92,7 @@ export default function Home() {
       <header className="bg-primary px-6 py-4 patela-shadow-md">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <PatelaLogo size="md" variant="icon" />
+            <PatelaLogo size="md" variant="light-icon" />
             <p className="text-xs text-primary-foreground/70">
               {new Date().toLocaleDateString("en-ZA", {
                 weekday: "long",
