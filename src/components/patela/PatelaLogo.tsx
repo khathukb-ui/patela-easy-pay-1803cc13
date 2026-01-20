@@ -45,14 +45,30 @@ export function PatelaLogo({
     );
   }
 
-  // Full wordmark variant - "patela." with brand colors
-  // Uses CSS text for true transparency - no image edges
+  // Light icon variant for dark backgrounds
+  if (variant === "light") {
+    return (
+      <span
+        className={cn(
+          "font-extrabold tracking-tight",
+          sizeClasses[size],
+          "text-white",
+          className
+        )}
+        style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+      >
+        patela<span className="text-[#00D4FF]">.</span>
+      </span>
+    );
+  }
+
+  // Dark wordmark variant - "patela." with brand colors on light backgrounds
   return (
     <span
       className={cn(
         "font-extrabold tracking-tight",
         sizeClasses[size],
-        variant === "light" ? "text-white" : "text-[#2D1B69]",
+        "text-[#2D1B69]",
         className
       )}
       style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}

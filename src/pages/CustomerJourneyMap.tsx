@@ -208,9 +208,8 @@ function ScreenHome() {
     <div className="h-full bg-gradient-to-b from-[#2D1B69] to-[#1a1040] flex flex-col">
       <div className="bg-[#2D1B69] p-2 rounded-b-xl">
         {/* Icon logo for small navigation areas */}
-        <div className="flex items-center gap-1 mb-1">
-          <LogoIcon className="text-[10px]" />
-          <p className="text-[6px] text-white font-bold">Patela</p>
+        <div className="flex items-center mb-1">
+          <LogoIcon className="text-[12px]" />
         </div>
         <div className="bg-white/10 rounded p-1.5">
           <p className="text-[5px] text-white/70">Today's Sales</p>
