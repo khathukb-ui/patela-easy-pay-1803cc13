@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import patelaIconTransparent from "@/assets/patela-icon-transparent.png";
 
 interface PatelaLogoProps {
   size?: "sm" | "md" | "lg" | "xl" | "2xl";
@@ -29,46 +30,6 @@ const BRAND = {
   cyan: "#00D4FF",
   white: "#FFFFFF",
 };
-
-/**
- * SVG "p." icon - accurately traced from reference image
- * Features: rounded loop at top, straight descender, circular dot
- */
-function PatelaIconSVG({ color, dotColor }: { color: string; dotColor: string }) {
-  return (
-    <svg 
-      viewBox="0 0 120 150" 
-      fill="none" 
-      xmlns="http://www.w3.org/2000/svg" 
-      className="h-full w-auto"
-      style={{ display: 'block' }}
-    >
-      {/* "p" letter - outer shape with rounded loop and descender */}
-      <path
-        d="M20 45C20 20.147 40.147 0 65 0C89.853 0 110 20.147 110 45C110 69.853 89.853 90 65 90H35V140C35 145.523 30.523 150 25 150H20V45Z"
-        fill={color}
-      />
-      {/* Inner cutout of the "p" loop - creates the hole */}
-      <circle cx="65" cy="45" r="25" fill="none" />
-      <path
-        d="M35 45C35 28.431 48.431 15 65 15C81.569 15 95 28.431 95 45C95 61.569 81.569 75 65 75H35V45Z"
-        fill="transparent"
-      />
-      {/* Mask to create the inner hole */}
-      <mask id="p-mask">
-        <rect width="120" height="150" fill="white"/>
-        <circle cx="65" cy="45" r="22" fill="black"/>
-      </mask>
-      <path
-        d="M20 45C20 20.147 40.147 0 65 0C89.853 0 110 20.147 110 45C110 69.853 89.853 90 65 90H35V140C35 145.523 30.523 150 25 150H20V45Z"
-        fill={color}
-        mask="url(#p-mask)"
-      />
-      {/* Cyan dot */}
-      <circle cx="105" cy="78" r="12" fill={dotColor} />
-    </svg>
-  );
-}
 
 /**
  * SVG "patela." wordmark - using web font for exact typography match
@@ -127,13 +88,26 @@ export function PatelaLogo({
   const mainColor = (variant === "light" || variant === "light-icon") ? BRAND.white : BRAND.purple;
   const dotColor = BRAND.cyan;
 
+  // For icon variants, use the official transparent PNG
+  // Apply CSS filter for light-icon variant to invert colors
+  if (isIconVariant) {
+    return (
+      <div className={cn(heightClass, "inline-flex items-center", className)}>
+        <img 
+          src={patelaIconTransparent} 
+          alt="Patela" 
+          className={cn(
+            "h-full w-auto",
+            variant === "light-icon" && "brightness-0 invert"
+          )}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className={cn(heightClass, "inline-flex items-center", className)}>
-      {isIconVariant ? (
-        <PatelaIconSVG color={mainColor} dotColor={dotColor} />
-      ) : (
-        <PatelaWordmarkSVG color={mainColor} dotColor={dotColor} />
-      )}
+      <PatelaWordmarkSVG color={mainColor} dotColor={dotColor} />
     </div>
   );
 }
