@@ -405,24 +405,28 @@ function StageHeader({ icon, title, subtitle, phase }: { icon: React.ReactNode; 
   return (
     <div className="rounded-xl p-5 mb-5" style={{ backgroundColor: style.bg, borderWidth: '2px', borderStyle: 'solid', borderColor: style.border }}>
       <div className="flex items-center gap-4">
+        {/* Icon container with absolute centering for PDF compatibility */}
         <div 
-          className="w-12 h-12 rounded-xl flex items-center justify-center"
           style={{ 
+            position: 'relative',
+            width: '48px',
+            height: '48px',
+            borderRadius: '12px',
             backgroundColor: BRAND.primaryDark, 
             border: `2px solid ${BRAND.accent}`,
-            lineHeight: 1,
           }}
         >
           <span 
-            className="font-extrabold" 
             style={{ 
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
               fontFamily: "'Plus Jakarta Sans', sans-serif", 
+              fontWeight: 800,
               color: BRAND.text,
               fontSize: '20px',
               lineHeight: 1,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
             }}
           >
             p<span style={{ color: BRAND.accent }}>.</span>
@@ -650,8 +654,28 @@ export default function CustomerJourneyMap() {
             {/* Bank Linking */}
             <div className="rounded-2xl p-6" style={{ backgroundColor: BRAND.warningDark, border: `2px solid ${BRAND.warning}` }}>
               <div className="flex items-center gap-4 mb-5">
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: BRAND.success }}>
-                  <Banknote className="h-6 w-6" style={{ color: BRAND.text }} />
+                {/* Icon with absolute centering for PDF */}
+                <div 
+                  style={{ 
+                    position: 'relative',
+                    width: '48px',
+                    height: '48px',
+                    minWidth: '48px',
+                    borderRadius: '12px',
+                    backgroundColor: BRAND.success,
+                  }}
+                >
+                  <Banknote 
+                    style={{ 
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      width: '24px',
+                      height: '24px',
+                      color: BRAND.text,
+                    }} 
+                  />
                 </div>
                 <div>
                   <h4 className="font-bold text-lg" style={{ color: BRAND.text }}>Link Bank Account</h4>
@@ -668,8 +692,28 @@ export default function CustomerJourneyMap() {
             {/* Device Pairing */}
             <div className="rounded-2xl p-6" style={{ backgroundColor: BRAND.warningDark, border: `2px solid ${BRAND.warning}` }}>
               <div className="flex items-center gap-4 mb-5">
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: BRAND.primaryDark }}>
-                  <Smartphone className="h-6 w-6" style={{ color: BRAND.accent }} />
+                {/* Icon with absolute centering for PDF */}
+                <div 
+                  style={{ 
+                    position: 'relative',
+                    width: '48px',
+                    height: '48px',
+                    minWidth: '48px',
+                    borderRadius: '12px',
+                    backgroundColor: BRAND.primaryDark,
+                  }}
+                >
+                  <Smartphone 
+                    style={{ 
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      width: '24px',
+                      height: '24px',
+                      color: BRAND.accent,
+                    }} 
+                  />
                 </div>
                 <div>
                   <h4 className="font-bold text-lg" style={{ color: BRAND.text }}>Pair Device</h4>
@@ -733,10 +777,30 @@ export default function CustomerJourneyMap() {
           
           <div className="grid md:grid-cols-3 gap-6">
             <div className="rounded-xl p-6" style={{ backgroundColor: BRAND.success, border: `2px solid ${BRAND.successLight}` }}>
-              <h4 className="font-bold mb-4 flex items-center gap-3 text-lg" style={{ color: BRAND.text }}>
-                <CheckCircle2 className="h-6 w-6" />
-                Always Available
-              </h4>
+              <div className="flex items-center gap-3 mb-4">
+                {/* Icon with absolute centering for PDF */}
+                <div 
+                  style={{ 
+                    position: 'relative',
+                    width: '24px',
+                    height: '24px',
+                    minWidth: '24px',
+                  }}
+                >
+                  <CheckCircle2 
+                    style={{ 
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      width: '24px',
+                      height: '24px',
+                      color: BRAND.text,
+                    }} 
+                  />
+                </div>
+                <h4 className="font-bold text-lg" style={{ color: BRAND.text }}>Always Available</h4>
+              </div>
               <ul className="space-y-3 text-base" style={{ color: BRAND.text }}>
                 <li>• Record cash sales</li>
                 <li>• Add items to catalog</li>
@@ -747,10 +811,30 @@ export default function CustomerJourneyMap() {
             </div>
             
             <div className="rounded-xl p-6" style={{ backgroundColor: BRAND.primaryDark, border: `2px solid ${BRAND.accent}` }}>
-              <h4 className="font-bold mb-4 flex items-center gap-3 text-lg" style={{ color: BRAND.accent }}>
-                <Smartphone className="h-6 w-6" />
-                Needs Device
-              </h4>
+              <div className="flex items-center gap-3 mb-4">
+                {/* Icon with absolute centering for PDF */}
+                <div 
+                  style={{ 
+                    position: 'relative',
+                    width: '24px',
+                    height: '24px',
+                    minWidth: '24px',
+                  }}
+                >
+                  <Smartphone 
+                    style={{ 
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      width: '24px',
+                      height: '24px',
+                      color: BRAND.accent,
+                    }} 
+                  />
+                </div>
+                <h4 className="font-bold text-lg" style={{ color: BRAND.accent }}>Needs Device</h4>
+              </div>
               <ul className="space-y-3 text-base" style={{ color: BRAND.textMuted }}>
                 <li>• Accept card payments</li>
                 <li>• Tap to pay (NFC)</li>
@@ -760,10 +844,30 @@ export default function CustomerJourneyMap() {
             </div>
             
             <div className="rounded-xl p-6" style={{ backgroundColor: BRAND.primary, border: `2px solid ${BRAND.primaryLight}` }}>
-              <h4 className="font-bold mb-4 flex items-center gap-3 text-lg" style={{ color: BRAND.text }}>
-                <Banknote className="h-6 w-6" style={{ color: BRAND.accent }} />
-                Needs Bank Account
-              </h4>
+              <div className="flex items-center gap-3 mb-4">
+                {/* Icon with absolute centering for PDF */}
+                <div 
+                  style={{ 
+                    position: 'relative',
+                    width: '24px',
+                    height: '24px',
+                    minWidth: '24px',
+                  }}
+                >
+                  <Banknote 
+                    style={{ 
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      width: '24px',
+                      height: '24px',
+                      color: BRAND.accent,
+                    }} 
+                  />
+                </div>
+                <h4 className="font-bold text-lg" style={{ color: BRAND.text }}>Needs Bank Account</h4>
+              </div>
               <ul className="space-y-3 text-base" style={{ color: BRAND.textMuted }}>
                 <li>• Request payouts</li>
                 <li>• Same-day transfers</li>
