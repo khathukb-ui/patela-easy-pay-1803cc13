@@ -459,28 +459,37 @@ export default function CustomerJourneyMap() {
     setIsGenerating(true);
     
     try {
+      // Calculate the actual height of the content for a single continuous page
+      const contentHeight = contentRef.current.scrollHeight;
+      const contentWidth = contentRef.current.offsetWidth;
+      
+      // Convert pixels to mm (assuming 96 DPI)
+      const pxToMm = 0.264583;
+      const widthMm = 210; // A4 width in mm
+      const scale = widthMm / (contentWidth * pxToMm);
+      const heightMm = contentHeight * pxToMm * scale;
+
       const opt = {
         margin: 0,
         filename: 'Patela-Customer-Journey-Map.pdf',
         image: { type: 'png', quality: 1 },
         html2canvas: { 
-          scale: 3,
+          scale: 2,
           useCORS: true,
           letterRendering: true,
           backgroundColor: BRAND.bgDarker,
           scrollX: 0,
-          scrollY: -window.scrollY,
-          windowWidth: contentRef.current.offsetWidth,
-          windowHeight: contentRef.current.scrollHeight,
+          scrollY: 0,
+          windowWidth: contentWidth,
+          windowHeight: contentHeight,
         },
         jsPDF: { 
           unit: 'mm', 
-          format: 'a4', 
+          format: [widthMm, heightMm],
           orientation: 'portrait',
           compress: true,
-          hotfixes: ['px_scaling'],
         },
-        pagebreak: { mode: 'css', before: '.pdf-page-break' }
+        pagebreak: { mode: 'avoid-all' }
       };
 
       await html2pdf().set(opt).from(contentRef.current).save();
