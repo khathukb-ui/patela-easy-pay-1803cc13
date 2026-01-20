@@ -100,19 +100,22 @@ function MockPhoneFrame({ children }: { children: React.ReactNode }) {
 
 function LandingMock() {
   return (
-    <div className="h-full bg-primary flex flex-col items-center justify-center p-6 text-center">
+    <div className="h-full bg-[#2D1B69] flex flex-col items-center justify-center p-6 text-center">
       <motion.div
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ type: "spring", delay: 0.2 }}
+        className="mb-6"
       >
-        <PatelaLogo size="lg" variant="light" className="mb-6" />
+        <span className="text-4xl font-bold text-white" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+          patela<span className="text-[#00D4FF]">.</span>
+        </span>
       </motion.div>
       <motion.h2 
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="text-2xl font-bold text-primary-foreground mb-2"
+        className="text-2xl font-bold text-white mb-2"
       >
         Accept Payments
       </motion.h2>
@@ -120,7 +123,7 @@ function LandingMock() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.4 }}
-        className="text-primary-foreground/70 text-sm mb-8"
+        className="text-white/70 text-sm mb-8"
       >
         The POS device built for SA vendors
       </motion.p>
@@ -130,10 +133,10 @@ function LandingMock() {
         transition={{ delay: 0.5 }}
         className="w-full space-y-3"
       >
-        <div className="bg-accent text-accent-foreground py-3 rounded-xl font-semibold text-sm">
+        <div className="bg-[#00D4FF] text-[#2D1B69] py-3 rounded-xl font-semibold text-sm">
           Get Started →
         </div>
-        <div className="bg-primary-foreground/20 text-primary-foreground py-3 rounded-xl text-sm">
+        <div className="bg-white/20 text-white py-3 rounded-xl text-sm">
           Sign In
         </div>
       </motion.div>
@@ -366,20 +369,20 @@ function DetailsMock() {
 
 function OnboardingSuccessMock() {
   return (
-    <div className="h-full bg-gradient-to-b from-primary to-primary/80 flex flex-col items-center justify-center p-6 text-center">
+    <div className="h-full bg-gradient-to-b from-[#2D1B69] to-[#1a1040] flex flex-col items-center justify-center p-6 text-center">
       <motion.div
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
-        className="w-24 h-24 bg-accent rounded-full flex items-center justify-center mb-6"
+        className="w-24 h-24 bg-[#00D4FF] rounded-full flex items-center justify-center mb-6"
       >
-        <Sparkles className="h-12 w-12 text-accent-foreground" />
+        <Sparkles className="h-12 w-12 text-[#2D1B69]" />
       </motion.div>
       <motion.h2 
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
-        className="text-2xl font-bold text-primary-foreground mb-2"
+        className="text-2xl font-bold text-white mb-2"
       >
         Account Created! 🎉
       </motion.h2>
@@ -387,7 +390,7 @@ function OnboardingSuccessMock() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.5 }}
-        className="text-primary-foreground/80 mb-8"
+        className="text-white/80 mb-8"
       >
         You're ready to start selling
       </motion.p>
@@ -397,10 +400,10 @@ function OnboardingSuccessMock() {
         transition={{ delay: 0.6 }}
         className="w-full space-y-3"
       >
-        <div className="bg-accent text-accent-foreground py-3 rounded-xl font-semibold text-sm">
+        <div className="bg-[#00D4FF] text-[#2D1B69] py-3 rounded-xl font-semibold text-sm">
           Complete Setup →
         </div>
-        <div className="text-primary-foreground/70 text-sm flex items-center justify-center gap-1">
+        <div className="text-white/70 text-sm flex items-center justify-center gap-1">
           <Clock className="h-3 w-3" />
           Skip for now
         </div>
