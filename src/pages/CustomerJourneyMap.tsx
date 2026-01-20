@@ -8,10 +8,19 @@ import {
 import { Button } from "@/components/ui/button";
 import html2pdf from "html2pdf.js";
 // Logo text components for true transparency (no image edges)
+// Using high-contrast colors for PDF export
 function LogoFull({ className = "" }: { className?: string }) {
   return (
     <span className={`font-extrabold tracking-tight text-white ${className}`} style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-      patela<span className="text-[#00D4FF]">.</span>
+      patela<span style={{ color: '#00D4FF' }}>.</span>
+    </span>
+  );
+}
+
+function LogoFullDark({ className = "" }: { className?: string }) {
+  return (
+    <span className={`font-extrabold tracking-tight ${className}`} style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", color: '#2D1B69' }}>
+      patela<span style={{ color: '#00D4FF' }}>.</span>
     </span>
   );
 }
@@ -19,16 +28,17 @@ function LogoFull({ className = "" }: { className?: string }) {
 function LogoIcon({ className = "" }: { className?: string }) {
   return (
     <span className={`font-extrabold tracking-tight text-white ${className}`} style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-      p<span className="text-[#00D4FF]">.</span>
+      p<span style={{ color: '#00D4FF' }}>.</span>
     </span>
   );
 }
 
 // Rich phone mockup component for visual journey
+// Enhanced with stronger borders and labels for PDF clarity
 function PhoneMockup({ children, label }: { children: React.ReactNode; label?: string }) {
   return (
     <div className="flex flex-col items-center">
-      <div className="relative w-[120px] h-[240px] bg-[#1a1040] rounded-[24px] border-2 border-[#2D1B69]/50 shadow-xl overflow-hidden">
+      <div className="relative w-[120px] h-[240px] rounded-[24px] border-3 shadow-xl overflow-hidden" style={{ backgroundColor: '#1a1040', borderColor: '#4a3a8a', borderWidth: '3px' }}>
         {/* Notch */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-12 h-3 bg-black rounded-b-lg z-10" />
         {/* Screen */}
@@ -36,10 +46,10 @@ function PhoneMockup({ children, label }: { children: React.ReactNode; label?: s
           {children}
         </div>
         {/* Home indicator */}
-        <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-10 h-0.5 bg-white/30 rounded-full" />
+        <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-10 h-0.5 rounded-full" style={{ backgroundColor: 'rgba(255,255,255,0.5)' }} />
       </div>
       {label && (
-        <p className="mt-2 text-xs font-medium text-center text-muted-foreground">{label}</p>
+        <p className="mt-3 text-sm font-bold text-center" style={{ color: '#e0e0e0' }}>{label}</p>
       )}
     </div>
   );
@@ -259,70 +269,71 @@ function ScreenPaySuccess() {
   );
 }
 
-// Flow arrow component
+// Flow arrow component - enhanced for PDF visibility
 function FlowArrow({ direction = "right" }: { direction?: "right" | "down" }) {
   if (direction === "down") {
     return (
-      <div className="flex justify-center my-2">
+      <div className="flex justify-center my-3">
         <div className="flex flex-col items-center">
-          <div className="w-0.5 h-4 bg-gradient-to-b from-[#00D4FF] to-[#2D1B69]" />
-          <ChevronRight className="h-4 w-4 text-[#00D4FF] rotate-90" />
+          <div className="w-1 h-6" style={{ backgroundColor: '#00D4FF' }} />
+          <ChevronRight className="h-6 w-6 rotate-90" style={{ color: '#00D4FF' }} />
         </div>
       </div>
     );
   }
   return (
-    <div className="flex items-center mx-2">
-      <div className="w-4 h-0.5 bg-gradient-to-r from-[#00D4FF] to-[#2D1B69]" />
-      <ChevronRight className="h-4 w-4 text-[#00D4FF]" />
+    <div className="flex items-center mx-3">
+      <div className="w-6 h-1" style={{ backgroundColor: '#00D4FF' }} />
+      <ChevronRight className="h-6 w-6" style={{ color: '#00D4FF' }} />
     </div>
   );
 }
 
-// Journey stage header
+// Journey stage header - enhanced contrast for PDF
 function StageHeader({ icon, title, subtitle, phase }: { icon: React.ReactNode; title: string; subtitle: string; phase: "required" | "optional" | "usage" }) {
-  const phaseColors = {
-    required: "from-[#2D1B69] to-[#2D1B69]/80 border-[#00D4FF]/30",
-    optional: "from-amber-900/50 to-amber-800/30 border-amber-500/30",
-    usage: "from-green-900/50 to-green-800/30 border-green-500/30",
+  const phaseStyles = {
+    required: { bg: '#2D1B69', border: '#00D4FF', labelBg: 'rgba(0,212,255,0.3)', labelColor: '#00D4FF' },
+    optional: { bg: '#5c4a1f', border: '#f59e0b', labelBg: 'rgba(245,158,11,0.3)', labelColor: '#fbbf24' },
+    usage: { bg: '#1a4a2e', border: '#22c55e', labelBg: 'rgba(34,197,94,0.3)', labelColor: '#4ade80' },
   };
   const phaseLabels = {
     required: "Required",
     optional: "Optional",
     usage: "Daily Use",
   };
+  const style = phaseStyles[phase];
   
   return (
-    <div className={`bg-gradient-to-r ${phaseColors[phase]} border rounded-xl p-4 mb-4`}>
-      <div className="flex items-center gap-3">
+    <div className="rounded-xl p-5 mb-5" style={{ backgroundColor: style.bg, borderWidth: '2px', borderStyle: 'solid', borderColor: style.border }}>
+      <div className="flex items-center gap-4">
         {/* Icon logo for platform representation in journey diagrams */}
-        <div className="w-10 h-10 rounded-xl bg-[#2D1B69] flex items-center justify-center">
-          <LogoIcon className="text-xl" />
+        <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#2D1B69', border: '2px solid #00D4FF' }}>
+          <LogoIcon className="text-2xl" />
         </div>
         <div>
-          <div className="flex items-center gap-2">
-            <h3 className="text-lg font-bold text-foreground">{title}</h3>
-            <span className={`text-[10px] px-2 py-0.5 rounded-full ${phase === "required" ? "bg-[#00D4FF]/20 text-[#00D4FF]" : phase === "optional" ? "bg-amber-500/20 text-amber-400" : "bg-green-500/20 text-green-400"}`}>
+          <div className="flex items-center gap-3">
+            <h3 className="text-xl font-bold" style={{ color: '#ffffff' }}>{title}</h3>
+            <span className="text-xs px-3 py-1 rounded-full font-semibold" style={{ backgroundColor: style.labelBg, color: style.labelColor }}>
               {phaseLabels[phase]}
             </span>
           </div>
-          <p className="text-sm text-muted-foreground">{subtitle}</p>
+          <p className="text-sm mt-1" style={{ color: '#d0d0d0' }}>{subtitle}</p>
         </div>
       </div>
     </div>
   );
 }
 
-// Feature availability indicator
+// Feature availability indicator - enhanced for PDF
 function FeatureCheck({ available, label }: { available: boolean; label: string }) {
   return (
-    <div className="flex items-center gap-2 text-sm">
+    <div className="flex items-center gap-3 text-sm py-1">
       {available ? (
-        <CheckCircle2 className="h-4 w-4 text-green-500" />
+        <CheckCircle2 className="h-5 w-5" style={{ color: '#22c55e' }} />
       ) : (
-        <XCircle className="h-4 w-4 text-red-400" />
+        <XCircle className="h-5 w-5" style={{ color: '#ef4444' }} />
       )}
-      <span className={available ? "text-foreground" : "text-muted-foreground"}>{label}</span>
+      <span className="font-medium" style={{ color: available ? '#ffffff' : '#a0a0a0' }}>{label}</span>
     </div>
   );
 }
@@ -338,18 +349,20 @@ export default function CustomerJourneyMap() {
     
     try {
       const opt = {
-        margin: [10, 10, 10, 10],
+      margin: [15, 15, 15, 15],
         filename: 'Patela-Customer-Journey-Map.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
+        image: { type: 'png', quality: 1 },
         html2canvas: { 
-          scale: 2,
+          scale: 3,
           useCORS: true,
           letterRendering: true,
+          backgroundColor: '#0d0a1a',
         },
         jsPDF: { 
           unit: 'mm', 
           format: 'a4', 
-          orientation: 'portrait' 
+          orientation: 'portrait',
+          compress: false
         },
         pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
       };
@@ -385,42 +398,41 @@ export default function CustomerJourneyMap() {
         </Button>
       </div>
 
-      {/* PDF Content */}
-      <div ref={contentRef} className="max-w-5xl mx-auto">
+      {/* PDF Content - using inline styles for reliable PDF export */}
+      <div ref={contentRef} className="max-w-5xl mx-auto" style={{ backgroundColor: '#0d0a1a' }}>
         {/* Hero Header */}
-        <div className="relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-[#2D1B69]/30 via-[#00D4FF]/10 to-[#2D1B69]/30" />
-          <div className="relative px-6 py-12 text-center">
-            <LogoFull className="text-5xl block mb-6" />
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-3">
+        <div className="relative overflow-hidden" style={{ backgroundColor: '#1a1040' }}>
+          <div className="relative px-8 py-14 text-center">
+            <LogoFull className="text-6xl block mb-8" />
+            <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{ color: '#ffffff' }}>
               Onboarding to First Sale
             </h1>
-            <p className="text-lg text-[#00D4FF] mb-4">
+            <p className="text-xl font-semibold mb-6" style={{ color: '#00D4FF' }}>
               Intelligence in every tap. Growing with you.
             </p>
-            <div className="flex justify-center gap-2">
+            <div className="flex justify-center gap-3">
               {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div key={i} className="w-2 h-2 rounded-full bg-[#00D4FF]/60" />
+                <div key={i} className="w-3 h-3 rounded-full" style={{ backgroundColor: '#00D4FF' }} />
               ))}
             </div>
           </div>
         </div>
 
         {/* User Personas */}
-        <div className="px-6 py-8">
-          <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
-            <User className="h-6 w-6 text-[#00D4FF]" />
+        <div className="px-8 py-10">
+          <h2 className="text-2xl font-bold mb-8 flex items-center gap-3" style={{ color: '#ffffff' }}>
+            <User className="h-7 w-7" style={{ color: '#00D4FF' }} />
             Who Uses Patela?
           </h2>
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-gradient-to-br from-[#2D1B69]/50 to-[#2D1B69]/20 border border-[#2D1B69]/30 rounded-2xl p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-14 h-14 bg-gradient-to-br from-[#2D1B69] to-[#00D4FF] rounded-2xl flex items-center justify-center">
-                  <User className="h-7 w-7 text-white" />
+          <div className="grid md:grid-cols-2 gap-8">
+            <div className="rounded-2xl p-6" style={{ backgroundColor: '#2D1B69', border: '2px solid #4a3a8a' }}>
+              <div className="flex items-center gap-4 mb-5">
+                <div className="w-16 h-16 rounded-2xl flex items-center justify-center" style={{ backgroundColor: '#00D4FF' }}>
+                  <User className="h-8 w-8" style={{ color: '#2D1B69' }} />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-white">Admin Merchant</h3>
-                  <p className="text-sm text-white/60">Business Owner</p>
+                  <h3 className="text-xl font-bold" style={{ color: '#ffffff' }}>Admin Merchant</h3>
+                  <p className="text-sm font-medium" style={{ color: '#b0b0b0' }}>Business Owner</p>
                 </div>
               </div>
               <div className="space-y-2">
@@ -431,14 +443,14 @@ export default function CustomerJourneyMap() {
                 <FeatureCheck available={true} label="Link bank & pair devices" />
               </div>
             </div>
-            <div className="bg-gradient-to-br from-[#00D4FF]/10 to-[#00D4FF]/5 border border-[#00D4FF]/20 rounded-2xl p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-14 h-14 bg-gradient-to-br from-[#00D4FF] to-[#00D4FF]/60 rounded-2xl flex items-center justify-center">
-                  <User className="h-7 w-7 text-[#2D1B69]" />
+            <div className="rounded-2xl p-6" style={{ backgroundColor: '#1a3a4a', border: '2px solid #00D4FF' }}>
+              <div className="flex items-center gap-4 mb-5">
+                <div className="w-16 h-16 rounded-2xl flex items-center justify-center" style={{ backgroundColor: '#2D1B69' }}>
+                  <User className="h-8 w-8" style={{ color: '#00D4FF' }} />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-white">Cashier</h3>
-                  <p className="text-sm text-white/60">Team Member</p>
+                  <h3 className="text-xl font-bold" style={{ color: '#ffffff' }}>Cashier</h3>
+                  <p className="text-sm font-medium" style={{ color: '#b0b0b0' }}>Team Member</p>
                 </div>
               </div>
               <div className="space-y-2">
@@ -453,7 +465,7 @@ export default function CustomerJourneyMap() {
         </div>
 
         {/* Stage 1: Required Onboarding */}
-        <div className="px-6 py-8">
+        <div className="px-8 py-10">
           <StageHeader
             icon={<User className="h-5 w-5" />}
             title="Account Setup"
@@ -462,8 +474,8 @@ export default function CustomerJourneyMap() {
           />
           
           {/* Visual Flow */}
-          <div className="bg-gradient-to-r from-[#2D1B69]/20 to-[#2D1B69]/10 border border-[#2D1B69]/20 rounded-2xl p-6">
-            <div className="flex flex-wrap items-center justify-center gap-2">
+          <div className="rounded-2xl p-8" style={{ backgroundColor: '#1a1040', border: '2px solid #4a3a8a' }}>
+            <div className="flex flex-wrap items-center justify-center gap-3">
               <PhoneMockup label="1. Language"><ScreenLanguage /></PhoneMockup>
               <FlowArrow />
               <PhoneMockup label="2. Phone"><ScreenPhone /></PhoneMockup>
@@ -476,16 +488,16 @@ export default function CustomerJourneyMap() {
               <FlowArrow />
               <PhoneMockup label="✓ Done!"><ScreenSuccess /></PhoneMockup>
             </div>
-            <div className="mt-6 text-center">
-              <p className="text-sm text-white/70">
-                <span className="text-[#00D4FF] font-semibold">5 steps</span> • Takes about <span className="text-[#00D4FF] font-semibold">2 minutes</span> • Progress saves automatically
+            <div className="mt-8 text-center">
+              <p className="text-base font-medium" style={{ color: '#d0d0d0' }}>
+                <span style={{ color: '#00D4FF', fontWeight: 700 }}>5 steps</span> • Takes about <span style={{ color: '#00D4FF', fontWeight: 700 }}>2 minutes</span> • Progress saves automatically
               </p>
             </div>
           </div>
         </div>
 
         {/* Stage 2: Optional Setup */}
-        <div className="px-6 py-8">
+        <div className="px-8 py-10">
           <StageHeader
             icon={<Smartphone className="h-5 w-5" />}
             title="Optional Setup"
@@ -493,51 +505,51 @@ export default function CustomerJourneyMap() {
             phase="optional"
           />
           
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid md:grid-cols-2 gap-8">
             {/* Bank Linking */}
-            <div className="bg-gradient-to-br from-amber-900/20 to-amber-800/10 border border-amber-500/20 rounded-2xl p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-green-500/20 rounded-xl flex items-center justify-center">
-                  <Banknote className="h-5 w-5 text-green-400" />
+            <div className="rounded-2xl p-6" style={{ backgroundColor: '#3d3220', border: '2px solid #f59e0b' }}>
+              <div className="flex items-center gap-4 mb-5">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#166534' }}>
+                  <Banknote className="h-6 w-6" style={{ color: '#4ade80' }} />
                 </div>
                 <div>
-                  <h4 className="font-bold text-white">Link Bank Account</h4>
-                  <p className="text-xs text-amber-400">For payouts</p>
+                  <h4 className="font-bold text-lg" style={{ color: '#ffffff' }}>Link Bank Account</h4>
+                  <p className="text-sm font-medium" style={{ color: '#fbbf24' }}>For payouts</p>
                 </div>
               </div>
               <PhoneMockup><ScreenBank /></PhoneMockup>
-              <div className="mt-4 flex items-center justify-center gap-2 text-amber-400 text-sm">
-                <SkipForward className="h-4 w-4" />
+              <div className="mt-5 flex items-center justify-center gap-2 text-base font-medium" style={{ color: '#fbbf24' }}>
+                <SkipForward className="h-5 w-5" />
                 <span>Can skip and do later</span>
               </div>
             </div>
             
             {/* Device Pairing */}
-            <div className="bg-gradient-to-br from-amber-900/20 to-amber-800/10 border border-amber-500/20 rounded-2xl p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-[#00D4FF]/20 rounded-xl flex items-center justify-center">
-                  <Smartphone className="h-5 w-5 text-[#00D4FF]" />
+            <div className="rounded-2xl p-6" style={{ backgroundColor: '#3d3220', border: '2px solid #f59e0b' }}>
+              <div className="flex items-center gap-4 mb-5">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#1e3a5f' }}>
+                  <Smartphone className="h-6 w-6" style={{ color: '#00D4FF' }} />
                 </div>
                 <div>
-                  <h4 className="font-bold text-white">Pair Device</h4>
-                  <p className="text-xs text-amber-400">For card payments</p>
+                  <h4 className="font-bold text-lg" style={{ color: '#ffffff' }}>Pair Device</h4>
+                  <p className="text-sm font-medium" style={{ color: '#fbbf24' }}>For card payments</p>
                 </div>
               </div>
               <PhoneMockup><ScreenDevice /></PhoneMockup>
-              <div className="mt-4 flex items-center justify-center gap-2 text-amber-400 text-sm">
-                <SkipForward className="h-4 w-4" />
+              <div className="mt-5 flex items-center justify-center gap-2 text-base font-medium" style={{ color: '#fbbf24' }}>
+                <SkipForward className="h-5 w-5" />
                 <span>Can skip and do later</span>
               </div>
             </div>
           </div>
           
           {/* Skip explanation */}
-          <div className="mt-6 bg-amber-500/10 border border-amber-500/20 rounded-xl p-4">
-            <div className="flex items-start gap-3">
-              <AlertCircle className="h-5 w-5 text-amber-400 mt-0.5" />
+          <div className="mt-8 rounded-xl p-5" style={{ backgroundColor: '#4a3d1a', border: '2px solid #f59e0b' }}>
+            <div className="flex items-start gap-4">
+              <AlertCircle className="h-6 w-6 mt-0.5" style={{ color: '#fbbf24' }} />
               <div>
-                <p className="text-sm text-white font-medium">Why can I skip these steps?</p>
-                <p className="text-xs text-white/70 mt-1">
+                <p className="text-base font-bold" style={{ color: '#ffffff' }}>Why can I skip these steps?</p>
+                <p className="text-sm mt-2" style={{ color: '#e0e0e0' }}>
                   Patela lets you start selling right away! Cash sales work without any additional setup. 
                   You can link your bank and pair your device later when you need card payments or payouts.
                 </p>
@@ -547,7 +559,7 @@ export default function CustomerJourneyMap() {
         </div>
 
         {/* Stage 3: Daily Use */}
-        <div className="px-6 py-8">
+        <div className="px-8 py-10">
           <StageHeader
             icon={<Home className="h-5 w-5" />}
             title="Start Selling"
@@ -555,36 +567,36 @@ export default function CustomerJourneyMap() {
             phase="usage"
           />
           
-          <div className="bg-gradient-to-r from-green-900/20 to-green-800/10 border border-green-500/20 rounded-2xl p-6">
-            <div className="flex flex-wrap items-center justify-center gap-2">
+          <div className="rounded-2xl p-8" style={{ backgroundColor: '#1a3a2e', border: '2px solid #22c55e' }}>
+            <div className="flex flex-wrap items-center justify-center gap-3">
               <PhoneMockup label="Dashboard"><ScreenHome /></PhoneMockup>
               <FlowArrow />
               <PhoneMockup label="Take Payment"><ScreenPayment /></PhoneMockup>
               <FlowArrow />
               <PhoneMockup label="Success!"><ScreenPaySuccess /></PhoneMockup>
             </div>
-            <div className="mt-6 text-center">
-              <p className="text-sm text-white/70">
-                <span className="text-green-400 font-semibold">Cash sales</span> work immediately • <span className="text-green-400 font-semibold">Card payments</span> require device
+            <div className="mt-8 text-center">
+              <p className="text-base font-medium" style={{ color: '#d0d0d0' }}>
+                <span style={{ color: '#4ade80', fontWeight: 700 }}>Cash sales</span> work immediately • <span style={{ color: '#4ade80', fontWeight: 700 }}>Card payments</span> require device
               </p>
             </div>
           </div>
         </div>
 
         {/* Feature Availability Matrix */}
-        <div className="px-6 py-8">
-          <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
-            <Check className="h-6 w-6 text-[#00D4FF]" />
+        <div className="px-8 py-10">
+          <h2 className="text-2xl font-bold mb-8 flex items-center gap-3" style={{ color: '#ffffff' }}>
+            <Check className="h-7 w-7" style={{ color: '#00D4FF' }} />
             What Works Without Full Setup?
           </h2>
           
-          <div className="grid md:grid-cols-3 gap-4">
-            <div className="bg-green-500/10 border border-green-500/20 rounded-xl p-5">
-              <h4 className="font-bold text-green-400 mb-3 flex items-center gap-2">
-                <CheckCircle2 className="h-5 w-5" />
+          <div className="grid md:grid-cols-3 gap-6">
+            <div className="rounded-xl p-6" style={{ backgroundColor: '#1a3a2e', border: '2px solid #22c55e' }}>
+              <h4 className="font-bold mb-4 flex items-center gap-3 text-lg" style={{ color: '#4ade80' }}>
+                <CheckCircle2 className="h-6 w-6" />
                 Always Available
               </h4>
-              <ul className="space-y-2 text-sm text-white/80">
+              <ul className="space-y-3 text-base" style={{ color: '#e0e0e0' }}>
                 <li>• Record cash sales</li>
                 <li>• Add items to catalog</li>
                 <li>• View sales history</li>
@@ -593,12 +605,12 @@ export default function CustomerJourneyMap() {
               </ul>
             </div>
             
-            <div className="bg-[#00D4FF]/10 border border-[#00D4FF]/20 rounded-xl p-5">
-              <h4 className="font-bold text-[#00D4FF] mb-3 flex items-center gap-2">
-                <Smartphone className="h-5 w-5" />
+            <div className="rounded-xl p-6" style={{ backgroundColor: '#1a3a4a', border: '2px solid #00D4FF' }}>
+              <h4 className="font-bold mb-4 flex items-center gap-3 text-lg" style={{ color: '#00D4FF' }}>
+                <Smartphone className="h-6 w-6" />
                 Needs Device
               </h4>
-              <ul className="space-y-2 text-sm text-white/80">
+              <ul className="space-y-3 text-base" style={{ color: '#e0e0e0' }}>
                 <li>• Accept card payments</li>
                 <li>• Tap to pay (NFC)</li>
                 <li>• QR code payments</li>
@@ -606,12 +618,12 @@ export default function CustomerJourneyMap() {
               </ul>
             </div>
             
-            <div className="bg-[#2D1B69]/30 border border-[#2D1B69]/30 rounded-xl p-5">
-              <h4 className="font-bold text-[#2D1B69] mb-3 flex items-center gap-2 text-white">
-                <Banknote className="h-5 w-5" />
+            <div className="rounded-xl p-6" style={{ backgroundColor: '#2D1B69', border: '2px solid #6b5b95' }}>
+              <h4 className="font-bold mb-4 flex items-center gap-3 text-lg" style={{ color: '#ffffff' }}>
+                <Banknote className="h-6 w-6" style={{ color: '#a78bfa' }} />
                 Needs Bank Account
               </h4>
-              <ul className="space-y-2 text-sm text-white/80">
+              <ul className="space-y-3 text-base" style={{ color: '#e0e0e0' }}>
                 <li>• Request payouts</li>
                 <li>• Same-day transfers</li>
                 <li>• Instant payouts</li>
@@ -622,12 +634,12 @@ export default function CustomerJourneyMap() {
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-8 text-center border-t border-white/10">
-          <LogoFull className="text-3xl block mb-4" />
-          <p className="text-sm text-white/50">
+        <div className="px-8 py-10 text-center" style={{ borderTop: '2px solid #4a3a8a' }}>
+          <LogoFull className="text-4xl block mb-5" />
+          <p className="text-base font-medium" style={{ color: '#b0b0b0' }}>
             Built for the Hustle. Patela © 2025
           </p>
-          <p className="text-xs text-white/30 mt-2">
+          <p className="text-sm mt-3" style={{ color: '#808080' }}>
             Languages: English • isiZulu • Sesotho • Xitsonga
           </p>
         </div>
