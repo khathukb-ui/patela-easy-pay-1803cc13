@@ -15,10 +15,6 @@ import vendorBanner from "@/assets/vendor-banner.jpg";
 // Visual imagery for account/device linking
 import bankLinkingVisual from "@/assets/bank-linking-visual.png";
 import devicePairingVisual from "@/assets/device-pairing-visual.png";
-// Official Patela logo assets - exact shapes from brand guidelines
-import wordmarkLight from "@/assets/patela-wordmark-light.png";
-import iconLight from "@/assets/patela-icon-light.png";
-
 // Official Patela Brand Colors (from design system)
 // Primary: hsl(261 51% 37%) = #5B3E9E (Deep Purple)
 // Accent: hsl(191 100% 50%) = #00D4FF (Cyan)
@@ -41,27 +37,35 @@ const BRAND = {
   bgDarker: '#0D0A1A',
 };
 
-// Logo components using official brand assets for PDF export
-// Using actual image files to ensure exact shape matching
+// SVG-based logos for PDF export with true transparency
 function LogoFull({ className = "" }: { className?: string }) {
   return (
-    <img 
-      src={wordmarkLight} 
-      alt="patela." 
-      className={`object-contain ${className}`}
-      draggable={false}
-    />
+    <svg viewBox="0 0 200 50" fill="none" xmlns="http://www.w3.org/2000/svg" className={`${className}`}>
+      <text
+        x="0"
+        y="38"
+        fill={BRAND.text}
+        fontFamily="'Plus Jakarta Sans', 'Nunito', system-ui, sans-serif"
+        fontWeight="800"
+        fontSize="42"
+        letterSpacing="-1"
+      >
+        patela
+      </text>
+      <circle cx="185" cy="38" r="6" fill={BRAND.accent} />
+    </svg>
   );
 }
 
 function LogoIcon({ className = "" }: { className?: string }) {
   return (
-    <img 
-      src={iconLight} 
-      alt="Patela" 
-      className={`object-contain ${className}`}
-      draggable={false}
-    />
+    <svg viewBox="0 0 80 100" fill="none" xmlns="http://www.w3.org/2000/svg" className={`${className}`}>
+      <path
+        d="M12 22C12 9.85 21.85 0 34 0C46.15 0 56 9.85 56 22C56 34.15 46.15 44 34 44H22V92C22 96.42 18.42 100 14 100H12V22Z"
+        fill={BRAND.text}
+      />
+      <circle cx="68" cy="40" r="10" fill={BRAND.accent} />
+    </svg>
   );
 }
 
