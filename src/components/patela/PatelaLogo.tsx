@@ -2,12 +2,12 @@ import { cn } from "@/lib/utils";
 
 interface PatelaLogoProps {
   size?: "sm" | "md" | "lg" | "xl" | "2xl";
-  variant?: "light" | "dark" | "icon";
+  variant?: "light" | "dark" | "icon" | "light-icon";
   className?: string;
 }
 
-// Larger, more prominent sizes for fintech branding
-const sizeClasses = {
+// Wordmark sizes for "patela."
+const wordmarkSizeClasses = {
   sm: "text-2xl",
   md: "text-3xl",
   lg: "text-5xl",
@@ -15,6 +15,7 @@ const sizeClasses = {
   "2xl": "text-7xl",
 };
 
+// Icon sizes for "p."
 const iconSizeClasses = {
   sm: "text-xl",
   md: "text-2xl",
@@ -23,57 +24,78 @@ const iconSizeClasses = {
   "2xl": "text-6xl",
 };
 
+// Brand colors - exact hex values
+const BRAND = {
+  purple: "#2D1B69",
+  cyan: "#00D4FF",
+};
+
 export function PatelaLogo({ 
   size = "md", 
   variant = "dark", 
   className
 }: PatelaLogoProps) {
-  // Icon variant - show just "p." with brand colors
+  const fontStyle = { fontFamily: "'Plus Jakarta Sans', sans-serif" };
+
+  // Dark icon variant - "p." on light backgrounds
   if (variant === "icon") {
     return (
       <span
         className={cn(
           "font-extrabold tracking-tight",
           iconSizeClasses[size],
-          "text-[#2D1B69]",
           className
         )}
-        style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+        style={{ ...fontStyle, color: BRAND.purple }}
       >
-        p<span className="text-[#00D4FF]">.</span>
+        p<span style={{ color: BRAND.cyan }}>.</span>
       </span>
     );
   }
 
-  // Light icon variant for dark backgrounds
+  // Light icon variant - "p." on dark backgrounds
+  if (variant === "light-icon") {
+    return (
+      <span
+        className={cn(
+          "font-extrabold tracking-tight text-white",
+          iconSizeClasses[size],
+          className
+        )}
+        style={fontStyle}
+      >
+        p<span style={{ color: BRAND.cyan }}>.</span>
+      </span>
+    );
+  }
+
+  // Light wordmark variant - "patela." on dark backgrounds
   if (variant === "light") {
     return (
       <span
         className={cn(
-          "font-extrabold tracking-tight",
-          sizeClasses[size],
-          "text-white",
+          "font-extrabold tracking-tight text-white",
+          wordmarkSizeClasses[size],
           className
         )}
-        style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+        style={fontStyle}
       >
-        patela<span className="text-[#00D4FF]">.</span>
+        patela<span style={{ color: BRAND.cyan }}>.</span>
       </span>
     );
   }
 
-  // Dark wordmark variant - "patela." with brand colors on light backgrounds
+  // Dark wordmark variant - "patela." on light backgrounds (default)
   return (
     <span
       className={cn(
         "font-extrabold tracking-tight",
-        sizeClasses[size],
-        "text-[#2D1B69]",
+        wordmarkSizeClasses[size],
         className
       )}
-      style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+      style={{ ...fontStyle, color: BRAND.purple }}
     >
-      patela<span className="text-[#00D4FF]">.</span>
+      patela<span style={{ color: BRAND.cyan }}>.</span>
     </span>
   );
 }
