@@ -195,7 +195,7 @@ function ScreenHome() {
       <div className="bg-[#2D1B69] p-2 rounded-b-xl">
         {/* Icon logo for small navigation areas */}
         <div className="flex items-center gap-1 mb-1">
-          <img src={patelaLogoIcon} alt="p." className="h-4 w-4 rounded" />
+          <img src={patelaLogoIcon} alt="p." className="h-4 w-4 rounded mix-blend-multiply" />
           <p className="text-[6px] text-white font-bold">Patela</p>
         </div>
         <div className="bg-white/10 rounded p-1.5">
@@ -283,7 +283,7 @@ function StageHeader({ icon, title, subtitle, phase }: { icon: React.ReactNode; 
     <div className={`bg-gradient-to-r ${phaseColors[phase]} border rounded-xl p-4 mb-4`}>
       <div className="flex items-center gap-3">
         {/* Icon logo for platform representation in journey diagrams */}
-        <img src={patelaLogoIcon} alt="p." className="w-10 h-10 rounded-xl object-cover" />
+        <img src={patelaLogoIcon} alt="p." className="w-10 h-10 rounded-xl object-cover mix-blend-multiply" />
         <div>
           <div className="flex items-center gap-2">
             <h3 className="text-lg font-bold text-foreground">{title}</h3>
@@ -376,7 +376,7 @@ export default function CustomerJourneyMap() {
         <div className="relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-[#2D1B69]/30 via-[#00D4FF]/10 to-[#2D1B69]/30" />
           <div className="relative px-6 py-12 text-center">
-            <img src={patelaLogoFull} alt="Patela" className="h-12 mx-auto mb-6" />
+            <img src={patelaLogoFull} alt="Patela" className="h-12 mx-auto mb-6 mix-blend-multiply" />
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-3">
               Onboarding to First Sale
             </h1>

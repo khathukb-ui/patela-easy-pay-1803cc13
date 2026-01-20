@@ -7,6 +7,8 @@ interface PatelaLogoProps {
   variant?: "light" | "dark" | "icon";
   className?: string;
   useImage?: boolean;
+  /** Background type to determine blend mode - use 'dark' for colored/dark backgrounds */
+  backgroundType?: "light" | "dark";
 }
 
 const sizeClasses = {
@@ -30,14 +32,28 @@ const iconSizeClasses = {
   xl: "h-20 w-20",
 };
 
-export function PatelaLogo({ size = "md", variant = "dark", className, useImage = false }: PatelaLogoProps) {
+export function PatelaLogo({ 
+  size = "md", 
+  variant = "dark", 
+  className, 
+  useImage = false,
+  backgroundType = "light"
+}: PatelaLogoProps) {
+  // Blend mode for dark/colored backgrounds - multiply hides white, making logo blend
+  const blendClass = backgroundType === "dark" ? "mix-blend-multiply" : "";
+
   // Icon variant - show the "p." logo
   if (variant === "icon") {
     return (
       <img 
         src={patelaLogoIcon} 
         alt="Patela" 
-        className={cn(iconSizeClasses[size], "rounded-xl object-cover", className)} 
+        className={cn(
+          iconSizeClasses[size], 
+          "rounded-xl object-cover",
+          blendClass,
+          className
+        )} 
       />
     );
   }
@@ -48,7 +64,12 @@ export function PatelaLogo({ size = "md", variant = "dark", className, useImage 
       <img 
         src={patelaLogoFull} 
         alt="Patela" 
-        className={cn(imageSizeClasses[size], "object-contain", className)} 
+        className={cn(
+          imageSizeClasses[size], 
+          "object-contain",
+          blendClass,
+          className
+        )} 
       />
     );
   }
