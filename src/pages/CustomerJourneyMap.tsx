@@ -8,6 +8,7 @@ import {
 import { Button } from "@/components/ui/button";
 import html2pdf from "html2pdf.js";
 import patelaLogoFull from "@/assets/patela-logo-full.jpg";
+import patelaLogoIcon from "@/assets/patela-logo-icon.jpg";
 
 // Rich phone mockup component for visual journey
 function PhoneMockup({ children, label }: { children: React.ReactNode; label?: string }) {
@@ -192,9 +193,12 @@ function ScreenHome() {
   return (
     <div className="h-full bg-gradient-to-b from-[#2D1B69] to-[#1a1040] flex flex-col">
       <div className="bg-[#2D1B69] p-2 rounded-b-xl">
-        <p className="text-[6px] text-white/70">Good morning</p>
-        <p className="text-[7px] text-white font-bold">Thembi 👋</p>
-        <div className="bg-white/10 rounded p-1.5 mt-1">
+        {/* Icon logo for small navigation areas */}
+        <div className="flex items-center gap-1 mb-1">
+          <img src={patelaLogoIcon} alt="p." className="h-4 w-4 rounded" />
+          <p className="text-[6px] text-white font-bold">Patela</p>
+        </div>
+        <div className="bg-white/10 rounded p-1.5">
           <p className="text-[5px] text-white/70">Today's Sales</p>
           <p className="text-[10px] text-white font-bold">R515.00</p>
         </div>
@@ -278,9 +282,8 @@ function StageHeader({ icon, title, subtitle, phase }: { icon: React.ReactNode; 
   return (
     <div className={`bg-gradient-to-r ${phaseColors[phase]} border rounded-xl p-4 mb-4`}>
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 bg-[#00D4FF]/20 rounded-xl flex items-center justify-center text-[#00D4FF]">
-          {icon}
-        </div>
+        {/* Icon logo for platform representation in journey diagrams */}
+        <img src={patelaLogoIcon} alt="p." className="w-10 h-10 rounded-xl object-cover" />
         <div>
           <div className="flex items-center gap-2">
             <h3 className="text-lg font-bold text-foreground">{title}</h3>

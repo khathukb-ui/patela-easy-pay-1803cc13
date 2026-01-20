@@ -151,9 +151,10 @@ export default function Index() {
   return (
     <div className="min-h-screen flex flex-col bg-background overflow-x-hidden">
       {/* Navigation */}
+      {/* Navigation - Full wordmark for website header */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-primary/95 backdrop-blur-md border-b border-primary-foreground/10">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <PatelaLogo size="md" variant="light" />
+          <PatelaLogo size="md" useImage />
           <div className="hidden md:flex items-center gap-8">
             <a href="#features" className="text-primary-foreground/80 hover:text-primary-foreground transition-colors text-sm font-medium">Features</a>
             <a href="#devices" className="text-primary-foreground/80 hover:text-primary-foreground transition-colors text-sm font-medium">Devices</a>
