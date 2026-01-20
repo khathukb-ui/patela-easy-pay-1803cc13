@@ -392,15 +392,15 @@ function StageHeader({ icon, title, subtitle, phase }: { icon: React.ReactNode; 
   const style = phaseStyles[phase];
   
   return (
-    <div className="rounded-xl p-5 mb-5" style={{ backgroundColor: style.bg, borderWidth: '2px', borderStyle: 'solid', borderColor: style.border }}>
-      <div className="flex items-center gap-4">
+    <div className="rounded-lg p-4 mb-4" style={{ backgroundColor: style.bg, borderWidth: '2px', borderStyle: 'solid', borderColor: style.border }}>
+      <div className="flex items-center gap-3">
         {/* Icon container with absolute centering for PDF compatibility */}
         <div 
           style={{ 
             position: 'relative',
-            width: '48px',
-            height: '48px',
-            borderRadius: '12px',
+            width: '40px',
+            height: '40px',
+            borderRadius: '10px',
             backgroundColor: BRAND.primaryDark, 
             border: `2px solid ${BRAND.accent}`,
           }}
@@ -414,7 +414,7 @@ function StageHeader({ icon, title, subtitle, phase }: { icon: React.ReactNode; 
               fontFamily: "'Plus Jakarta Sans', sans-serif", 
               fontWeight: 800,
               color: BRAND.text,
-              fontSize: '20px',
+              fontSize: '18px',
               lineHeight: 1,
             }}
           >
@@ -422,13 +422,13 @@ function StageHeader({ icon, title, subtitle, phase }: { icon: React.ReactNode; 
           </span>
         </div>
         <div>
-          <div className="flex items-center gap-3">
-            <h3 className="text-xl font-bold" style={{ color: BRAND.text }}>{title}</h3>
-            <span className="text-xs px-3 py-1 rounded-full font-semibold" style={{ backgroundColor: style.labelBg, color: style.labelColor }}>
+          <div className="flex items-center gap-2">
+            <h3 className="text-lg font-bold" style={{ color: BRAND.text }}>{title}</h3>
+            <span className="text-xs px-2 py-0.5 rounded-full font-semibold" style={{ backgroundColor: style.labelBg, color: style.labelColor }}>
               {phaseLabels[phase]}
             </span>
           </div>
-          <p className="text-sm mt-1" style={{ color: BRAND.textMuted }}>{subtitle}</p>
+          <p className="text-xs mt-0.5" style={{ color: BRAND.textMuted }}>{subtitle}</p>
         </div>
       </div>
     </div>
@@ -438,11 +438,11 @@ function StageHeader({ icon, title, subtitle, phase }: { icon: React.ReactNode; 
 // Feature availability indicator - using brand colors
 function FeatureCheck({ available, label }: { available: boolean; label: string }) {
   return (
-    <div className="flex items-center gap-3 text-sm py-1">
+    <div className="flex items-center gap-2 text-xs py-0.5">
       {available ? (
-        <CheckCircle2 className="h-5 w-5" style={{ color: BRAND.success }} />
+        <CheckCircle2 className="h-4 w-4" style={{ color: BRAND.success }} />
       ) : (
-        <XCircle className="h-5 w-5" style={{ color: '#ef4444' }} />
+        <XCircle className="h-4 w-4" style={{ color: '#ef4444' }} />
       )}
       <span className="font-medium" style={{ color: available ? BRAND.text : BRAND.textSubtle }}>{label}</span>
     </div>
@@ -464,21 +464,23 @@ export default function CustomerJourneyMap() {
         filename: 'Patela-Customer-Journey-Map.pdf',
         image: { type: 'png', quality: 1 },
         html2canvas: { 
-          scale: 2,
+          scale: 3,
           useCORS: true,
           letterRendering: true,
           backgroundColor: BRAND.bgDarker,
           scrollX: 0,
-          scrollY: 0,
-          windowWidth: contentRef.current.scrollWidth,
+          scrollY: -window.scrollY,
+          windowWidth: contentRef.current.offsetWidth,
+          windowHeight: contentRef.current.scrollHeight,
         },
         jsPDF: { 
           unit: 'mm', 
           format: 'a4', 
           orientation: 'portrait',
           compress: true,
+          hotfixes: ['px_scaling'],
         },
-        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+        pagebreak: { mode: 'css', before: '.pdf-page-break' }
       };
 
       await html2pdf().set(opt).from(contentRef.current).save();
@@ -514,7 +516,7 @@ export default function CustomerJourneyMap() {
       </div>
 
       {/* PDF Content */}
-      <div ref={contentRef} className="max-w-5xl mx-auto" style={{ backgroundColor: BRAND.bgDarker }}>
+      <div ref={contentRef} className="max-w-4xl mx-auto" style={{ backgroundColor: BRAND.bgDarker, padding: '0' }}>
         {/* Hero Header with Human Banner */}
         <div className="relative overflow-hidden" style={{ background: `linear-gradient(180deg, ${BRAND.primary} 0%, ${BRAND.bgDark} 100%)` }}>
           {/* Subtle vendor banner overlay */}
@@ -526,33 +528,32 @@ export default function CustomerJourneyMap() {
               backgroundPosition: 'center top',
             }}
           />
-          <div className="relative px-8 py-14 text-center">
-            <LogoFull className="text-6xl block mb-8" />
-            <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{ color: BRAND.text }}>
+          <div className="relative px-6 py-10 text-center">
+            <LogoFull className="text-5xl block mb-5" />
+            <h1 className="text-3xl md:text-4xl font-bold mb-3" style={{ color: BRAND.text }}>
               Onboarding to First Sale
             </h1>
-            <p className="text-xl font-semibold mb-6" style={{ color: BRAND.accent }}>
+            <p className="text-lg font-semibold mb-4" style={{ color: BRAND.accent }}>
               Intelligence in every tap. Growing with you.
             </p>
-            <div className="flex justify-center gap-3">
+            <div className="flex justify-center gap-2">
               {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div key={i} className="w-3 h-3 rounded-full" style={{ backgroundColor: BRAND.accent }} />
+                <div key={i} className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: BRAND.accent }} />
               ))}
             </div>
           </div>
         </div>
 
         {/* User Personas */}
-        <div className="px-8 py-10">
-          <h2 className="text-2xl font-bold mb-8 flex items-center gap-3" style={{ color: BRAND.text }}>
-            <User className="h-7 w-7" style={{ color: BRAND.accent }} />
+        <div className="px-6 py-6">
+          <h2 className="text-xl font-bold mb-5 flex items-center gap-2" style={{ color: BRAND.text }}>
+            <User className="h-6 w-6" style={{ color: BRAND.accent }} />
             Who Uses Patela?
           </h2>
-          <div className="grid md:grid-cols-2 gap-8">
-            <div className="rounded-2xl p-6" style={{ backgroundColor: BRAND.primary, border: `2px solid ${BRAND.primaryLight}` }}>
-              <div className="flex items-center gap-4 mb-5">
-                {/* Human portrait instead of icon */}
-                <div className="w-16 h-16 rounded-2xl overflow-hidden flex-shrink-0" style={{ border: `2px solid ${BRAND.accent}` }}>
+          <div className="grid md:grid-cols-2 gap-5">
+            <div className="rounded-xl p-4" style={{ backgroundColor: BRAND.primary, border: `2px solid ${BRAND.primaryLight}` }}>
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-12 h-12 rounded-xl overflow-hidden flex-shrink-0" style={{ border: `2px solid ${BRAND.accent}` }}>
                   <img 
                     src={vendorPortrait1} 
                     alt="Business owner" 
@@ -560,11 +561,11 @@ export default function CustomerJourneyMap() {
                   />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold" style={{ color: BRAND.text }}>Admin Merchant</h3>
-                  <p className="text-sm font-medium" style={{ color: BRAND.textSubtle }}>Business Owner</p>
+                  <h3 className="text-lg font-bold" style={{ color: BRAND.text }}>Admin Merchant</h3>
+                  <p className="text-xs font-medium" style={{ color: BRAND.textSubtle }}>Business Owner</p>
                 </div>
               </div>
-              <div className="space-y-2">
+              <div className="space-y-1">
                 <FeatureCheck available={true} label="Full account access & settings" />
                 <FeatureCheck available={true} label="Add and manage team members" />
                 <FeatureCheck available={true} label="View all sales & reports" />
@@ -572,10 +573,9 @@ export default function CustomerJourneyMap() {
                 <FeatureCheck available={true} label="Link bank & pair devices" />
               </div>
             </div>
-            <div className="rounded-2xl p-6" style={{ backgroundColor: BRAND.primaryDark, border: `2px solid ${BRAND.accent}` }}>
-              <div className="flex items-center gap-4 mb-5">
-                {/* Human portrait instead of icon */}
-                <div className="w-16 h-16 rounded-2xl overflow-hidden flex-shrink-0" style={{ border: `2px solid ${BRAND.accent}` }}>
+            <div className="rounded-xl p-4" style={{ backgroundColor: BRAND.primaryDark, border: `2px solid ${BRAND.accent}` }}>
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-12 h-12 rounded-xl overflow-hidden flex-shrink-0" style={{ border: `2px solid ${BRAND.accent}` }}>
                   <img 
                     src={vendorPortrait2} 
                     alt="Team member" 
@@ -583,11 +583,11 @@ export default function CustomerJourneyMap() {
                   />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold" style={{ color: BRAND.text }}>Cashier</h3>
-                  <p className="text-sm font-medium" style={{ color: BRAND.textSubtle }}>Team Member</p>
+                  <h3 className="text-lg font-bold" style={{ color: BRAND.text }}>Cashier</h3>
+                  <p className="text-xs font-medium" style={{ color: BRAND.textSubtle }}>Team Member</p>
                 </div>
               </div>
-              <div className="space-y-2">
+              <div className="space-y-1">
                 <FeatureCheck available={true} label="Take payments" />
                 <FeatureCheck available={true} label="View own sales history" />
                 <FeatureCheck available={false} label="Cannot access settings" />
@@ -599,7 +599,7 @@ export default function CustomerJourneyMap() {
         </div>
 
         {/* Stage 1: Required Onboarding */}
-        <div className="px-8 py-10">
+        <div className="px-6 py-6">
           <StageHeader
             icon={<User className="h-5 w-5" />}
             title="Account Setup"
@@ -608,8 +608,8 @@ export default function CustomerJourneyMap() {
           />
           
           {/* Visual Flow */}
-          <div className="rounded-2xl p-8" style={{ backgroundColor: BRAND.bgDark, border: `2px solid ${BRAND.primaryLight}` }}>
-            <div className="flex flex-wrap items-center justify-center gap-3">
+          <div className="rounded-xl p-5" style={{ backgroundColor: BRAND.bgDark, border: `2px solid ${BRAND.primaryLight}` }}>
+            <div className="flex flex-wrap items-center justify-center gap-2">
               <PhoneMockup label="1. Language"><ScreenLanguage /></PhoneMockup>
               <FlowArrow />
               <PhoneMockup label="2. Phone"><ScreenPhone /></PhoneMockup>
@@ -622,8 +622,8 @@ export default function CustomerJourneyMap() {
               <FlowArrow />
               <PhoneMockup label="✓ Done!"><ScreenSuccess /></PhoneMockup>
             </div>
-            <div className="mt-8 text-center">
-              <p className="text-base font-medium" style={{ color: BRAND.textMuted }}>
+            <div className="mt-5 text-center">
+              <p className="text-sm font-medium" style={{ color: BRAND.textMuted }}>
                 <span style={{ color: BRAND.accent, fontWeight: 700 }}>5 steps</span> • Takes about <span style={{ color: BRAND.accent, fontWeight: 700 }}>2 minutes</span> • Progress saves automatically
               </p>
             </div>
@@ -631,7 +631,7 @@ export default function CustomerJourneyMap() {
         </div>
 
         {/* Stage 2: Optional Setup */}
-        <div className="px-8 py-10">
+        <div className="px-6 py-6">
           <StageHeader
             icon={<Smartphone className="h-5 w-5" />}
             title="Optional Setup"
@@ -639,18 +639,17 @@ export default function CustomerJourneyMap() {
             phase="optional"
           />
           
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid md:grid-cols-2 gap-5">
             {/* Bank Linking */}
-            <div className="rounded-2xl p-6" style={{ backgroundColor: BRAND.warningDark, border: `2px solid ${BRAND.warning}` }}>
-              <div className="flex items-center gap-4 mb-5">
-                {/* Icon with absolute centering for PDF */}
+            <div className="rounded-xl p-4" style={{ backgroundColor: BRAND.warningDark, border: `2px solid ${BRAND.warning}` }}>
+              <div className="flex items-center gap-3 mb-3">
                 <div 
                   style={{ 
                     position: 'relative',
-                    width: '48px',
-                    height: '48px',
-                    minWidth: '48px',
-                    borderRadius: '12px',
+                    width: '40px',
+                    height: '40px',
+                    minWidth: '40px',
+                    borderRadius: '10px',
                     backgroundColor: BRAND.success,
                   }}
                 >
@@ -660,48 +659,46 @@ export default function CustomerJourneyMap() {
                       top: '50%',
                       left: '50%',
                       transform: 'translate(-50%, -50%)',
-                      width: '24px',
-                      height: '24px',
+                      width: '20px',
+                      height: '20px',
                       color: BRAND.text,
                     }} 
                   />
                 </div>
                 <div>
-                  <h4 className="font-bold text-lg" style={{ color: BRAND.text }}>Link Bank Account</h4>
-                  <p className="text-sm font-medium" style={{ color: BRAND.warning }}>For payouts</p>
+                  <h4 className="font-bold text-base" style={{ color: BRAND.text }}>Link Bank Account</h4>
+                  <p className="text-xs font-medium" style={{ color: BRAND.warning }}>For payouts</p>
                 </div>
               </div>
-              {/* Bank linking visual imagery */}
-              <div className="flex justify-center mb-4">
+              <div className="flex justify-center mb-3">
                 <img 
                   src={bankLinkingVisual} 
                   alt="Bank account linking" 
                   style={{ 
-                    width: '140px', 
-                    height: '140px', 
+                    width: '100px', 
+                    height: '100px', 
                     objectFit: 'contain',
-                    borderRadius: '12px',
+                    borderRadius: '10px',
                   }} 
                 />
               </div>
               <PhoneMockup><ScreenBank /></PhoneMockup>
-              <div className="mt-5 flex items-center justify-center gap-2 text-base font-medium" style={{ color: BRAND.warning }}>
-                <SkipForward className="h-5 w-5" />
+              <div className="mt-3 flex items-center justify-center gap-2 text-sm font-medium" style={{ color: BRAND.warning }}>
+                <SkipForward className="h-4 w-4" />
                 <span>Can skip and do later</span>
               </div>
             </div>
             
             {/* Device Pairing */}
-            <div className="rounded-2xl p-6" style={{ backgroundColor: BRAND.warningDark, border: `2px solid ${BRAND.warning}` }}>
-              <div className="flex items-center gap-4 mb-5">
-                {/* Icon with absolute centering for PDF */}
+            <div className="rounded-xl p-4" style={{ backgroundColor: BRAND.warningDark, border: `2px solid ${BRAND.warning}` }}>
+              <div className="flex items-center gap-3 mb-3">
                 <div 
                   style={{ 
                     position: 'relative',
-                    width: '48px',
-                    height: '48px',
-                    minWidth: '48px',
-                    borderRadius: '12px',
+                    width: '40px',
+                    height: '40px',
+                    minWidth: '40px',
+                    borderRadius: '10px',
                     backgroundColor: BRAND.primaryDark,
                   }}
                 >
@@ -711,45 +708,44 @@ export default function CustomerJourneyMap() {
                       top: '50%',
                       left: '50%',
                       transform: 'translate(-50%, -50%)',
-                      width: '24px',
-                      height: '24px',
+                      width: '20px',
+                      height: '20px',
                       color: BRAND.accent,
                     }} 
                   />
                 </div>
                 <div>
-                  <h4 className="font-bold text-lg" style={{ color: BRAND.text }}>Pair Device</h4>
-                  <p className="text-sm font-medium" style={{ color: BRAND.warning }}>For card payments</p>
+                  <h4 className="font-bold text-base" style={{ color: BRAND.text }}>Pair Device</h4>
+                  <p className="text-xs font-medium" style={{ color: BRAND.warning }}>For card payments</p>
                 </div>
               </div>
-              {/* Device pairing visual imagery */}
-              <div className="flex justify-center mb-4">
+              <div className="flex justify-center mb-3">
                 <img 
                   src={devicePairingVisual} 
                   alt="Device pairing" 
                   style={{ 
-                    width: '140px', 
-                    height: '140px', 
+                    width: '100px', 
+                    height: '100px', 
                     objectFit: 'contain',
-                    borderRadius: '12px',
+                    borderRadius: '10px',
                   }} 
                 />
               </div>
               <PhoneMockup><ScreenDevice /></PhoneMockup>
-              <div className="mt-5 flex items-center justify-center gap-2 text-base font-medium" style={{ color: BRAND.warning }}>
-                <SkipForward className="h-5 w-5" />
+              <div className="mt-3 flex items-center justify-center gap-2 text-sm font-medium" style={{ color: BRAND.warning }}>
+                <SkipForward className="h-4 w-4" />
                 <span>Can skip and do later</span>
               </div>
             </div>
           </div>
           
           {/* Skip explanation */}
-          <div className="mt-8 rounded-xl p-5" style={{ backgroundColor: BRAND.warningDark, border: `2px solid ${BRAND.warning}` }}>
-            <div className="flex items-start gap-4">
-              <AlertCircle className="h-6 w-6 mt-0.5" style={{ color: BRAND.warning }} />
+          <div className="mt-5 rounded-lg p-4" style={{ backgroundColor: BRAND.warningDark, border: `2px solid ${BRAND.warning}` }}>
+            <div className="flex items-start gap-3">
+              <AlertCircle className="h-5 w-5 mt-0.5" style={{ color: BRAND.warning }} />
               <div>
-                <p className="text-base font-bold" style={{ color: BRAND.text }}>Why can I skip these steps?</p>
-                <p className="text-sm mt-2" style={{ color: BRAND.textMuted }}>
+                <p className="text-sm font-bold" style={{ color: BRAND.text }}>Why can I skip these steps?</p>
+                <p className="text-xs mt-1" style={{ color: BRAND.textMuted }}>
                   Patela lets you start selling right away! Cash sales work without any additional setup. 
                   You can link your bank and pair your device later when you need card payments or payouts.
                 </p>
@@ -759,7 +755,7 @@ export default function CustomerJourneyMap() {
         </div>
 
         {/* Stage 3: Daily Use */}
-        <div className="px-8 py-10">
+        <div className="px-6 py-6">
           <StageHeader
             icon={<Home className="h-5 w-5" />}
             title="Start Selling"
@@ -767,16 +763,16 @@ export default function CustomerJourneyMap() {
             phase="usage"
           />
           
-          <div className="rounded-2xl p-8" style={{ backgroundColor: BRAND.success, border: `2px solid ${BRAND.successLight}` }}>
-            <div className="flex flex-wrap items-center justify-center gap-3">
+          <div className="rounded-xl p-5" style={{ backgroundColor: BRAND.success, border: `2px solid ${BRAND.successLight}` }}>
+            <div className="flex flex-wrap items-center justify-center gap-2">
               <PhoneMockup label="Dashboard"><ScreenHome /></PhoneMockup>
               <FlowArrow />
               <PhoneMockup label="Take Payment"><ScreenPayment /></PhoneMockup>
               <FlowArrow />
               <PhoneMockup label="Success!"><ScreenPaySuccess /></PhoneMockup>
             </div>
-            <div className="mt-8 text-center">
-              <p className="text-base font-medium" style={{ color: BRAND.text }}>
+            <div className="mt-5 text-center">
+              <p className="text-sm font-medium" style={{ color: BRAND.text }}>
                 <span style={{ color: BRAND.text, fontWeight: 700 }}>Cash sales</span> work immediately • <span style={{ color: BRAND.text, fontWeight: 700 }}>Card payments</span> require device
               </p>
             </div>
@@ -784,22 +780,21 @@ export default function CustomerJourneyMap() {
         </div>
 
         {/* Feature Availability Matrix */}
-        <div className="px-8 py-10">
-          <h2 className="text-2xl font-bold mb-8 flex items-center gap-3" style={{ color: BRAND.text }}>
-            <Check className="h-7 w-7" style={{ color: BRAND.accent }} />
+        <div className="px-6 py-6">
+          <h2 className="text-xl font-bold mb-5 flex items-center gap-2" style={{ color: BRAND.text }}>
+            <Check className="h-6 w-6" style={{ color: BRAND.accent }} />
             What Works Without Full Setup?
           </h2>
           
-          <div className="grid md:grid-cols-3 gap-6">
-            <div className="rounded-xl p-6" style={{ backgroundColor: BRAND.success, border: `2px solid ${BRAND.successLight}` }}>
-              <div className="flex items-center gap-3 mb-4">
-                {/* Icon with absolute centering for PDF */}
+          <div className="grid md:grid-cols-3 gap-4">
+            <div className="rounded-lg p-4" style={{ backgroundColor: BRAND.success, border: `2px solid ${BRAND.successLight}` }}>
+              <div className="flex items-center gap-2 mb-3">
                 <div 
                   style={{ 
                     position: 'relative',
-                    width: '24px',
-                    height: '24px',
-                    minWidth: '24px',
+                    width: '20px',
+                    height: '20px',
+                    minWidth: '20px',
                   }}
                 >
                   <CheckCircle2 
@@ -808,15 +803,15 @@ export default function CustomerJourneyMap() {
                       top: '50%',
                       left: '50%',
                       transform: 'translate(-50%, -50%)',
-                      width: '24px',
-                      height: '24px',
+                      width: '20px',
+                      height: '20px',
                       color: BRAND.text,
                     }} 
                   />
                 </div>
-                <h4 className="font-bold text-lg" style={{ color: BRAND.text }}>Always Available</h4>
+                <h4 className="font-bold text-base" style={{ color: BRAND.text }}>Always Available</h4>
               </div>
-              <ul className="space-y-3 text-base" style={{ color: BRAND.text }}>
+              <ul className="space-y-1.5 text-sm" style={{ color: BRAND.text }}>
                 <li>• Record cash sales</li>
                 <li>• Add items to catalog</li>
                 <li>• View sales history</li>
@@ -825,15 +820,14 @@ export default function CustomerJourneyMap() {
               </ul>
             </div>
             
-            <div className="rounded-xl p-6" style={{ backgroundColor: BRAND.primaryDark, border: `2px solid ${BRAND.accent}` }}>
-              <div className="flex items-center gap-3 mb-4">
-                {/* Icon with absolute centering for PDF */}
+            <div className="rounded-lg p-4" style={{ backgroundColor: BRAND.primaryDark, border: `2px solid ${BRAND.accent}` }}>
+              <div className="flex items-center gap-2 mb-3">
                 <div 
                   style={{ 
                     position: 'relative',
-                    width: '24px',
-                    height: '24px',
-                    minWidth: '24px',
+                    width: '20px',
+                    height: '20px',
+                    minWidth: '20px',
                   }}
                 >
                   <Smartphone 
@@ -842,15 +836,15 @@ export default function CustomerJourneyMap() {
                       top: '50%',
                       left: '50%',
                       transform: 'translate(-50%, -50%)',
-                      width: '24px',
-                      height: '24px',
+                      width: '20px',
+                      height: '20px',
                       color: BRAND.accent,
                     }} 
                   />
                 </div>
-                <h4 className="font-bold text-lg" style={{ color: BRAND.accent }}>Needs Device</h4>
+                <h4 className="font-bold text-base" style={{ color: BRAND.accent }}>Needs Device</h4>
               </div>
-              <ul className="space-y-3 text-base" style={{ color: BRAND.textMuted }}>
+              <ul className="space-y-1.5 text-sm" style={{ color: BRAND.textMuted }}>
                 <li>• Accept card payments</li>
                 <li>• Tap to pay (NFC)</li>
                 <li>• QR code payments</li>
@@ -858,15 +852,14 @@ export default function CustomerJourneyMap() {
               </ul>
             </div>
             
-            <div className="rounded-xl p-6" style={{ backgroundColor: BRAND.primary, border: `2px solid ${BRAND.primaryLight}` }}>
-              <div className="flex items-center gap-3 mb-4">
-                {/* Icon with absolute centering for PDF */}
+            <div className="rounded-lg p-4" style={{ backgroundColor: BRAND.primary, border: `2px solid ${BRAND.primaryLight}` }}>
+              <div className="flex items-center gap-2 mb-3">
                 <div 
                   style={{ 
                     position: 'relative',
-                    width: '24px',
-                    height: '24px',
-                    minWidth: '24px',
+                    width: '20px',
+                    height: '20px',
+                    minWidth: '20px',
                   }}
                 >
                   <Banknote 
@@ -875,15 +868,15 @@ export default function CustomerJourneyMap() {
                       top: '50%',
                       left: '50%',
                       transform: 'translate(-50%, -50%)',
-                      width: '24px',
-                      height: '24px',
+                      width: '20px',
+                      height: '20px',
                       color: BRAND.accent,
                     }} 
                   />
                 </div>
-                <h4 className="font-bold text-lg" style={{ color: BRAND.text }}>Needs Bank Account</h4>
+                <h4 className="font-bold text-base" style={{ color: BRAND.text }}>Needs Bank Account</h4>
               </div>
-              <ul className="space-y-3 text-base" style={{ color: BRAND.textMuted }}>
+              <ul className="space-y-1.5 text-sm" style={{ color: BRAND.textMuted }}>
                 <li>• Request payouts</li>
                 <li>• Same-day transfers</li>
                 <li>• Instant payouts</li>
@@ -894,21 +887,20 @@ export default function CustomerJourneyMap() {
         </div>
 
         {/* Footer with Human Touch */}
-        <div className="px-8 py-10 text-center relative" style={{ borderTop: `2px solid ${BRAND.primaryLight}` }}>
-          {/* Subtle human portraits in footer */}
-          <div className="flex justify-center gap-4 mb-6">
-            <div className="w-14 h-14 rounded-full overflow-hidden opacity-80" style={{ border: `2px solid ${BRAND.accent}` }}>
+        <div className="px-6 py-6 text-center relative" style={{ borderTop: `2px solid ${BRAND.primaryLight}` }}>
+          <div className="flex justify-center gap-3 mb-4">
+            <div className="w-10 h-10 rounded-full overflow-hidden opacity-80" style={{ border: `2px solid ${BRAND.accent}` }}>
               <img src={vendorPortrait1} alt="" className="w-full h-full object-cover" />
             </div>
-            <div className="w-14 h-14 rounded-full overflow-hidden opacity-80" style={{ border: `2px solid ${BRAND.accent}` }}>
+            <div className="w-10 h-10 rounded-full overflow-hidden opacity-80" style={{ border: `2px solid ${BRAND.accent}` }}>
               <img src={vendorPortrait2} alt="" className="w-full h-full object-cover" />
             </div>
           </div>
-          <LogoFull className="text-4xl block mb-5" />
-          <p className="text-base font-medium" style={{ color: BRAND.textSubtle }}>
+          <LogoFull className="text-3xl block mb-3" />
+          <p className="text-sm font-medium" style={{ color: BRAND.textSubtle }}>
             Built for the Hustle. Patela © 2025
           </p>
-          <p className="text-sm mt-3" style={{ color: BRAND.textSubtle }}>
+          <p className="text-xs mt-2" style={{ color: BRAND.textSubtle }}>
             Languages: English • isiZulu • Sesotho • Xitsonga
           </p>
         </div>
