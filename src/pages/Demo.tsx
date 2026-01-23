@@ -29,11 +29,9 @@ import {
 } from "lucide-react";
 import { PatelaLogo } from "@/components/patela/PatelaLogo";
 import { Progress } from "@/components/ui/progress";
-// Logo variants are now handled by the shared PatelaLogo component
-// Use: variant="light" for wordmark on dark bg
-// Use: variant="dark" for wordmark on light bg
-// Use: variant="light-icon" for icon on dark bg
-// Use: variant="icon" for icon on light bg
+// Logo variants use official SVG assets - NO colour modifications
+// Use: variant="dark" for full "patela." wordmark
+// Use: variant="icon" for standalone "p." icon
 
 interface DemoStep {
   id: number;
