@@ -154,7 +154,7 @@ export default function Index() {
       {/* Navigation - Full wordmark for website header */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-primary/95 backdrop-blur-md border-b border-primary-foreground/10">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <PatelaLogo size="lg" variant="light" />
+          <PatelaLogo size="lg" variant="dark" />
           <div className="hidden md:flex items-center gap-8">
             <a href="#features" className="text-primary-foreground/80 hover:text-primary-foreground transition-colors text-sm font-medium">Features</a>
             <a href="#devices" className="text-primary-foreground/80 hover:text-primary-foreground transition-colors text-sm font-medium">Devices</a>
@@ -505,7 +505,7 @@ export default function Index() {
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
             <div className="col-span-2 md:col-span-1">
-              <PatelaLogo size="md" variant="light" />
+              <PatelaLogo size="md" variant="dark" />
               <p className="text-primary-foreground/60 mt-4 text-sm">Built for the hustle. Empowering South African vendors everywhere.</p>
             </div>
             <div>
