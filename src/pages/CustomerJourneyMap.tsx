@@ -537,10 +537,27 @@ export default function CustomerJourneyMap() {
           />
           <div className="relative px-6 py-10 text-center">
             <LogoFull className="h-14 mx-auto mb-5" />
-            <h1 className="text-3xl md:text-4xl font-bold mb-3" style={{ color: BRAND.text }}>
+            <h1 
+              className="text-3xl md:text-4xl font-bold mb-3" 
+              style={{ 
+                color: BRAND.text,
+                lineHeight: '1.3',
+                letterSpacing: '0.02em',
+                wordSpacing: '0.1em',
+                whiteSpace: 'normal',
+                textRendering: 'geometricPrecision',
+              }}
+            >
               Onboarding to First Sale
             </h1>
-            <p className="text-lg font-semibold mb-4" style={{ color: BRAND.accent }}>
+            <p 
+              className="text-lg font-semibold mb-4" 
+              style={{ 
+                color: BRAND.accent,
+                lineHeight: '1.4',
+                letterSpacing: '0.01em',
+              }}
+            >
               Intelligence in every tap. Growing with you.
             </p>
             <div className="flex justify-center gap-2">
