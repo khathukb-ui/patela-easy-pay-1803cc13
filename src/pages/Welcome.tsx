@@ -34,7 +34,7 @@ export default function Welcome() {
         <div className="relative z-10 flex-1 flex flex-col px-6 py-8">
           {/* Logo - Full wordmark for welcome/splash screens */}
           <div className="text-center mb-8 pt-4">
-            <PatelaLogo size="2xl" variant="light" className="mx-auto" />
+            <PatelaLogo size="2xl" variant="dark" className="mx-auto" />
           </div>
 
           {/* Main Content */}

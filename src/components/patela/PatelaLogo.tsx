@@ -1,10 +1,10 @@
 import { cn } from "@/lib/utils";
 import patelaWordmarkSvg from "@/assets/patela-wordmark.svg";
-import patelaIconTransparent from "@/assets/patela-icon-transparent.png";
+import patelaIconSvg from "@/assets/patela-icon.svg";
 
 interface PatelaLogoProps {
   size?: "sm" | "md" | "lg" | "xl" | "2xl";
-  variant?: "light" | "dark" | "icon" | "light-icon";
+  variant?: "dark" | "icon";
   className?: string;
 }
 
@@ -28,30 +28,25 @@ const iconHeightClasses = {
 /**
  * PatelaLogo Component
  * 
- * Master brand asset: Uses official SVG wordmark from the AI source file.
+ * Master brand asset: Uses official SVG files from the AI source.
+ * 
+ * IMPORTANT: No CSS filters, theming, or color modifications are applied.
+ * The dot colour and all SVG colours are preserved exactly as defined.
  * 
  * Variants:
- * - "dark" - Original purple wordmark for light backgrounds (SVG)
- * - "light" - White wordmark for dark backgrounds (CSS filter on SVG)
- * - "icon" - Purple "p." icon for light backgrounds (PNG fallback)
- * - "light-icon" - White "p." icon for dark backgrounds (CSS filter)
+ * - "dark" - Full "patela." wordmark (SVG) - use on any background
+ * - "icon" - Standalone "p." icon (SVG) - use on any background
  */
 export function PatelaLogo({ 
   size = "md", 
   variant = "dark", 
   className
 }: PatelaLogoProps) {
-  const isIconVariant = variant === "icon" || variant === "light-icon";
-  const isLightVariant = variant === "light" || variant === "light-icon";
+  const isIconVariant = variant === "icon";
   const heightClass = isIconVariant ? iconHeightClasses[size] : wordmarkHeightClasses[size];
 
-  // Use SVG for wordmark (master source), PNG for icon (until SVG provided)
-  const imgSrc = isIconVariant ? patelaIconTransparent : patelaWordmarkSvg;
-
-  // For light variants: invert to white
-  const lightFilterStyle = isLightVariant 
-    ? { filter: "brightness(0) saturate(100%) invert(100%)" }
-    : undefined;
+  // Use official SVG assets - NO filters or color modifications
+  const imgSrc = isIconVariant ? patelaIconSvg : patelaWordmarkSvg;
 
   return (
     <div className={cn(heightClass, "inline-flex items-center", className)}>
@@ -59,7 +54,6 @@ export function PatelaLogo({
         src={imgSrc} 
         alt="Patela" 
         className="h-full w-auto"
-        style={lightFilterStyle}
       />
     </div>
   );

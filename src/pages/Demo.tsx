@@ -113,7 +113,7 @@ function LandingMock() {
         className="mb-6"
       >
         {/* Full wordmark logo for landing/demo screens */}
-        <PatelaLogo size="md" variant="light" />
+        <PatelaLogo size="md" variant="dark" />
       </motion.div>
       <motion.h2 
         initial={{ opacity: 0, y: 10 }}
@@ -1029,7 +1029,7 @@ export default function Demo() {
     <div className="min-h-screen bg-gradient-to-br from-primary via-primary/95 to-primary/90 flex flex-col">
       {/* Header */}
       <div className="p-4 flex items-center justify-between">
-        <PatelaLogo size="md" variant="light" />
+        <PatelaLogo size="md" variant="dark" />
         <Button
           variant="ghost"
           size="sm"
