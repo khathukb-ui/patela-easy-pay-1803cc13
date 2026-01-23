@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
+import patelaWordmarkSvg from "@/assets/patela-wordmark.svg";
 import patelaIconTransparent from "@/assets/patela-icon-transparent.png";
-import patelaWordmarkTransparent from "@/assets/patela-wordmark-transparent.png";
 
 interface PatelaLogoProps {
   size?: "sm" | "md" | "lg" | "xl" | "2xl";
@@ -28,16 +28,13 @@ const iconHeightClasses = {
 /**
  * PatelaLogo Component
  * 
- * Uses official transparent PNG assets for pixel-perfect rendering.
+ * Master brand asset: Uses official SVG wordmark from the AI source file.
  * 
  * Variants:
- * - "dark" - Purple wordmark for light backgrounds (original PNG)
- * - "light" - White wordmark for dark backgrounds (CSS filter to make purple white, keep cyan)
- * - "icon" - Purple "p." icon for light backgrounds (original PNG)
+ * - "dark" - Original purple wordmark for light backgrounds (SVG)
+ * - "light" - White wordmark for dark backgrounds (CSS filter on SVG)
+ * - "icon" - Purple "p." icon for light backgrounds (PNG fallback)
  * - "light-icon" - White "p." icon for dark backgrounds (CSS filter)
- * 
- * The CSS filter chain targets only the deep purple (#2D1B69) to white conversion
- * while keeping the cyan (#00D4FF) dot visible.
  */
 export function PatelaLogo({ 
   size = "md", 
@@ -48,12 +45,12 @@ export function PatelaLogo({
   const isLightVariant = variant === "light" || variant === "light-icon";
   const heightClass = isIconVariant ? iconHeightClasses[size] : wordmarkHeightClasses[size];
 
-  const imgSrc = isIconVariant ? patelaIconTransparent : patelaWordmarkTransparent;
+  // Use SVG for wordmark (master source), PNG for icon (until SVG provided)
+  const imgSrc = isIconVariant ? patelaIconTransparent : patelaWordmarkSvg;
 
-  // For light variants: invert purple to white, but preserve cyan
-  // Using hue-rotate + saturate to shift purple to white while keeping cyan intact
+  // For light variants: invert to white
   const lightFilterStyle = isLightVariant 
-    ? { filter: "brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(0%) hue-rotate(0deg)" }
+    ? { filter: "brightness(0) saturate(100%) invert(100%)" }
     : undefined;
 
   return (
