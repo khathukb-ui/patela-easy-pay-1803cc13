@@ -312,7 +312,7 @@ export default function Auth() {
             ) : (
               <>
                 <p className="text-muted-foreground">Don't have an account?</p>
-                <Button variant="link" className="text-primary font-semibold" onClick={() => { setIsSignUp(true); setErrors({}); }}>
+                <Button variant="link" className="text-primary font-semibold" onClick={() => navigate("/onboarding/language")}>
                   Create one now
                 </Button>
               </>
