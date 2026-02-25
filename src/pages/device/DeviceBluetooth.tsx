@@ -11,8 +11,8 @@ interface Device {
 }
 
 const MOCK_DEVICES: Device[] = [
-  { id: "PTL-2024-7842", name: "Patela Pro", battery: 85, signal: "strong" },
-  { id: "PTL-2024-3156", name: "Patela Mini", battery: 42, signal: "medium" },
+  { id: "FP9320-7842", name: "FP9320", battery: 85, signal: "strong" },
+  { id: "FP9320-3156", name: "FP9320", battery: 42, signal: "medium" },
 ];
 
 export default function DeviceBluetooth() {

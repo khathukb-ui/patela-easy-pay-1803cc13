@@ -50,6 +50,7 @@ import DeviceManagement from "./pages/device/DeviceManagement";
 import DeviceUnpair from "./pages/device/DeviceUnpair";
 import DeviceUnpairSuccess from "./pages/device/DeviceUnpairSuccess";
 import DeviceTransfer from "./pages/device/DeviceTransfer";
+import DeviceUSBConnect from "./pages/device/DeviceUSBConnect";
 
 // Settings
 import UsersAccess from "./pages/settings/UsersAccess";
@@ -118,6 +119,7 @@ function AppContent() {
           <Route path="/device/unpair" element={<DeviceUnpair />} />
           <Route path="/device/unpair-success" element={<DeviceUnpairSuccess />} />
           <Route path="/device/transfer" element={<DeviceTransfer />} />
+          <Route path="/device/usb" element={<DeviceUSBConnect />} />
           
           {/* Settings */}
           <Route path="/settings/users" element={<UsersAccess />} />
