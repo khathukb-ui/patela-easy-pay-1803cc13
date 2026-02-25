@@ -23,13 +23,7 @@ export default function LanguageSelection() {
 
   const handleResume = () => {
     // Navigate to the appropriate step based on saved progress
-    if (data.phoneVerified) {
-      navigate("/onboarding/details");
-    } else if (data.phone) {
-      navigate("/onboarding/phone");
-    } else {
-      navigate("/onboarding/phone");
-    }
+    navigate("/onboarding/details");
   };
 
   const handleStartFresh = () => {
@@ -100,7 +94,7 @@ export default function LanguageSelection() {
                 variant="default"
                 size="xl"
                 className="w-[300px] shadow-md hover:shadow-lg transition-all duration-200 active:scale-95"
-                onClick={() => navigate("/onboarding/phone")}
+                onClick={() => navigate("/onboarding/details")}
               >
                 Continue
                 <ArrowRight className="ml-2 h-5 w-5" />

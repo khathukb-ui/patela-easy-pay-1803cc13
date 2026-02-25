@@ -130,7 +130,7 @@ export default function PersonalDetails() {
 
   const handleBack = () => {
     if (step === "personal") {
-      navigate("/onboarding/phone");
+      navigate("/onboarding/language");
     } else if (step === "business") {
       setStep("personal");
     } else {
