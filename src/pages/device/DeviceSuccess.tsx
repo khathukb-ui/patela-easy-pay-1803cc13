@@ -32,7 +32,7 @@ export default function DeviceSuccess() {
               </div>
               <div className="text-left">
                 <p className="text-primary-foreground/80 text-sm">Paired Device</p>
-                <p className="text-primary-foreground font-bold text-lg">Patela Pro</p>
+                <p className="text-primary-foreground font-bold text-lg">FP9320</p>
               </div>
             </div>
           </div>
