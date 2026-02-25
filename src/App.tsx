@@ -21,6 +21,7 @@ import Account from "./pages/Account";
 import Help from "./pages/Help";
 import Items from "./pages/Items";
 import Auth from "./pages/Auth";
+import InstallApp from "./pages/InstallApp";
 import Welcome from "./pages/Welcome";
 
 // Onboarding
@@ -91,6 +92,7 @@ function AppContent() {
           <Route path="/" element={<Index />} />
           <Route path="/welcome" element={<Welcome />} />
           <Route path="/auth" element={<Auth />} />
+          <Route path="/install" element={<InstallApp />} />
           
           {/* Onboarding */}
           <Route path="/onboarding/language" element={<LanguageSelection />} />
