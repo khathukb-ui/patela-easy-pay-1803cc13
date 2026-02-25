@@ -16,7 +16,8 @@ import {
   Headphones,
   Star,
   Play,
-  ChevronDown
+  ChevronDown,
+  Download
 } from "lucide-react";
 import { PatelaLogo } from "@/components/patela/PatelaLogo";
 import patelaHeroBg from "@/assets/patela-hero-bg.jpg";
@@ -160,6 +161,10 @@ export default function Index() {
             <a href="#devices" className="text-primary-foreground/80 hover:text-primary-foreground transition-colors text-sm font-medium">Devices</a>
             <a href="#how-it-works" className="text-primary-foreground/80 hover:text-primary-foreground transition-colors text-sm font-medium">How It Works</a>
             <a href="#testimonials" className="text-primary-foreground/80 hover:text-primary-foreground transition-colors text-sm font-medium">Reviews</a>
+            <button onClick={() => navigate("/install")} className="text-primary-foreground/80 hover:text-primary-foreground transition-colors text-sm font-medium flex items-center gap-1">
+              <Download className="h-3.5 w-3.5" />
+              Install App
+            </button>
           </div>
           <div className="flex items-center gap-3">
             <Button
