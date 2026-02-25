@@ -4,10 +4,13 @@ import { OnboardingHeader } from "@/components/patela/OnboardingHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowRight, ArrowLeft, Loader2, User, Store, MessageSquare, Mail, Phone, Check } from "lucide-react";
+import { ArrowRight, ArrowLeft, Loader2, User, Store, MessageSquare, Mail, Phone, Check, Lock, Eye, EyeOff } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { cn } from "@/lib/utils";
 import { useOnboardingData } from "@/hooks/use-onboarding-data";
+import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "sonner";
+import { z } from "zod";
 
 type Step = "personal" | "business" | "communication";
 
@@ -18,18 +21,29 @@ interface CommunicationMethod {
   description: string;
 }
 
+const phoneSchema = z.string().regex(/^(\+27|0)[6-8][0-9]{8}$/, "Please enter a valid SA phone number");
+const emailSchema = z.string().email("Please enter a valid email address");
+const passwordSchema = z
+  .string()
+  .min(8, "At least 8 characters")
+  .regex(/[A-Z]/, "At least one uppercase letter")
+  .regex(/[0-9]/, "At least one number")
+  .regex(/[^A-Za-z0-9]/, "At least one special character");
+
+const passwordChecks = [
+  { label: "8+ characters", test: (v: string) => v.length >= 8 },
+  { label: "Uppercase letter", test: (v: string) => /[A-Z]/.test(v) },
+  { label: "Number", test: (v: string) => /[0-9]/.test(v) },
+  { label: "Special character", test: (v: string) => /[^A-Za-z0-9]/.test(v) },
+];
+
 // Validate SA ID number format and checksum (Luhn algorithm)
 const validateSAID = (id: string): boolean => {
   if (!id) return true; // Optional field
   if (!/^\d{13}$/.test(id)) return false;
-  
-  // Validate date of birth (first 6 digits: YYMMDD)
-  const year = parseInt(id.substring(0, 2));
   const month = parseInt(id.substring(2, 4));
   const day = parseInt(id.substring(4, 6));
   if (month < 1 || month > 12 || day < 1 || day > 31) return false;
-  
-  // Luhn checksum validation
   let sum = 0;
   for (let i = 0; i < 13; i++) {
     let digit = parseInt(id[i]);
@@ -43,45 +57,52 @@ const validateSAID = (id: string): boolean => {
 };
 
 export default function PersonalDetails() {
-  const { data: onboardingData, updateData } = useOnboardingData();
+  const { data: onboardingData, updateData, clearData } = useOnboardingData();
+  const { signUp } = useAuth();
   const [step, setStep] = useState<Step>("personal");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { t } = useLanguage();
 
-  // Personal details - initialize from saved data
+  // Personal details
   const [firstName, setFirstName] = useState(onboardingData.firstName);
   const [lastName, setLastName] = useState(onboardingData.lastName);
   const [idNumber, setIdNumber] = useState(onboardingData.idNumber);
   const [idError, setIdError] = useState("");
 
-  // Business details - initialize from saved data
+  // Account / registration fields
+  const [phone, setPhone] = useState(onboardingData.phone);
+  const [email, setEmail] = useState(onboardingData.email);
+  const [password, setPassword] = useState(onboardingData.password);
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [phoneError, setPhoneError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [confirmPasswordError, setConfirmPasswordError] = useState("");
+
+  // Business details
   const [businessName, setBusinessName] = useState(onboardingData.businessName);
   const [businessType, setBusinessType] = useState(onboardingData.businessType);
 
-  // Communication preferences - initialize from saved data
+  // Communication preferences
   const [selectedMethods, setSelectedMethods] = useState<string[]>(onboardingData.selectedMethods);
-  const [email, setEmail] = useState(onboardingData.email);
-  const [emailError, setEmailError] = useState("");
+  const [commEmail, setCommEmail] = useState(onboardingData.email);
 
   // Save data when it changes
   useEffect(() => {
     updateData({
-      firstName,
-      lastName,
-      idNumber,
-      businessName,
-      businessType,
+      firstName, lastName, idNumber,
+      phone, email, password,
+      businessName, businessType,
       selectedMethods,
-      email,
       currentStep: "details",
     });
-  }, [firstName, lastName, idNumber, businessName, businessType, selectedMethods, email, updateData]);
+  }, [firstName, lastName, idNumber, phone, email, password, businessName, businessType, selectedMethods, updateData]);
 
-  const validateEmail = (email: string): boolean => {
-    if (!email) return false;
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+  const validateEmail = (val: string): boolean => {
+    if (!val) return false;
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
   };
 
   const businessTypes = [
@@ -101,7 +122,6 @@ export default function PersonalDetails() {
   const toggleCommunicationMethod = (methodId: string) => {
     setSelectedMethods(prev => {
       if (prev.includes(methodId)) {
-        // Don't allow deselecting if it's the only one
         if (prev.length === 1) return prev;
         return prev.filter(id => id !== methodId);
       }
@@ -111,20 +131,82 @@ export default function PersonalDetails() {
 
   const handleNext = async () => {
     if (step === "personal") {
+      // Validate all personal + account fields
+      let hasError = false;
+
       if (!firstName.trim() || !lastName.trim()) return;
+
       if (idNumber && !validateSAID(idNumber)) {
         setIdError(t("idNumberError"));
-        return;
+        hasError = true;
       }
+
+      const phoneResult = phoneSchema.safeParse(phone);
+      if (!phoneResult.success) {
+        setPhoneError(phoneResult.error.errors[0].message);
+        hasError = true;
+      } else {
+        setPhoneError("");
+      }
+
+      if (email.trim()) {
+        const emailResult = emailSchema.safeParse(email);
+        if (!emailResult.success) {
+          setEmailError(emailResult.error.errors[0].message);
+          hasError = true;
+        } else {
+          setEmailError("");
+        }
+      } else {
+        setEmailError("");
+      }
+
+      const pwResult = passwordSchema.safeParse(password);
+      if (!pwResult.success) {
+        setPasswordError(pwResult.error.errors[0].message);
+        hasError = true;
+      } else {
+        setPasswordError("");
+      }
+
+      if (password !== confirmPassword) {
+        setConfirmPasswordError("Passwords don't match");
+        hasError = true;
+      } else {
+        setConfirmPasswordError("");
+      }
+
+      if (hasError) return;
       setStep("business");
     } else if (step === "business") {
       if (!businessName.trim()) return;
       setStep("communication");
     } else {
+      // Final step: create account
       setIsLoading(true);
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      setIsLoading(false);
-      navigate("/onboarding/pin");
+      try {
+        const formattedPhone = phone.startsWith("+27") ? phone : `+27${phone.slice(1)}`;
+        const signUpData: { full_name: string; phone: string; password: string; email?: string } = {
+          full_name: `${firstName} ${lastName}`,
+          phone: formattedPhone,
+          password,
+        };
+        if (email.trim()) signUpData.email = email;
+
+        const { error } = await signUp(signUpData);
+        if (error) {
+          toast.error(error.message);
+          setIsLoading(false);
+          return;
+        }
+        clearData();
+        toast.success("Account created!");
+        navigate("/onboarding/pin");
+      } catch {
+        toast.error("Something went wrong. Please try again.");
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -139,17 +221,13 @@ export default function PersonalDetails() {
   };
 
   const isNextDisabled = () => {
-    if (step === "personal") return !firstName.trim() || !lastName.trim() || !!idError;
+    if (step === "personal") {
+      return !firstName.trim() || !lastName.trim() || !!idError || !phone.trim() || !password.trim() || !confirmPassword.trim();
+    }
     if (step === "business") return !businessName.trim();
     if (selectedMethods.length === 0) return true;
-    if (selectedMethods.includes("email") && !validateEmail(email)) return true;
+    if (selectedMethods.includes("email") && !validateEmail(commEmail)) return true;
     return false;
-  };
-
-  const getCurrentStepNumber = () => {
-    if (step === "personal") return 1;
-    if (step === "business") return 2;
-    return 3;
   };
 
   return (
@@ -179,29 +257,17 @@ export default function PersonalDetails() {
               </p>
             </div>
 
-            <div className="flex-1 space-y-3 animate-patela-fade-in">
+            <div className="flex-1 space-y-3 animate-patela-fade-in overflow-y-auto">
               <h2 className="text-xs font-semibold text-foreground uppercase tracking-wide">Your Information</h2>
               
               <div className="space-y-1.5">
                 <Label htmlFor="firstName" className="text-sm font-medium">First Name</Label>
-                <Input
-                  id="firstName"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                  placeholder="Enter your first name"
-                  className="h-12"
-                />
+                <Input id="firstName" value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="Enter your first name" className="h-12" />
               </div>
 
               <div className="space-y-1.5">
                 <Label htmlFor="lastName" className="text-sm font-medium">Last Name</Label>
-                <Input
-                  id="lastName"
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                  placeholder="Enter your last name"
-                  className="h-12"
-                />
+                <Input id="lastName" value={lastName} onChange={(e) => setLastName(e.target.value)} placeholder="Enter your last name" className="h-12" />
               </div>
 
               <div className="space-y-1.5">
@@ -214,11 +280,7 @@ export default function PersonalDetails() {
                   onChange={(e) => {
                     const value = e.target.value.replace(/\D/g, '');
                     setIdNumber(value);
-                    if (value && !validateSAID(value)) {
-                      setIdError(t("idNumberError"));
-                    } else {
-                      setIdError("");
-                    }
+                    setIdError(value && !validateSAID(value) ? t("idNumberError") : "");
                   }}
                   placeholder="13-digit SA ID number"
                   className={cn("h-12", idError && "border-destructive")}
@@ -230,6 +292,91 @@ export default function PersonalDetails() {
                 ) : (
                   <p className="text-xs text-muted-foreground mt-1">Used for verification purposes only</p>
                 )}
+              </div>
+
+              {/* Account fields */}
+              <h2 className="text-xs font-semibold text-foreground uppercase tracking-wide pt-2">Account Details</h2>
+
+              <div className="space-y-1.5">
+                <Label htmlFor="phone" className="text-sm font-medium">
+                  Phone Number <span className="text-destructive">*</span>
+                </Label>
+                <div className="relative">
+                  <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                  <Input
+                    id="phone" type="tel" placeholder="081 234 5678"
+                    value={phone} onChange={(e) => { setPhone(e.target.value); setPhoneError(""); }}
+                    className={cn("pl-12 h-12", phoneError && "border-destructive")}
+                  />
+                </div>
+                {phoneError && <p className="text-xs text-destructive">{phoneError}</p>}
+              </div>
+
+              <div className="space-y-1.5">
+                <Label htmlFor="email" className="text-sm font-medium">
+                  Email Address <span className="text-muted-foreground font-normal text-xs">(optional)</span>
+                </Label>
+                <div className="relative">
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                  <Input
+                    id="email" type="email" placeholder="you@example.com"
+                    value={email} onChange={(e) => { setEmail(e.target.value); setEmailError(""); }}
+                    className={cn("pl-12 h-12", emailError && "border-destructive")}
+                  />
+                </div>
+                {emailError && <p className="text-xs text-destructive">{emailError}</p>}
+              </div>
+
+              <div className="space-y-1.5">
+                <Label htmlFor="password" className="text-sm font-medium">
+                  Password <span className="text-destructive">*</span>
+                </Label>
+                <div className="relative">
+                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => { setPassword(e.target.value); setPasswordError(""); }}
+                    className={cn("pl-12 pr-12 h-12", passwordError && "border-destructive")}
+                  />
+                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+                    {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                  </button>
+                </div>
+                {passwordError && <p className="text-xs text-destructive">{passwordError}</p>}
+                {password.length > 0 && (
+                  <div className="grid grid-cols-2 gap-1.5 mt-1.5">
+                    {passwordChecks.map((check) => {
+                      const passed = check.test(password);
+                      return (
+                        <div key={check.label} className={`flex items-center gap-1.5 text-xs ${passed ? "text-emerald-600" : "text-muted-foreground"}`}>
+                          <div className={`h-1.5 w-1.5 rounded-full ${passed ? "bg-emerald-500" : "bg-muted-foreground/40"}`} />
+                          {check.label}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+
+              <div className="space-y-1.5">
+                <Label htmlFor="confirmPassword" className="text-sm font-medium">
+                  Confirm Password <span className="text-destructive">*</span>
+                </Label>
+                <div className="relative">
+                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                  <Input
+                    id="confirmPassword"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="••••••••"
+                    value={confirmPassword}
+                    onChange={(e) => { setConfirmPassword(e.target.value); setConfirmPasswordError(""); }}
+                    className={cn("pl-12 h-12", confirmPasswordError && "border-destructive")}
+                  />
+                </div>
+                {confirmPasswordError && <p className="text-xs text-destructive">{confirmPasswordError}</p>}
               </div>
             </div>
           </>
@@ -254,13 +401,7 @@ export default function PersonalDetails() {
               
               <div className="space-y-1.5">
                 <Label htmlFor="businessName" className="text-sm font-medium">Business Name</Label>
-                <Input
-                  id="businessName"
-                  value={businessName}
-                  onChange={(e) => setBusinessName(e.target.value)}
-                  placeholder="Enter your business name"
-                  className="h-12"
-                />
+                <Input id="businessName" value={businessName} onChange={(e) => setBusinessName(e.target.value)} placeholder="Enter your business name" className="h-12" />
                 <p className="text-xs text-muted-foreground mt-1">This will appear on customer receipts</p>
               </div>
 
@@ -277,16 +418,11 @@ export default function PersonalDetails() {
                         onClick={() => setBusinessType(type.id)}
                         className={cn(
                           "flex items-center gap-2 p-3 rounded-xl border-2 transition-all",
-                          isSelected
-                            ? "border-primary bg-primary/10"
-                            : "border-border bg-card hover:border-muted-foreground/30"
+                          isSelected ? "border-primary bg-primary/10" : "border-border bg-card hover:border-muted-foreground/30"
                         )}
                       >
                         <span className="text-xl">{type.icon}</span>
-                        <span className={cn(
-                          "font-medium text-sm",
-                          isSelected ? "text-primary" : "text-foreground"
-                        )}>{type.label}</span>
+                        <span className={cn("font-medium text-sm", isSelected ? "text-primary" : "text-foreground")}>{type.label}</span>
                       </button>
                     );
                   })}
@@ -322,25 +458,14 @@ export default function PersonalDetails() {
                     onClick={() => toggleCommunicationMethod(method.id)}
                     className={cn(
                       "w-full flex items-center gap-3 p-4 rounded-xl border-2 transition-all text-left",
-                      isSelected
-                        ? "border-primary bg-primary/10"
-                        : "border-border bg-card hover:border-muted-foreground/30"
+                      isSelected ? "border-primary bg-primary/10" : "border-border bg-card hover:border-muted-foreground/30"
                     )}
                   >
-                    <div className={cn(
-                      "h-10 w-10 rounded-full flex items-center justify-center transition-colors",
-                      isSelected ? "bg-primary" : "bg-muted"
-                    )}>
-                      <Icon className={cn(
-                        "h-5 w-5",
-                        isSelected ? "text-primary-foreground" : "text-muted-foreground"
-                      )} />
+                    <div className={cn("h-10 w-10 rounded-full flex items-center justify-center transition-colors", isSelected ? "bg-primary" : "bg-muted")}>
+                      <Icon className={cn("h-5 w-5", isSelected ? "text-primary-foreground" : "text-muted-foreground")} />
                     </div>
                     <div className="flex-1">
-                      <p className={cn(
-                        "font-semibold",
-                        isSelected ? "text-primary" : "text-foreground"
-                      )}>{method.label}</p>
+                      <p className={cn("font-semibold", isSelected ? "text-primary" : "text-foreground")}>{method.label}</p>
                       <p className="text-muted-foreground text-sm">{method.description}</p>
                     </div>
                     {isSelected && (
@@ -354,27 +479,16 @@ export default function PersonalDetails() {
 
               {selectedMethods.includes("email") && (
                 <div className="space-y-1.5 animate-patela-fade-in mt-3">
-                  <Label htmlFor="email" className="text-sm font-medium">Email Address</Label>
+                  <Label htmlFor="commEmail" className="text-sm font-medium">Email Address</Label>
                   <Input
-                    id="email"
+                    id="commEmail"
                     type="email"
-                    value={email}
-                    onChange={(e) => {
-                      setEmail(e.target.value);
-                      if (e.target.value && !validateEmail(e.target.value)) {
-                        setEmailError(t("emailError"));
-                      } else {
-                        setEmailError("");
-                      }
-                    }}
+                    value={commEmail}
+                    onChange={(e) => setCommEmail(e.target.value)}
                     placeholder="your@email.com"
-                    className={cn("h-12", emailError && "border-destructive")}
+                    className="h-12"
                   />
-                  {emailError ? (
-                    <p className="text-xs text-destructive mt-1">{emailError}</p>
-                  ) : (
-                    <p className="text-xs text-muted-foreground mt-1">For receipts and updates</p>
-                  )}
+                  <p className="text-xs text-muted-foreground mt-1">For receipts and updates</p>
                 </div>
               )}
 
@@ -396,11 +510,11 @@ export default function PersonalDetails() {
             {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                Saving...
+                Creating account...
               </>
             ) : (
               <>
-                {step === "communication" ? "Complete Setup" : "Continue"}
+                {step === "communication" ? "Create Account" : "Continue"}
                 <ArrowRight className="ml-2 h-5 w-5" />
               </>
             )}

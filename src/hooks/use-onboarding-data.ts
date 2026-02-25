@@ -10,6 +10,7 @@ export interface OnboardingData {
   businessType: string;
   selectedMethods: string[];
   email: string;
+  password: string;
   currentStep: string;
 }
 
@@ -25,6 +26,7 @@ const defaultData: OnboardingData = {
   businessType: "",
   selectedMethods: ["sms"],
   email: "",
+  password: "",
   currentStep: "language",
 };
 
