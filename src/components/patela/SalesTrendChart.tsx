@@ -1,22 +1,25 @@
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { TrendingUp } from "lucide-react";
 
 interface SalesTrendChartProps {
   data?: { day: string; amount: number }[];
 }
 
-const mockData = [
-  { day: "Mon", amount: 1240 },
-  { day: "Tue", amount: 890 },
-  { day: "Wed", amount: 1560 },
-  { day: "Thu", amount: 2100 },
-  { day: "Fri", amount: 1850 },
-  { day: "Sat", amount: 2450 },
-  { day: "Sun", amount: 980 },
+const emptyData = [
+  { day: "Mon", amount: 0 },
+  { day: "Tue", amount: 0 },
+  { day: "Wed", amount: 0 },
+  { day: "Thu", amount: 0 },
+  { day: "Fri", amount: 0 },
+  { day: "Sat", amount: 0 },
+  { day: "Sun", amount: 0 },
 ];
 
-export function SalesTrendChart({ data = mockData }: SalesTrendChartProps) {
+export function SalesTrendChart({ data }: SalesTrendChartProps) {
   const { t } = useLanguage();
+  const chartData = data && data.length > 0 ? data : emptyData;
+  const hasData = data && data.length > 0 && data.some(d => d.amount > 0);
 
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
@@ -40,38 +43,46 @@ export function SalesTrendChart({ data = mockData }: SalesTrendChartProps) {
         </h3>
         <span className="text-xs text-muted-foreground">This Week</span>
       </div>
-      <div className="h-32">
-        <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={data} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
-            <defs>
-              <linearGradient id="salesGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="hsl(var(--accent))" stopOpacity={0.3} />
-                <stop offset="95%" stopColor="hsl(var(--accent))" stopOpacity={0} />
-              </linearGradient>
-            </defs>
-            <XAxis 
-              dataKey="day" 
-              axisLine={false}
-              tickLine={false}
-              tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }}
-            />
-            <YAxis 
-              axisLine={false}
-              tickLine={false}
-              tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }}
-              tickFormatter={(value) => `R${(value / 1000).toFixed(0)}k`}
-            />
-            <Tooltip content={<CustomTooltip />} />
-            <Area
-              type="monotone"
-              dataKey="amount"
-              stroke="hsl(var(--accent))"
-              strokeWidth={2}
-              fill="url(#salesGradient)"
-            />
-          </AreaChart>
-        </ResponsiveContainer>
-      </div>
+      {!hasData ? (
+        <div className="h-32 flex flex-col items-center justify-center text-center">
+          <TrendingUp className="h-8 w-8 text-muted-foreground/30 mb-2" />
+          <p className="text-xs text-muted-foreground">No sales yet</p>
+          <p className="text-[10px] text-muted-foreground/60">Start taking payments to see trends</p>
+        </div>
+      ) : (
+        <div className="h-32">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={chartData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
+              <defs>
+                <linearGradient id="salesGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="hsl(var(--accent))" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="hsl(var(--accent))" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <XAxis 
+                dataKey="day" 
+                axisLine={false}
+                tickLine={false}
+                tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }}
+              />
+              <YAxis 
+                axisLine={false}
+                tickLine={false}
+                tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }}
+                tickFormatter={(value) => `R${(value / 1000).toFixed(0)}k`}
+              />
+              <Tooltip content={<CustomTooltip />} />
+              <Area
+                type="monotone"
+                dataKey="amount"
+                stroke="hsl(var(--accent))"
+                strokeWidth={2}
+                fill="url(#salesGradient)"
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+      )}
     </div>
   );
 }
