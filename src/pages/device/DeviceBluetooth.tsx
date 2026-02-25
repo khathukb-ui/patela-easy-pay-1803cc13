@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Bluetooth, Smartphone, RefreshCw, Loader2, Battery, Signal } from "lucide-react";
@@ -10,33 +10,48 @@ interface Device {
   signal: "strong" | "medium" | "weak";
 }
 
-const MOCK_DEVICES: Device[] = [
-  { id: "FP9320-7842", name: "FP9320", battery: 85, signal: "strong" },
-  { id: "FP9320-3156", name: "FP9320", battery: 42, signal: "medium" },
-];
+const handleScan = async (): Promise<Device[]> => {
+  // In a real Capacitor app, this would use the Bluetooth plugin.
+  // In browser, Web Bluetooth API is used if available.
+  if ('bluetooth' in navigator) {
+    try {
+      const btDevice = await (navigator as any).bluetooth.requestDevice({
+        filters: [{ namePrefix: 'FP9320' }],
+        optionalServices: [],
+      });
+      if (btDevice) {
+        return [{
+          id: btDevice.id || `FP9320-${Math.random().toString(36).substring(2, 6).toUpperCase()}`,
+          name: btDevice.name || 'FP9320',
+          battery: 0,
+          signal: 'strong' as const,
+        }];
+      }
+    } catch {
+      // User cancelled or no device found
+    }
+  }
+  return [];
+};
 
 export default function DeviceBluetooth() {
   const navigate = useNavigate();
-  const [isSearching, setIsSearching] = useState(true);
+  const [isSearching, setIsSearching] = useState(false);
   const [devices, setDevices] = useState<Device[]>([]);
+  const [hasSearched, setHasSearched] = useState(false);
 
-  useEffect(() => {
-    // Simulate device discovery
-    const timer = setTimeout(() => {
-      setDevices(MOCK_DEVICES);
-      setIsSearching(false);
-    }, 2000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  const handleRefresh = () => {
+  const handleRefresh = async () => {
     setIsSearching(true);
     setDevices([]);
-    setTimeout(() => {
-      setDevices(MOCK_DEVICES);
+    try {
+      const found = await handleScan();
+      setDevices(found);
+    } catch {
+      setDevices([]);
+    } finally {
       setIsSearching(false);
-    }, 2000);
+      setHasSearched(true);
+    }
   };
 
   const handleSelectDevice = (device: Device) => {
@@ -105,6 +120,25 @@ export default function DeviceBluetooth() {
           </div>
         </div>
 
+        {/* Initial State - prompt to scan */}
+        {!isSearching && !hasSearched && (
+          <div className="flex flex-col items-center justify-center py-12">
+            <div className="relative mb-4">
+              <div className="w-20 h-20 rounded-full bg-accent/10 flex items-center justify-center">
+                <Bluetooth className="h-10 w-10 text-accent" />
+              </div>
+            </div>
+            <p className="text-foreground font-medium mb-1 text-sm">Ready to scan</p>
+            <p className="text-xs text-muted-foreground text-center max-w-xs mb-4">
+              Make sure your FP9320 is turned on and nearby
+            </p>
+            <Button onClick={handleRefresh} variant="default" size="lg" className="rounded-lg">
+              <Bluetooth className="mr-2 h-4 w-4" />
+              Scan for Devices
+            </Button>
+          </div>
+        )}
+
         {/* Searching State */}
         {isSearching && (
           <div className="flex flex-col items-center justify-center py-12">
@@ -115,7 +149,7 @@ export default function DeviceBluetooth() {
               <div className="absolute inset-0 rounded-full border-4 border-accent/30 animate-ping" />
             </div>
             <p className="text-foreground font-medium mb-1 text-sm">Searching...</p>
-            <p className="text-xs text-muted-foreground">Looking for Patela devices nearby</p>
+            <p className="text-xs text-muted-foreground">Looking for FP9320 devices nearby</p>
           </div>
         )}
 
@@ -152,14 +186,14 @@ export default function DeviceBluetooth() {
         )}
 
         {/* No Devices Found */}
-        {!isSearching && devices.length === 0 && (
+        {!isSearching && hasSearched && devices.length === 0 && (
           <div className="flex flex-col items-center justify-center py-12">
             <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-3">
               <Bluetooth className="h-8 w-8 text-muted-foreground" />
             </div>
-            <p className="text-foreground font-medium mb-1 text-sm">No devices found</p>
+            <p className="text-foreground font-medium mb-1 text-sm">No FP9320 devices found</p>
             <p className="text-xs text-muted-foreground text-center max-w-xs mb-4">
-              Make sure your Patela machine is turned on and nearby
+              Make sure your FP9320 is turned on and nearby
             </p>
             <Button onClick={handleRefresh} variant="outline" size="sm" className="rounded-lg">
               <RefreshCw className="mr-2 h-4 w-4" />
@@ -169,7 +203,7 @@ export default function DeviceBluetooth() {
         )}
 
         {/* Help Tips */}
-        {!isSearching && (
+        {!isSearching && hasSearched && (
           <div className="mt-6 p-3 bg-muted/50 rounded-xl">
             <h3 className="font-semibold text-foreground text-sm mb-2">Can't find your device?</h3>
             <ul className="space-y-1.5 text-xs text-muted-foreground">
