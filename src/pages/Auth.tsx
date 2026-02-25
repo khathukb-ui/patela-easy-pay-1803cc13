@@ -12,7 +12,19 @@ import { z } from "zod";
 
 const emailSchema = z.string().email("Please enter a valid email address");
 const phoneSchema = z.string().regex(/^(\+27|0)[6-8][0-9]{8}$/, "Please enter a valid SA phone number");
-const passwordSchema = z.string().min(8, "Password must be at least 8 characters");
+const passwordSchema = z
+  .string()
+  .min(8, "At least 8 characters")
+  .regex(/[A-Z]/, "At least one uppercase letter")
+  .regex(/[0-9]/, "At least one number")
+  .regex(/[^A-Za-z0-9]/, "At least one special character");
+
+const passwordChecks = [
+  { label: "8+ characters", test: (v: string) => v.length >= 8 },
+  { label: "Uppercase letter", test: (v: string) => /[A-Z]/.test(v) },
+  { label: "Number", test: (v: string) => /[0-9]/.test(v) },
+  { label: "Special character", test: (v: string) => /[^A-Za-z0-9]/.test(v) },
+];
 
 type LoginMethod = "email" | "phone";
 
@@ -41,21 +53,30 @@ export default function Auth() {
   const validate = () => {
     const newErrors: Record<string, string> = {};
     
-    if (loginMethod === "email") {
-      const r = emailSchema.safeParse(email);
-      if (!r.success) newErrors.identifier = r.error.errors[0].message;
-    } else {
-      const r = phoneSchema.safeParse(phone);
-      if (!r.success) newErrors.identifier = r.error.errors[0].message;
-    }
-    
-    const pr = passwordSchema.safeParse(password);
-    if (!pr.success) newErrors.password = pr.error.errors[0].message;
-    
     if (isSignUp) {
+      // Registration: phone is always required
+      const pr = phoneSchema.safeParse(phone);
+      if (!pr.success) newErrors.phone = pr.error.errors[0].message;
+      // Email is optional but validated if provided
+      if (email.trim()) {
+        const er = emailSchema.safeParse(email);
+        if (!er.success) newErrors.email = er.error.errors[0].message;
+      }
       if (!fullName.trim()) newErrors.fullName = "Full name is required";
       if (password !== confirmPassword) newErrors.confirmPassword = "Passwords don't match";
+    } else {
+      // Login: validate based on selected method
+      if (loginMethod === "email") {
+        const r = emailSchema.safeParse(email);
+        if (!r.success) newErrors.identifier = r.error.errors[0].message;
+      } else {
+        const r = phoneSchema.safeParse(phone);
+        if (!r.success) newErrors.identifier = r.error.errors[0].message;
+      }
     }
+    
+    const pwResult = passwordSchema.safeParse(password);
+    if (!pwResult.success) newErrors.password = pwResult.error.errors[0].message;
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -75,12 +96,13 @@ export default function Auth() {
     
     try {
       if (isSignUp) {
-        const data: { full_name: string; password: string; email?: string; phone?: string } = {
+        const formattedPhone = phone.startsWith("+27") ? phone : `+27${phone.slice(1)}`;
+        const data: { full_name: string; password: string; phone: string; email?: string } = {
           full_name: fullName,
           password,
+          phone: formattedPhone,
         };
-        if (loginMethod === "email") data.email = email;
-        else data.phone = identifier;
+        if (email.trim()) data.email = email;
 
         const { error } = await signUp(data);
         if (error) {
@@ -124,29 +146,31 @@ export default function Auth() {
 
       <main className="flex-1 px-6 py-8">
         <div className="max-w-sm mx-auto">
-          {/* Login Method Toggle */}
-          <div className="flex mb-6 bg-muted rounded-xl p-1">
-            <button
-              type="button"
-              onClick={() => { setLoginMethod("phone"); setErrors({}); }}
-              className={`flex-1 py-3 px-4 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2 ${
-                loginMethod === "phone" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              <Phone className="h-4 w-4" />
-              Phone
-            </button>
-            <button
-              type="button"
-              onClick={() => { setLoginMethod("email"); setErrors({}); }}
-              className={`flex-1 py-3 px-4 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2 ${
-                loginMethod === "email" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              <Mail className="h-4 w-4" />
-              Email
-            </button>
-          </div>
+          {/* Login Method Toggle - only show on login */}
+          {!isSignUp && (
+            <div className="flex mb-6 bg-muted rounded-xl p-1">
+              <button
+                type="button"
+                onClick={() => { setLoginMethod("phone"); setErrors({}); }}
+                className={`flex-1 py-3 px-4 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2 ${
+                  loginMethod === "phone" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <Phone className="h-4 w-4" />
+                Phone
+              </button>
+              <button
+                type="button"
+                onClick={() => { setLoginMethod("email"); setErrors({}); }}
+                className={`flex-1 py-3 px-4 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2 ${
+                  loginMethod === "email" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <Mail className="h-4 w-4" />
+                Email
+              </button>
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Full Name (Sign Up only) */}
@@ -167,25 +191,51 @@ export default function Auth() {
               </div>
             )}
 
-            {/* Phone or Email */}
-            {loginMethod === "phone" ? (
-              <div className="space-y-2">
-                <Label htmlFor="phone" className="text-foreground font-semibold">Phone Number</Label>
-                <div className="relative">
-                  <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                  <Input id="phone" type="tel" placeholder="081 234 5678" value={phone} onChange={(e) => setPhone(e.target.value)} className="pl-12 h-14 text-lg" />
+            {/* Registration: Phone (required) + Email (optional) */}
+            {isSignUp ? (
+              <>
+                <div className="space-y-2">
+                  <Label htmlFor="phone" className="text-foreground font-semibold">
+                    Phone Number <span className="text-destructive">*</span>
+                  </Label>
+                  <div className="relative">
+                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                    <Input id="phone" type="tel" placeholder="081 234 5678" value={phone} onChange={(e) => setPhone(e.target.value)} className="pl-12 h-14 text-lg" />
+                  </div>
+                  {errors.phone && <p className="text-sm text-destructive">{errors.phone}</p>}
                 </div>
-                {errors.identifier && <p className="text-sm text-destructive">{errors.identifier}</p>}
-              </div>
+                <div className="space-y-2">
+                  <Label htmlFor="email" className="text-foreground font-semibold">
+                    Email Address <span className="text-muted-foreground text-xs font-normal">(optional)</span>
+                  </Label>
+                  <div className="relative">
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                    <Input id="email" type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} className="pl-12 h-14 text-lg" />
+                  </div>
+                  {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
+                </div>
+              </>
             ) : (
-              <div className="space-y-2">
-                <Label htmlFor="email" className="text-foreground font-semibold">Email Address</Label>
-                <div className="relative">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                  <Input id="email" type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} className="pl-12 h-14 text-lg" />
+              /* Login: Phone or Email based on toggle */
+              loginMethod === "phone" ? (
+                <div className="space-y-2">
+                  <Label htmlFor="phone" className="text-foreground font-semibold">Phone Number</Label>
+                  <div className="relative">
+                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                    <Input id="phone" type="tel" placeholder="081 234 5678" value={phone} onChange={(e) => setPhone(e.target.value)} className="pl-12 h-14 text-lg" />
+                  </div>
+                  {errors.identifier && <p className="text-sm text-destructive">{errors.identifier}</p>}
                 </div>
-                {errors.identifier && <p className="text-sm text-destructive">{errors.identifier}</p>}
-              </div>
+              ) : (
+                <div className="space-y-2">
+                  <Label htmlFor="email" className="text-foreground font-semibold">Email Address</Label>
+                  <div className="relative">
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                    <Input id="email" type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} className="pl-12 h-14 text-lg" />
+                  </div>
+                  {errors.identifier && <p className="text-sm text-destructive">{errors.identifier}</p>}
+                </div>
+              )
             )}
 
             {/* Password */}
@@ -206,6 +256,20 @@ export default function Auth() {
                 </button>
               </div>
               {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
+              {/* Password strength indicators - show during signup */}
+              {isSignUp && password.length > 0 && (
+                <div className="grid grid-cols-2 gap-1.5 mt-2">
+                  {passwordChecks.map((check) => {
+                    const passed = check.test(password);
+                    return (
+                      <div key={check.label} className={`flex items-center gap-1.5 text-xs ${passed ? "text-emerald-600" : "text-muted-foreground"}`}>
+                        <div className={`h-1.5 w-1.5 rounded-full ${passed ? "bg-emerald-500" : "bg-muted-foreground/40"}`} />
+                        {check.label}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
 
             {/* Confirm Password (Sign Up only) */}
