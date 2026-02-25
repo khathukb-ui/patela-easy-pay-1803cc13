@@ -254,7 +254,7 @@ export default function Payment() {
             <div className="flex flex-wrap gap-1">
               {cart.map((item) => (
                 <span
-                  key={item.id}
+                  key={item.sku}
                   className="text-xs bg-accent/20 text-accent px-2 py-1 rounded-full"
                 >
                   {item.quantity}× {item.name}

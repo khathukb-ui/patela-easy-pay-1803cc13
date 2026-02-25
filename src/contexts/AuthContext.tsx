@@ -1,106 +1,70 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { User, Session } from "@supabase/supabase-js";
-import { supabase } from "@/integrations/supabase/client";
+import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from "react";
+import { authApi, UserProfile, ApiError } from "@/lib/api-client";
 
 interface AuthContextType {
-  user: User | null;
-  session: Session | null;
+  user: UserProfile | null;
   loading: boolean;
-  signUp: (email: string, password: string) => Promise<{ error: Error | null }>;
-  signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
-  signOut: () => Promise<void>;
+  error: string | null;
+  signUp: (data: { full_name: string; email?: string; phone?: string; password: string }) => Promise<{ error: Error | null }>;
+  signIn: (identifier: string, password: string) => Promise<{ error: Error | null }>;
+  signOut: () => void;
   userRole: "admin" | "manager" | "cashier" | null;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
+  const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
-  const [userRole, setUserRole] = useState<"admin" | "manager" | "cashier" | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
+  // Check for existing session on mount
   useEffect(() => {
-    // Set up auth state listener FIRST
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        setLoading(false);
-
-        // Defer role fetching with setTimeout
-        if (session?.user) {
-          setTimeout(() => {
-            fetchUserRole(session.user.id);
-          }, 0);
-        } else {
-          setUserRole(null);
-        }
-      }
-    );
-
-    // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
+    if (authApi.isAuthenticated()) {
+      authApi.me()
+        .then(setUser)
+        .catch(() => {
+          authApi.logout();
+        })
+        .finally(() => setLoading(false));
+    } else {
       setLoading(false);
-      
-      if (session?.user) {
-        fetchUserRole(session.user.id);
-      }
-    });
-
-    return () => subscription.unsubscribe();
+    }
   }, []);
 
-  const fetchUserRole = async (userId: string) => {
+  const signUp = useCallback(async (data: { full_name: string; email?: string; phone?: string; password: string }) => {
     try {
-      const { data, error } = await supabase
-        .from("user_roles")
-        .select("role")
-        .eq("user_id", userId)
-        .maybeSingle();
-      
-      if (!error && data) {
-        setUserRole(data.role as "admin" | "manager" | "cashier");
-      }
+      await authApi.register(data);
+      const profile = await authApi.me();
+      setUser(profile);
+      return { error: null };
     } catch (e) {
-      console.error("Failed to fetch user role:", e);
+      const msg = e instanceof ApiError ? e.message : "Registration failed";
+      return { error: new Error(msg) };
     }
-  };
+  }, []);
 
-  const signUp = async (email: string, password: string) => {
-    const redirectUrl = `${window.location.origin}/`;
-    
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: redirectUrl
-      }
-    });
-    
-    return { error: error as Error | null };
-  };
+  const signIn = useCallback(async (identifier: string, password: string) => {
+    try {
+      await authApi.login(identifier, password);
+      const profile = await authApi.me();
+      setUser(profile);
+      return { error: null };
+    } catch (e) {
+      const msg = e instanceof ApiError ? e.message : "Login failed";
+      return { error: new Error(msg) };
+    }
+  }, []);
 
-  const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    
-    return { error: error as Error | null };
-  };
-
-  const signOut = async () => {
-    await supabase.auth.signOut();
+  const signOut = useCallback(() => {
+    authApi.logout();
     setUser(null);
-    setSession(null);
-    setUserRole(null);
-  };
+  }, []);
+
+  const userRole = user?.role ?? null;
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, signUp, signIn, signOut, userRole }}>
+    <AuthContext.Provider value={{ user, loading, error, signUp, signIn, signOut, userRole }}>
       {children}
     </AuthContext.Provider>
   );
