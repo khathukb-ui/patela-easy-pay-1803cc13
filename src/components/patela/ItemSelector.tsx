@@ -6,15 +6,15 @@ interface ItemSelectorProps {
   items: CatalogItem[];
   cart: CartItem[];
   onAdd: (item: CatalogItem) => void;
-  onRemove: (itemId: string) => void;
+  onRemove: (sku: string) => void;
 }
 
 export function ItemSelector({ items, cart, onAdd, onRemove }: ItemSelectorProps) {
-  const getCartQuantity = (itemId: string) => {
-    return cart.find((c) => c.id === itemId)?.quantity || 0;
+  const getCartQuantity = (sku: string) => {
+    return cart.find((c) => c.sku === sku)?.quantity || 0;
   };
 
-  const inStockItems = items.filter((item) => item.stock > 0);
+  const inStockItems = items.filter((item) => item.in_stock);
 
   if (inStockItems.length === 0) {
     return (
@@ -28,13 +28,13 @@ export function ItemSelector({ items, cart, onAdd, onRemove }: ItemSelectorProps
   return (
     <div className="grid grid-cols-3 gap-1.5">
       {inStockItems.map((item) => {
-        const qty = getCartQuantity(item.id);
+        const qty = getCartQuantity(item.sku);
         const isInCart = qty > 0;
-        const isLowStock = item.stock <= item.lowStockThreshold;
+        const isLowStock = item.available_qty > 0 && item.available_qty <= 5;
 
         return (
           <button
-            key={item.id}
+            key={item.sku}
             onClick={() => onAdd(item)}
             className={cn(
               "relative flex flex-col items-center p-2 rounded-lg border transition-all active:scale-95",
@@ -43,14 +43,12 @@ export function ItemSelector({ items, cart, onAdd, onRemove }: ItemSelectorProps
                 : "bg-card border-border hover:border-accent/50"
             )}
           >
-            {/* Quantity Badge */}
             {isInCart && (
               <div className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-accent text-accent-foreground text-[10px] font-bold flex items-center justify-center">
                 {qty}
               </div>
             )}
 
-            {/* Low Stock Indicator */}
             {isLowStock && (
               <div className="absolute top-0.5 left-0.5 w-1.5 h-1.5 rounded-full bg-warning" />
             )}
@@ -63,12 +61,11 @@ export function ItemSelector({ items, cart, onAdd, onRemove }: ItemSelectorProps
             </span>
             <span className="text-xs font-bold text-accent">R{item.price}</span>
 
-            {/* Remove Button (only when in cart) */}
             {isInCart && (
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  onRemove(item.id);
+                  onRemove(item.sku);
                 }}
                 className="absolute bottom-0.5 right-0.5 w-5 h-5 rounded-full bg-destructive/10 text-destructive flex items-center justify-center hover:bg-destructive/20 transition-colors"
               >

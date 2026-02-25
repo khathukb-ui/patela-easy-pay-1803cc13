@@ -25,7 +25,6 @@ import Welcome from "./pages/Welcome";
 
 // Onboarding
 import LanguageSelection from "./pages/onboarding/LanguageSelection";
-import PhoneVerification from "./pages/onboarding/PhoneVerification";
 import PersonalDetails from "./pages/onboarding/PersonalDetails";
 import CreatePin from "./pages/onboarding/CreatePin";
 import OnboardingSuccess from "./pages/onboarding/OnboardingSuccess";
@@ -56,9 +55,8 @@ import DeviceTransfer from "./pages/device/DeviceTransfer";
 import UsersAccess from "./pages/settings/UsersAccess";
 import PayoutPreferences from "./pages/settings/PayoutPreferences";
 
-// Documentation & Demo
+// Documentation
 import CustomerJourneyMap from "./pages/CustomerJourneyMap";
-import Demo from "./pages/Demo";
 
 const queryClient = new QueryClient();
 
@@ -95,7 +93,6 @@ function AppContent() {
           
           {/* Onboarding */}
           <Route path="/onboarding/language" element={<LanguageSelection />} />
-          <Route path="/onboarding/phone" element={<PhoneVerification />} />
           <Route path="/onboarding/details" element={<PersonalDetails />} />
           <Route path="/onboarding/pin" element={<CreatePin />} />
           <Route path="/onboarding/success" element={<OnboardingSuccess />} />
@@ -126,9 +123,8 @@ function AppContent() {
           <Route path="/settings/users" element={<UsersAccess />} />
           <Route path="/settings/payouts" element={<PayoutPreferences />} />
           
-          {/* Documentation & Demo */}
+          {/* Documentation */}
           <Route path="/customer-journey" element={<CustomerJourneyMap />} />
-          <Route path="/demo" element={<Demo />} />
           
           {/* Main App */}
           <Route path="/home" element={<Home />} />
