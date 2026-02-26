@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { 
@@ -17,7 +18,9 @@ import {
   Star,
   Play,
   ChevronDown,
-  Download
+  Download,
+  Menu,
+  X
 } from "lucide-react";
 import { PatelaLogo } from "@/components/patela/PatelaLogo";
 import patelaHeroBg from "@/assets/patela-hero-bg.jpg";
@@ -25,6 +28,7 @@ import patelaDeviceBox from "@/assets/patela-device-box.jpg";
 
 export default function Index() {
   const navigate = useNavigate();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const products = [
     {
@@ -177,13 +181,54 @@ export default function Index() {
             </Button>
             <Button
               size="sm"
-              className="bg-accent hover:bg-accent/90 text-accent-foreground font-semibold"
+              className="bg-accent hover:bg-accent/90 text-accent-foreground font-semibold hidden sm:inline-flex"
               onClick={() => navigate("/onboarding/language")}
             >
               Get Started
             </Button>
+            {/* Hamburger button - mobile only */}
+            <button
+              className="md:hidden p-2 text-primary-foreground/80 hover:text-primary-foreground transition-colors"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Toggle menu"
+            >
+              {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
           </div>
         </div>
+
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden bg-primary/98 backdrop-blur-md border-t border-primary-foreground/10 animate-in slide-in-from-top-2 duration-200">
+            <div className="px-6 py-4 space-y-1">
+              <a href="#features" onClick={() => setMobileMenuOpen(false)} className="block py-3 text-primary-foreground/80 hover:text-primary-foreground transition-colors text-sm font-medium border-b border-primary-foreground/10">Features</a>
+              <a href="#devices" onClick={() => setMobileMenuOpen(false)} className="block py-3 text-primary-foreground/80 hover:text-primary-foreground transition-colors text-sm font-medium border-b border-primary-foreground/10">Devices</a>
+              <a href="#how-it-works" onClick={() => setMobileMenuOpen(false)} className="block py-3 text-primary-foreground/80 hover:text-primary-foreground transition-colors text-sm font-medium border-b border-primary-foreground/10">How It Works</a>
+              <a href="#testimonials" onClick={() => setMobileMenuOpen(false)} className="block py-3 text-primary-foreground/80 hover:text-primary-foreground transition-colors text-sm font-medium border-b border-primary-foreground/10">Reviews</a>
+              <button onClick={() => { navigate("/install"); setMobileMenuOpen(false); }} className="flex items-center gap-2 py-3 text-primary-foreground/80 hover:text-primary-foreground transition-colors text-sm font-medium border-b border-primary-foreground/10 w-full">
+                <Download className="h-3.5 w-3.5" />
+                Install App
+              </button>
+              <div className="flex gap-3 pt-3">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10 flex-1"
+                  onClick={() => { navigate("/auth"); setMobileMenuOpen(false); }}
+                >
+                  Sign In
+                </Button>
+                <Button
+                  size="sm"
+                  className="bg-accent hover:bg-accent/90 text-accent-foreground font-semibold flex-1"
+                  onClick={() => { navigate("/onboarding/language"); setMobileMenuOpen(false); }}
+                >
+                  Get Started
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
       </nav>
 
       {/* Hero Section */}
