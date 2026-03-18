@@ -57,6 +57,7 @@ export default function Payment() {
     const itemsNote = inputMode === "items" && cart.length > 0
       ? cart.map(c => `${c.quantity}x ${c.name}`).join(", ")
       : note;
+    const cartItems = inputMode === "items" ? cart.map(c => ({ name: c.name, sku: c.sku, price: c.price, quantity: c.quantity })) : [];
 
     if (method === "cash") {
       setStep("cash_confirm");
