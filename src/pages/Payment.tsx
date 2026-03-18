@@ -73,7 +73,7 @@ export default function Payment() {
     const success = Math.random() > 0.2;
 
     if (success) {
-      navigate("/payment/success", { state: { amount: chargeAmount, note: itemsNote, method: "card" } });
+      navigate("/payment/success", { state: { amount: chargeAmount, note: itemsNote, method: "card", items: cartItems } });
     } else {
       navigate("/payment/failed", { state: { amount: chargeAmount } });
     }
