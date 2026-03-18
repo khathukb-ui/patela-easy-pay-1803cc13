@@ -301,7 +301,15 @@ export default function Auth() {
             </Button>
           </form>
 
-          <div className="mt-8 text-center">
+          {!isSignUp && (
+            <div className="mt-4 text-center">
+              <Button variant="link" className="text-muted-foreground" onClick={() => navigate("/forgot-password")}>
+                Forgot your password?
+              </Button>
+            </div>
+          )}
+
+          <div className="mt-4 text-center">
             {isSignUp ? (
               <>
                 <p className="text-muted-foreground">Already have an account?</p>

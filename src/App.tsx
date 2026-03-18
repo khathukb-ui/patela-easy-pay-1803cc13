@@ -94,6 +94,8 @@ function AppContent() {
           <Route path="/" element={<Index />} />
           <Route path="/welcome" element={<Welcome />} />
           <Route path="/auth" element={<Auth />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/install" element={<InstallApp />} />
           
           {/* Onboarding */}
