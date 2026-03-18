@@ -84,7 +84,8 @@ export default function Payment() {
     const itemsNote = inputMode === "items" && cart.length > 0
       ? cart.map(c => `${c.quantity}x ${c.name}`).join(", ")
       : note;
-    navigate("/payment/success", { state: { amount: chargeAmount, note: itemsNote, method: "cash" } });
+    const cartItems = inputMode === "items" ? cart.map(c => ({ name: c.name, sku: c.sku, price: c.price, quantity: c.quantity })) : [];
+    navigate("/payment/success", { state: { amount: chargeAmount, note: itemsNote, method: "cash", items: cartItems } });
   };
 
   const currentAmount = inputMode === "items" ? cartTotal : (amount ? parseFloat(amount) : 0);
