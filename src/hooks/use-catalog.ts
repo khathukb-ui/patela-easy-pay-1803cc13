@@ -1,7 +1,15 @@
 import { useState, useEffect, useCallback } from "react";
-import { catalogApi, CatalogItem, ApiError } from "@/lib/api-client";
+import { supabase } from "@/integrations/supabase/client";
 
-export type { CatalogItem };
+export interface CatalogItem {
+  sku: string;
+  name: string;
+  price: number;
+  category: string | null;
+  image_url: string | null;
+  in_stock: boolean;
+  available_qty: number;
+}
 
 export interface CartItem {
   sku: string;
@@ -20,10 +28,25 @@ export function useCatalog() {
     setLoading(true);
     setError(null);
     try {
-      const data = await catalogApi.getItems();
-      setItems(data);
-    } catch (e) {
-      const msg = e instanceof ApiError ? e.message : "Failed to load catalog";
+      const { data, error: dbError } = await supabase
+        .from("catalog_items")
+        .select("*")
+        .order("name");
+
+      if (dbError) throw dbError;
+
+      const mapped: CatalogItem[] = (data || []).map((row) => ({
+        sku: row.id,
+        name: row.name,
+        price: Number(row.price),
+        category: row.category,
+        image_url: null,
+        in_stock: row.stock > 0,
+        available_qty: row.stock,
+      }));
+      setItems(mapped);
+    } catch (e: any) {
+      const msg = e.message || "Failed to load catalog";
       setError(msg);
       setItems([]);
     } finally {
@@ -35,17 +58,9 @@ export function useCatalog() {
     fetchItems();
   }, [fetchItems]);
 
-  const getInStockItems = useCallback(() => {
-    return items.filter((item) => item.in_stock);
-  }, [items]);
-
-  const getLowStockItems = useCallback(() => {
-    return items.filter((item) => item.in_stock && item.available_qty <= 5);
-  }, [items]);
-
-  const getOutOfStockItems = useCallback(() => {
-    return items.filter((item) => !item.in_stock);
-  }, [items]);
+  const getInStockItems = useCallback(() => items.filter((item) => item.in_stock), [items]);
+  const getLowStockItems = useCallback(() => items.filter((item) => item.in_stock && item.available_qty <= 5), [items]);
+  const getOutOfStockItems = useCallback(() => items.filter((item) => !item.in_stock), [items]);
 
   return {
     items,
