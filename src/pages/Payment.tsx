@@ -57,6 +57,7 @@ export default function Payment() {
     const itemsNote = inputMode === "items" && cart.length > 0
       ? cart.map(c => `${c.quantity}x ${c.name}`).join(", ")
       : note;
+    const cartItems = inputMode === "items" ? cart.map(c => ({ name: c.name, sku: c.sku, price: c.price, quantity: c.quantity })) : [];
 
     if (method === "cash") {
       setStep("cash_confirm");
@@ -72,7 +73,7 @@ export default function Payment() {
     const success = Math.random() > 0.2;
 
     if (success) {
-      navigate("/payment/success", { state: { amount: chargeAmount, note: itemsNote, method: "card" } });
+      navigate("/payment/success", { state: { amount: chargeAmount, note: itemsNote, method: "card", items: cartItems } });
     } else {
       navigate("/payment/failed", { state: { amount: chargeAmount } });
     }
@@ -83,7 +84,8 @@ export default function Payment() {
     const itemsNote = inputMode === "items" && cart.length > 0
       ? cart.map(c => `${c.quantity}x ${c.name}`).join(", ")
       : note;
-    navigate("/payment/success", { state: { amount: chargeAmount, note: itemsNote, method: "cash" } });
+    const cartItems = inputMode === "items" ? cart.map(c => ({ name: c.name, sku: c.sku, price: c.price, quantity: c.quantity })) : [];
+    navigate("/payment/success", { state: { amount: chargeAmount, note: itemsNote, method: "cash", items: cartItems } });
   };
 
   const currentAmount = inputMode === "items" ? cartTotal : (amount ? parseFloat(amount) : 0);
