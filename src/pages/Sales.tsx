@@ -1,12 +1,12 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { BottomNav } from "@/components/patela/BottomNav";
-import { SaleItem, SaleStatus } from "@/components/patela/SaleItem";
 import { Button } from "@/components/ui/button";
-import { Calendar, Download, Filter, TrendingUp, Users, Banknote, X, Loader2, AlertCircle } from "lucide-react";
+import { Download, Filter, TrendingUp, Users, Banknote, X, Loader2, AlertCircle } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { ordersApi, OrderResponse, ApiError } from "@/lib/api-client";
-import { 
-  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import {
+  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from "recharts";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
@@ -17,31 +17,48 @@ import {
 
 type TimeRange = "today" | "week" | "month";
 
+interface SaleRecord {
+  id: string;
+  amount: number;
+  payment_method: string;
+  status: string;
+  note: string | null;
+  created_at: string;
+}
+
 export default function Sales() {
   const { t } = useLanguage();
+  const { user } = useAuth();
   const [timeRange, setTimeRange] = useState<TimeRange>("week");
   const [showFilters, setShowFilters] = useState(false);
-  const [orders, setOrders] = useState<OrderResponse[]>([]);
+  const [sales, setSales] = useState<SaleRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    async function fetchOrders() {
-      setLoading(true);
-      setError(null);
-      try {
-        const data = await ordersApi.list();
-        setOrders(data);
-      } catch (e) {
-        setError(e instanceof ApiError ? e.message : "Failed to load sales");
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchOrders();
-  }, []);
+  const fetchSales = useCallback(async () => {
+    if (!user) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const { data, error: dbError } = await supabase
+        .from("sales")
+        .select("*")
+        .order("created_at", { ascending: false });
 
-  const filteredOrders = useMemo(() => {
+      if (dbError) throw dbError;
+      setSales(data || []);
+    } catch (e: any) {
+      setError(e.message || "Failed to load sales");
+    } finally {
+      setLoading(false);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    fetchSales();
+  }, [fetchSales]);
+
+  const filteredSales = useMemo(() => {
     const now = new Date();
     let startDate: Date;
     switch (timeRange) {
@@ -55,17 +72,24 @@ export default function Sales() {
         startDate = new Date(now.getTime() - 30 * 24 * 3600000);
         break;
     }
-    return orders.filter((o) => new Date(o.created_at) >= startDate);
-  }, [timeRange, orders]);
+    return sales.filter((s) => new Date(s.created_at) >= startDate);
+  }, [timeRange, sales]);
 
   const stats = useMemo(() => {
-    const paid = filteredOrders.filter((o) => o.status === "paid");
-    const totalSales = paid.reduce((sum, o) => sum + o.total, 0);
+    const successful = filteredSales.filter((s) => s.status === "success");
+    const totalSales = successful.reduce((sum, s) => sum + Number(s.amount), 0);
     const totalFees = totalSales * 0.015;
     const netAmount = totalSales - totalFees;
-    const avgSale = paid.length > 0 ? totalSales / paid.length : 0;
-    return { totalSales, totalFees, netAmount, avgSale, salesCount: paid.length, refunds: filteredOrders.filter((o) => o.status === "cancelled").length };
-  }, [filteredOrders]);
+    const avgSale = successful.length > 0 ? totalSales / successful.length : 0;
+    return {
+      totalSales,
+      totalFees,
+      netAmount,
+      avgSale,
+      salesCount: successful.length,
+      refunds: filteredSales.filter((s) => s.status === "refunded").length,
+    };
+  }, [filteredSales]);
 
   const chartData = useMemo(() => {
     const days: Record<string, number> = {};
@@ -75,12 +99,14 @@ export default function Sales() {
       const date = new Date(now.getTime() - i * 24 * 3600000);
       days[date.toLocaleDateString("en-ZA", { day: "numeric", month: "short" })] = 0;
     }
-    filteredOrders.filter((o) => o.status === "paid").forEach((order) => {
-      const key = new Date(order.created_at).toLocaleDateString("en-ZA", { day: "numeric", month: "short" });
-      if (key in days) days[key] += order.total;
-    });
+    filteredSales
+      .filter((s) => s.status === "success")
+      .forEach((sale) => {
+        const key = new Date(sale.created_at).toLocaleDateString("en-ZA", { day: "numeric", month: "short" });
+        if (key in days) days[key] += Number(sale.amount);
+      });
     return Object.entries(days).map(([date, amount]) => ({ date, amount }));
-  }, [filteredOrders, timeRange]);
+  }, [filteredSales, timeRange]);
 
   if (loading) {
     return (
@@ -97,7 +123,7 @@ export default function Sales() {
         <AlertCircle className="h-12 w-12 text-destructive mb-4" />
         <h2 className="text-lg font-bold text-foreground mb-2">Unable to load sales</h2>
         <p className="text-muted-foreground mb-4">{error}</p>
-        <Button onClick={() => window.location.reload()}>Try Again</Button>
+        <Button onClick={fetchSales}>Try Again</Button>
         <BottomNav />
       </div>
     );
@@ -139,7 +165,7 @@ export default function Sales() {
             </Button>
           </div>
         </div>
-        
+
         <div className="flex gap-2">
           {(["today", "week", "month"] as TimeRange[]).map((range) => (
             <Button
@@ -198,8 +224,8 @@ export default function Sales() {
               <AreaChart data={chartData}>
                 <defs>
                   <linearGradient id="colorAmount" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="hsl(var(--success))" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="hsl(var(--success))" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="hsl(var(--success))" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="hsl(var(--success))" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
@@ -212,35 +238,39 @@ export default function Sales() {
           </div>
         </div>
 
-        {/* Orders List */}
+        {/* Sales List */}
         <div>
-          <h3 className="text-sm font-semibold text-foreground mb-3">Recent Orders</h3>
+          <h3 className="text-sm font-semibold text-foreground mb-3">Recent Sales</h3>
           <div className="space-y-2">
-            {filteredOrders.slice(0, 20).map((order) => (
-              <div key={order.id} className="bg-card rounded-xl p-3 border border-border flex items-center justify-between">
+            {filteredSales.slice(0, 50).map((sale) => (
+              <div key={sale.id} className="bg-card rounded-xl p-3 border border-border flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-semibold text-foreground">{order.order_no}</p>
+                  <p className="text-sm font-semibold text-foreground">
+                    {sale.note || sale.payment_method.charAt(0).toUpperCase() + sale.payment_method.slice(1) + " Payment"}
+                  </p>
                   <p className="text-xs text-muted-foreground">
-                    {new Date(order.created_at).toLocaleString("en-ZA", { dateStyle: "short", timeStyle: "short" })}
+                    {new Date(sale.created_at).toLocaleString("en-ZA", { dateStyle: "short", timeStyle: "short" })}
+                    {" · "}
+                    {sale.payment_method}
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm font-bold text-foreground">R{order.total.toFixed(2)}</p>
+                  <p className="text-sm font-bold text-foreground">R{Number(sale.amount).toFixed(2)}</p>
                   <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                    order.status === "paid" ? "bg-success/10 text-success" :
-                    order.status === "failed" ? "bg-destructive/10 text-destructive" :
+                    sale.status === "success" ? "bg-success/10 text-success" :
+                    sale.status === "failed" ? "bg-destructive/10 text-destructive" :
                     "bg-warning/10 text-warning"
                   }`}>
-                    {order.status}
+                    {sale.status}
                   </span>
                 </div>
               </div>
             ))}
           </div>
-          
-          {filteredOrders.length === 0 && (
+
+          {filteredSales.length === 0 && (
             <div className="text-center py-12">
-              <p className="text-muted-foreground">No orders found</p>
+              <p className="text-muted-foreground">No sales found for this period</p>
             </div>
           )}
         </div>
