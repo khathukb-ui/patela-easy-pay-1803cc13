@@ -21,6 +21,8 @@ import Account from "./pages/Account";
 import Help from "./pages/Help";
 import Items from "./pages/Items";
 import Auth from "./pages/Auth";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import InstallApp from "./pages/InstallApp";
 import Welcome from "./pages/Welcome";
 
