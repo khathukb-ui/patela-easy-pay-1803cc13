@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { PatelaLogo } from "@/components/patela/PatelaLogo";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Upload, CheckCircle2, ArrowRight, FileText, Building2 } from "lucide-react";
+import { Upload, CheckCircle2, ArrowRight, ArrowLeft, FileText, Building2 } from "lucide-react";
 
 const DOCUMENT_TYPES = [
   { value: "company_registration", label: "Company Registration (CIPC)", required: true },
