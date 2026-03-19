@@ -68,11 +68,21 @@ export default function Home() {
         );
 
         const totalSales = todayOrders.reduce((sum, o) => sum + o.total, 0);
+
+        // Fetch refund totals for today
+        let refundsTotal = 0;
+        try {
+          const metrics = await getRefundMetrics(user!.id, today);
+          refundsTotal = metrics.totalRefunds;
+        } catch (e) {
+          console.error("Failed to fetch refund metrics:", e);
+        }
+
         setTodayStats({
           totalSales,
           salesCount: todayOrders.length,
-          refundsTotal: 0,
-          netAmount: totalSales,
+          refundsTotal,
+          netAmount: totalSales - refundsTotal,
         });
       } catch (e) {
         // Backend unavailable — show zeros, not mock data
