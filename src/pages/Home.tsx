@@ -11,6 +11,7 @@ import { LoanOffers } from "@/components/patela/LoanOffers";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { ordersApi, ApiError } from "@/lib/api-client";
+import { getRefundMetrics } from "@/services/refund-service";
 import { toast } from "@/hooks/use-toast";
 import { 
   CreditCard, 
