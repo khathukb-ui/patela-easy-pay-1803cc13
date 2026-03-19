@@ -232,6 +232,15 @@ export default function PaygateDashboard() {
 
           <h1 className="text-2xl font-bold text-foreground mb-6">Dashboard</h1>
 
+          {/* Test Payment Simulator */}
+          {merchant && (
+            <TestPaymentSimulator
+              merchantId={merchant.id}
+              environment={environment}
+              onTransactionCreated={fetchData}
+            />
+          )}
+
           {/* Stats */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             {[
