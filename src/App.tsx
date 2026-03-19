@@ -67,6 +67,8 @@ import DeviceUSBConnect from "./pages/device/DeviceUSBConnect";
 // Settings
 import UsersAccess from "./pages/settings/UsersAccess";
 import PayoutPreferences from "./pages/settings/PayoutPreferences";
+import ChangePin from "./pages/settings/ChangePin";
+import ResetPin from "./pages/settings/ResetPin";
 
 // Documentation
 import CustomerJourneyMap from "./pages/CustomerJourneyMap";
