@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ProgressSteps } from "@/components/patela/ProgressSteps";
-import { CreditCard, Clock } from "lucide-react";
+import { CreditCard, Clock, ArrowLeft } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { PatelaCard } from "@/components/patela/PatelaCard";
 
