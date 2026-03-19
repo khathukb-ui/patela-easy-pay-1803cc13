@@ -67,6 +67,8 @@ import DeviceUSBConnect from "./pages/device/DeviceUSBConnect";
 // Settings
 import UsersAccess from "./pages/settings/UsersAccess";
 import PayoutPreferences from "./pages/settings/PayoutPreferences";
+import ChangePin from "./pages/settings/ChangePin";
+import ResetPin from "./pages/settings/ResetPin";
 
 // Documentation
 import CustomerJourneyMap from "./pages/CustomerJourneyMap";
@@ -148,6 +150,8 @@ function AppContent() {
           {/* Settings */}
           <Route path="/settings/users" element={<UsersAccess />} />
           <Route path="/settings/payouts" element={<PayoutPreferences />} />
+          <Route path="/settings/change-pin" element={<ChangePin />} />
+          <Route path="/settings/reset-pin" element={<ResetPin />} />
           
           {/* Documentation */}
           <Route path="/customer-journey" element={<CustomerJourneyMap />} />

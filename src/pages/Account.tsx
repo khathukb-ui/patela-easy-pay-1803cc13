@@ -193,7 +193,12 @@ export default function Account() {
               <ThemeToggle showLabel={false} />
             </div>
             <SettingsItem icon={Bell} label={t("notifications")} />
-            <SettingsItem icon={Shield} label={t("securityPin")} />
+            <SettingsItem
+              icon={Shield}
+              label={t("securityPin")}
+              description="Change or reset your security PIN"
+              onClick={() => navigate("/settings/change-pin")}
+            />
             <SettingsItem 
               icon={HelpCircle} 
               label={t("helpSupport")} 
