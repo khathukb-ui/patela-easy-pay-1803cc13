@@ -1,10 +1,12 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { BottomNav } from "@/components/patela/BottomNav";
 import { Button } from "@/components/ui/button";
-import { Download, Filter, TrendingUp, Users, Banknote, X, Loader2, AlertCircle } from "lucide-react";
+import { Download, Filter, TrendingUp, Users, Banknote, X, Loader2, AlertCircle, RotateCcw } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { RefundModal } from "@/components/patela/RefundModal";
+import { getRefundMetrics } from "@/services/refund-service";
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from "recharts";
@@ -34,6 +36,8 @@ export default function Sales() {
   const [sales, setSales] = useState<SaleRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [refundSale, setRefundSale] = useState<SaleRecord | null>(null);
+  const [refundMetrics, setRefundMetrics] = useState({ totalRefunds: 0, refundCount: 0, partialCount: 0, failedCount: 0 });
 
   const fetchSales = useCallback(async () => {
     if (!user) return;
@@ -47,6 +51,10 @@ export default function Sales() {
 
       if (dbError) throw dbError;
       setSales(data || []);
+
+      // Fetch refund metrics
+      const metrics = await getRefundMetrics(user.id);
+      setRefundMetrics(metrics);
     } catch (e: any) {
       setError(e.message || "Failed to load sales");
     } finally {
@@ -79,7 +87,7 @@ export default function Sales() {
     const successful = filteredSales.filter((s) => s.status === "success");
     const totalSales = successful.reduce((sum, s) => sum + Number(s.amount), 0);
     const totalFees = totalSales * 0.015;
-    const netAmount = totalSales - totalFees;
+    const netAmount = totalSales - totalFees - refundMetrics.totalRefunds;
     const avgSale = successful.length > 0 ? totalSales / successful.length : 0;
     return {
       totalSales,
@@ -87,9 +95,9 @@ export default function Sales() {
       netAmount,
       avgSale,
       salesCount: successful.length,
-      refunds: filteredSales.filter((s) => s.status === "refunded").length,
+      refunds: filteredSales.filter((s) => s.status === "refunded" || s.status === "partially_refunded").length,
     };
-  }, [filteredSales]);
+  }, [filteredSales, refundMetrics]);
 
   const chartData = useMemo(() => {
     const days: Record<string, number> = {};
@@ -107,6 +115,26 @@ export default function Sales() {
       });
     return Object.entries(days).map(([date, amount]) => ({ date, amount }));
   }, [filteredSales, timeRange]);
+
+  const getStatusBadge = (status: string) => {
+    const map: Record<string, { bg: string; text: string; label: string }> = {
+      success: { bg: "bg-success/10", text: "text-success", label: "Success" },
+      failed: { bg: "bg-destructive/10", text: "text-destructive", label: "Failed" },
+      refunded: { bg: "bg-destructive/10", text: "text-destructive", label: "Refunded" },
+      partially_refunded: { bg: "bg-warning/10", text: "text-warning", label: "Partial Refund" },
+      pending: { bg: "bg-warning/10", text: "text-warning", label: "Pending" },
+    };
+    const s = map[status] || { bg: "bg-muted", text: "text-muted-foreground", label: status };
+    return (
+      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${s.bg} ${s.text}`}>
+        {s.label}
+      </span>
+    );
+  };
+
+  const canRefund = (sale: SaleRecord) =>
+    sale.payment_method === "card" &&
+    (sale.status === "success" || sale.status === "partially_refunded");
 
   if (loading) {
     return (
@@ -198,7 +226,7 @@ export default function Sales() {
               <span className="text-xs text-muted-foreground">Net Amount</span>
             </div>
             <p className="text-xl font-bold text-foreground">R{stats.netAmount.toFixed(2)}</p>
-            <p className="text-xs text-muted-foreground">After R{stats.totalFees.toFixed(2)} fees</p>
+            <p className="text-xs text-muted-foreground">After fees & refunds</p>
           </div>
           <div className="bg-card rounded-xl p-3 border border-border">
             <div className="flex items-center gap-2 mb-1">
@@ -209,10 +237,13 @@ export default function Sales() {
           </div>
           <div className="bg-card rounded-xl p-3 border border-border">
             <div className="flex items-center gap-2 mb-1">
-              <X className="h-4 w-4 text-destructive" />
+              <RotateCcw className="h-4 w-4 text-destructive" />
               <span className="text-xs text-muted-foreground">Refunds</span>
             </div>
             <p className="text-xl font-bold text-foreground">{stats.refunds}</p>
+            {refundMetrics.totalRefunds > 0 && (
+              <p className="text-xs text-destructive">-R{refundMetrics.totalRefunds.toFixed(2)}</p>
+            )}
           </div>
         </div>
 
@@ -243,27 +274,37 @@ export default function Sales() {
           <h3 className="text-sm font-semibold text-foreground mb-3">Recent Sales</h3>
           <div className="space-y-2">
             {filteredSales.slice(0, 50).map((sale) => (
-              <div key={sale.id} className="bg-card rounded-xl p-3 border border-border flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-semibold text-foreground">
-                    {sale.note || sale.payment_method.charAt(0).toUpperCase() + sale.payment_method.slice(1) + " Payment"}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    {new Date(sale.created_at).toLocaleString("en-ZA", { dateStyle: "short", timeStyle: "short" })}
-                    {" · "}
-                    {sale.payment_method}
-                  </p>
+              <div key={sale.id} className="bg-card rounded-xl p-3 border border-border">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-semibold text-foreground">
+                      {sale.note || sale.payment_method.charAt(0).toUpperCase() + sale.payment_method.slice(1) + " Payment"}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {new Date(sale.created_at).toLocaleString("en-ZA", { dateStyle: "short", timeStyle: "short" })}
+                      {" · "}
+                      {sale.payment_method}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-bold text-foreground">R{Number(sale.amount).toFixed(2)}</p>
+                    {getStatusBadge(sale.status)}
+                  </div>
                 </div>
-                <div className="text-right">
-                  <p className="text-sm font-bold text-foreground">R{Number(sale.amount).toFixed(2)}</p>
-                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                    sale.status === "success" ? "bg-success/10 text-success" :
-                    sale.status === "failed" ? "bg-destructive/10 text-destructive" :
-                    "bg-warning/10 text-warning"
-                  }`}>
-                    {sale.status}
-                  </span>
-                </div>
+                {/* Refund button for eligible card transactions */}
+                {canRefund(sale) && (
+                  <div className="mt-2 pt-2 border-t border-border">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full text-xs gap-1.5 border-destructive/20 text-destructive hover:bg-destructive/5 hover:text-destructive"
+                      onClick={() => setRefundSale(sale)}
+                    >
+                      <RotateCcw className="h-3.5 w-3.5" />
+                      Refund
+                    </Button>
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -275,6 +316,16 @@ export default function Sales() {
           )}
         </div>
       </main>
+
+      {/* Refund Modal */}
+      {refundSale && (
+        <RefundModal
+          open={!!refundSale}
+          onOpenChange={(open) => { if (!open) setRefundSale(null); }}
+          sale={refundSale}
+          onRefundComplete={fetchSales}
+        />
+      )}
 
       <BottomNav />
     </div>
