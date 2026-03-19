@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Clock, Bell, MessageCircle } from "lucide-react";
+import { Clock, Bell, MessageCircle, ArrowLeft } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function BankPending() {
@@ -8,7 +8,21 @@ export default function BankPending() {
   const { t } = useLanguage();
 
   return (
-    <div className="min-h-screen patela-app-bg flex flex-col items-center justify-center px-6">
+    <div className="min-h-screen patela-app-bg flex flex-col">
+      {/* Header */}
+      <div className="p-4 pt-8 flex items-center">
+        <button 
+          onClick={() => navigate("/home")}
+          className="w-10 h-10 rounded-full bg-card flex items-center justify-center"
+        >
+          <ArrowLeft className="h-5 w-5 text-foreground" />
+        </button>
+        <h1 className="flex-1 text-center text-lg font-bold text-foreground pr-10">
+          {t("underReview")}
+        </h1>
+      </div>
+
+      <div className="flex-1 flex flex-col items-center justify-center px-6">
       <div className="flex flex-col items-center text-center animate-fade-in">
         <div className="w-24 h-24 rounded-full bg-accent/10 flex items-center justify-center mb-4">
           <Clock className="h-12 w-12 text-accent" />
@@ -84,6 +98,7 @@ export default function BankPending() {
             {t("helpSupport")}
           </Button>
         </div>
+      </div>
       </div>
     </div>
   );
