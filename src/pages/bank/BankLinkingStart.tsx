@@ -16,8 +16,15 @@ export default function BankLinkingStart() {
   return (
     <div className="min-h-screen patela-app-bg flex flex-col">
       {/* Header */}
-      <div className="p-3 pt-6">
+      <div className="p-3 pt-6 flex items-center justify-between">
+        <button
+          onClick={() => navigate(-1)}
+          className="w-10 h-10 rounded-full bg-card flex items-center justify-center"
+        >
+          <ArrowLeft className="h-5 w-5 text-foreground" />
+        </button>
         <ProgressSteps currentStep={1} totalSteps={4} />
+        <div className="w-10" />
       </div>
 
       {/* Content - Single connected section */}

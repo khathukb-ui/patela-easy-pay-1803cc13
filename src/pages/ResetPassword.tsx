@@ -115,6 +115,10 @@ export default function ResetPassword() {
 
       <main className="flex-1 px-6 py-8">
         <div className="max-w-sm mx-auto">
+          <button onClick={() => navigate("/auth")} className="flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6 transition-colors text-sm">
+            <ArrowLeft className="h-4 w-4" />
+            Back to Sign In
+          </button>
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="space-y-2">
               <Label htmlFor="password" className="text-foreground font-semibold">New Password</Label>
