@@ -150,6 +150,8 @@ function AppContent() {
           {/* Settings */}
           <Route path="/settings/users" element={<UsersAccess />} />
           <Route path="/settings/payouts" element={<PayoutPreferences />} />
+          <Route path="/settings/change-pin" element={<ChangePin />} />
+          <Route path="/settings/reset-pin" element={<ResetPin />} />
           
           {/* Documentation */}
           <Route path="/customer-journey" element={<CustomerJourneyMap />} />
