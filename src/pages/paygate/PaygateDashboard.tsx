@@ -5,6 +5,7 @@ import { PatelaLogo } from "@/components/patela/PatelaLogo";
 import { Switch } from "@/components/ui/switch";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { TestPaymentSimulator } from "@/components/paygate/TestPaymentSimulator";
 import {
   BarChart3, CreditCard, Banknote, Key, Settings, LogOut, Home,
   AlertCircle, CheckCircle2, Clock, TrendingUp, ArrowUpRight, FileText
