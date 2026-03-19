@@ -106,23 +106,30 @@ export async function checkRefundEligibility(saleId: string): Promise<{
  * Verify merchant PIN against stored hash
  */
 export async function verifyPin(pin: string): Promise<boolean> {
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return false;
+  try {
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    console.log("[verifyPin] user:", user?.id, "authError:", authError?.message);
+    if (!user) return false;
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("pin_hash")
-    .eq("user_id", user.id)
-    .single();
+    const { data: profile, error: profileError } = await supabase
+      .from("profiles")
+      .select("pin_hash")
+      .eq("user_id", user.id)
+      .single();
 
-  if (!profile?.pin_hash) {
-    // No PIN set — allow for now (should prompt setup)
-    return pin === "1234"; // Fallback for dev/testing
+    console.log("[verifyPin] profile:", profile, "error:", profileError?.message);
+
+    if (!profile?.pin_hash) {
+      // No PIN set — allow for now (should prompt setup)
+      console.log("[verifyPin] No pin_hash, using fallback. Pin entered:", pin);
+      return pin === "1234"; // Fallback for dev/testing
+    }
+
+    return profile.pin_hash === pin;
+  } catch (err) {
+    console.error("[verifyPin] exception:", err);
+    return false;
   }
-
-  // Simple hash comparison (in production, use proper bcrypt on server)
-  // For now, compare directly since pin_hash stores the PIN
-  return profile.pin_hash === pin;
 }
 
 /**
