@@ -400,6 +400,86 @@ export type Database = {
         }
         Relationships: []
       }
+      refunds: {
+        Row: {
+          amount: number
+          created_at: string
+          email_sent: boolean | null
+          flagged_suspicious: boolean | null
+          id: string
+          next_settlement_adjustment: number | null
+          original_transaction_reference: string | null
+          payment_method: string
+          processed_at: string | null
+          reason: string
+          reason_note: string | null
+          refund_reference: string
+          refund_type: string
+          refunded_by_user_id: string
+          sale_id: string
+          same_day_refund_deduction: number | null
+          sms_sent: boolean | null
+          status: string
+          updated_at: string
+          user_id: string
+          whatsapp_sent: boolean | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          email_sent?: boolean | null
+          flagged_suspicious?: boolean | null
+          id?: string
+          next_settlement_adjustment?: number | null
+          original_transaction_reference?: string | null
+          payment_method?: string
+          processed_at?: string | null
+          reason?: string
+          reason_note?: string | null
+          refund_reference?: string
+          refund_type?: string
+          refunded_by_user_id: string
+          sale_id: string
+          same_day_refund_deduction?: number | null
+          sms_sent?: boolean | null
+          status?: string
+          updated_at?: string
+          user_id: string
+          whatsapp_sent?: boolean | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          email_sent?: boolean | null
+          flagged_suspicious?: boolean | null
+          id?: string
+          next_settlement_adjustment?: number | null
+          original_transaction_reference?: string | null
+          payment_method?: string
+          processed_at?: string | null
+          reason?: string
+          reason_note?: string | null
+          refund_reference?: string
+          refund_type?: string
+          refunded_by_user_id?: string
+          sale_id?: string
+          same_day_refund_deduction?: number | null
+          sms_sent?: boolean | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+          whatsapp_sent?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "refunds_sale_id_fkey"
+            columns: ["sale_id"]
+            isOneToOne: false
+            referencedRelation: "sales"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       sale_items: {
         Row: {
           created_at: string
