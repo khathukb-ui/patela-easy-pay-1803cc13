@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { PatelaLogo } from "@/components/patela/PatelaLogo";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Upload, CheckCircle2, ArrowRight, FileText, Building2 } from "lucide-react";
+import { Upload, CheckCircle2, ArrowRight, ArrowLeft, FileText, Building2 } from "lucide-react";
 
 const DOCUMENT_TYPES = [
   { value: "company_registration", label: "Company Registration (CIPC)", required: true },
@@ -130,9 +130,14 @@ export default function PaygateOnboarding() {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-2xl mx-auto px-4 py-8">
-        <div className="flex items-center gap-2 mb-8">
-          <PatelaLogo size="md" />
-          <span className="text-accent font-bold text-sm border border-accent/40 rounded-full px-2 py-0.5">PayGate</span>
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-2">
+            <PatelaLogo size="md" />
+            <span className="text-accent font-bold text-sm border border-accent/40 rounded-full px-2 py-0.5">PayGate</span>
+          </div>
+          <button onClick={() => step > 1 ? setStep(step - 1) : navigate("/paygate/dashboard")} className="flex items-center gap-1 text-muted-foreground hover:text-foreground text-sm transition-colors">
+            <ArrowLeft className="h-4 w-4" /> {step > 1 ? "Back" : "Dashboard"}
+          </button>
         </div>
 
         {/* Progress */}
