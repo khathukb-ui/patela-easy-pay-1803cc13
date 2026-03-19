@@ -165,9 +165,9 @@ export default function Index() {
             <a href="#devices" className="text-primary-foreground/80 hover:text-primary-foreground transition-colors text-sm font-medium">Devices</a>
             <a href="#how-it-works" className="text-primary-foreground/80 hover:text-primary-foreground transition-colors text-sm font-medium">How It Works</a>
             <a href="#testimonials" className="text-primary-foreground/80 hover:text-primary-foreground transition-colors text-sm font-medium">Reviews</a>
-            <button onClick={() => navigate("/install")} className="text-primary-foreground/80 hover:text-primary-foreground transition-colors text-sm font-medium flex items-center gap-1">
-              <Download className="h-3.5 w-3.5" />
-              Install App
+            <button onClick={() => navigate("/paygate")} className="text-primary-foreground/80 hover:text-primary-foreground transition-colors text-sm font-medium flex items-center gap-1">
+              <Globe className="h-3.5 w-3.5" />
+              PayGate
             </button>
           </div>
           <div className="flex items-center gap-3">
@@ -205,9 +205,9 @@ export default function Index() {
               <a href="#devices" onClick={() => setMobileMenuOpen(false)} className="block py-3 text-primary-foreground/80 hover:text-primary-foreground transition-colors text-sm font-medium border-b border-primary-foreground/10">Devices</a>
               <a href="#how-it-works" onClick={() => setMobileMenuOpen(false)} className="block py-3 text-primary-foreground/80 hover:text-primary-foreground transition-colors text-sm font-medium border-b border-primary-foreground/10">How It Works</a>
               <a href="#testimonials" onClick={() => setMobileMenuOpen(false)} className="block py-3 text-primary-foreground/80 hover:text-primary-foreground transition-colors text-sm font-medium border-b border-primary-foreground/10">Reviews</a>
-              <button onClick={() => { navigate("/install"); setMobileMenuOpen(false); }} className="flex items-center gap-2 py-3 text-primary-foreground/80 hover:text-primary-foreground transition-colors text-sm font-medium border-b border-primary-foreground/10 w-full">
-                <Download className="h-3.5 w-3.5" />
-                Install App
+              <button onClick={() => { navigate("/paygate"); setMobileMenuOpen(false); }} className="flex items-center gap-2 py-3 text-primary-foreground/80 hover:text-primary-foreground transition-colors text-sm font-medium border-b border-primary-foreground/10 w-full">
+                <Globe className="h-3.5 w-3.5" />
+                PayGate
               </button>
               <div className="flex gap-3 pt-3">
                 <Button

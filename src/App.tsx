@@ -23,8 +23,17 @@ import Items from "./pages/Items";
 import Auth from "./pages/Auth";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
-import InstallApp from "./pages/InstallApp";
 import Welcome from "./pages/Welcome";
+
+// PayGate
+import PaygateLanding from "./pages/paygate/PaygateLanding";
+import PaygateAuth from "./pages/paygate/PaygateAuth";
+import PaygateOnboarding from "./pages/paygate/PaygateOnboarding";
+import PaygateDashboard from "./pages/paygate/PaygateDashboard";
+import PaygateTransactions from "./pages/paygate/PaygateTransactions";
+import PaygatePayouts from "./pages/paygate/PaygatePayouts";
+import PaygateApiKeys from "./pages/paygate/PaygateApiKeys";
+import PaygateSettings from "./pages/paygate/PaygateSettings";
 
 // Onboarding
 import LanguageSelection from "./pages/onboarding/LanguageSelection";
@@ -96,7 +105,16 @@ function AppContent() {
           <Route path="/auth" element={<Auth />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
-          <Route path="/install" element={<InstallApp />} />
+          
+          {/* PayGate */}
+          <Route path="/paygate" element={<PaygateLanding />} />
+          <Route path="/paygate/auth" element={<PaygateAuth />} />
+          <Route path="/paygate/onboarding" element={<PaygateOnboarding />} />
+          <Route path="/paygate/dashboard" element={<PaygateDashboard />} />
+          <Route path="/paygate/transactions" element={<PaygateTransactions />} />
+          <Route path="/paygate/payouts" element={<PaygatePayouts />} />
+          <Route path="/paygate/api-keys" element={<PaygateApiKeys />} />
+          <Route path="/paygate/settings" element={<PaygateSettings />} />
           
           {/* Onboarding */}
           <Route path="/onboarding/language" element={<LanguageSelection />} />
