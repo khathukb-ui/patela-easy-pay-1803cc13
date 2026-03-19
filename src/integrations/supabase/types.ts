@@ -50,6 +50,275 @@ export type Database = {
         }
         Relationships: []
       }
+      merchant_api_keys: {
+        Row: {
+          created_at: string
+          environment: string
+          id: string
+          is_active: boolean
+          last_used_at: string | null
+          merchant_id: string
+          public_key: string
+          secret_key: string
+        }
+        Insert: {
+          created_at?: string
+          environment: string
+          id?: string
+          is_active?: boolean
+          last_used_at?: string | null
+          merchant_id: string
+          public_key: string
+          secret_key: string
+        }
+        Update: {
+          created_at?: string
+          environment?: string
+          id?: string
+          is_active?: boolean
+          last_used_at?: string | null
+          merchant_id?: string
+          public_key?: string
+          secret_key?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "merchant_api_keys_merchant_id_fkey"
+            columns: ["merchant_id"]
+            isOneToOne: false
+            referencedRelation: "merchants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      merchant_documents: {
+        Row: {
+          document_type: string
+          file_name: string
+          file_path: string
+          file_size: number | null
+          id: string
+          merchant_id: string
+          rejection_reason: string | null
+          status: string
+          uploaded_at: string
+        }
+        Insert: {
+          document_type: string
+          file_name: string
+          file_path: string
+          file_size?: number | null
+          id?: string
+          merchant_id: string
+          rejection_reason?: string | null
+          status?: string
+          uploaded_at?: string
+        }
+        Update: {
+          document_type?: string
+          file_name?: string
+          file_path?: string
+          file_size?: number | null
+          id?: string
+          merchant_id?: string
+          rejection_reason?: string | null
+          status?: string
+          uploaded_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "merchant_documents_merchant_id_fkey"
+            columns: ["merchant_id"]
+            isOneToOne: false
+            referencedRelation: "merchants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      merchant_payouts: {
+        Row: {
+          account_holder: string | null
+          account_number: string | null
+          amount: number
+          bank_name: string | null
+          branch_code: string | null
+          currency: string
+          id: string
+          merchant_id: string
+          processed_at: string | null
+          reference: string | null
+          requested_at: string
+          status: string
+        }
+        Insert: {
+          account_holder?: string | null
+          account_number?: string | null
+          amount: number
+          bank_name?: string | null
+          branch_code?: string | null
+          currency?: string
+          id?: string
+          merchant_id: string
+          processed_at?: string | null
+          reference?: string | null
+          requested_at?: string
+          status?: string
+        }
+        Update: {
+          account_holder?: string | null
+          account_number?: string | null
+          amount?: number
+          bank_name?: string | null
+          branch_code?: string | null
+          currency?: string
+          id?: string
+          merchant_id?: string
+          processed_at?: string | null
+          reference?: string | null
+          requested_at?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "merchant_payouts_merchant_id_fkey"
+            columns: ["merchant_id"]
+            isOneToOne: false
+            referencedRelation: "merchants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      merchant_transactions: {
+        Row: {
+          amount: number
+          created_at: string
+          currency: string
+          customer_email: string | null
+          customer_name: string | null
+          environment: string
+          id: string
+          merchant_id: string
+          metadata: Json | null
+          payment_method: string
+          reference: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          currency?: string
+          customer_email?: string | null
+          customer_name?: string | null
+          environment?: string
+          id?: string
+          merchant_id: string
+          metadata?: Json | null
+          payment_method?: string
+          reference?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          currency?: string
+          customer_email?: string | null
+          customer_name?: string | null
+          environment?: string
+          id?: string
+          merchant_id?: string
+          metadata?: Json | null
+          payment_method?: string
+          reference?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "merchant_transactions_merchant_id_fkey"
+            columns: ["merchant_id"]
+            isOneToOne: false
+            referencedRelation: "merchants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      merchants: {
+        Row: {
+          approved_at: string | null
+          business_address: string | null
+          business_city: string | null
+          business_name: string
+          business_postal_code: string | null
+          business_province: string | null
+          business_type: string
+          contact_email: string | null
+          contact_phone: string | null
+          created_at: string
+          description: string | null
+          environment: string
+          id: string
+          is_live_enabled: boolean
+          registration_number: string | null
+          rejected_reason: string | null
+          status: string
+          tax_number: string | null
+          trading_name: string | null
+          updated_at: string
+          user_id: string
+          website_url: string | null
+        }
+        Insert: {
+          approved_at?: string | null
+          business_address?: string | null
+          business_city?: string | null
+          business_name: string
+          business_postal_code?: string | null
+          business_province?: string | null
+          business_type: string
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          description?: string | null
+          environment?: string
+          id?: string
+          is_live_enabled?: boolean
+          registration_number?: string | null
+          rejected_reason?: string | null
+          status?: string
+          tax_number?: string | null
+          trading_name?: string | null
+          updated_at?: string
+          user_id: string
+          website_url?: string | null
+        }
+        Update: {
+          approved_at?: string | null
+          business_address?: string | null
+          business_city?: string | null
+          business_name?: string
+          business_postal_code?: string | null
+          business_province?: string | null
+          business_type?: string
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          description?: string | null
+          environment?: string
+          id?: string
+          is_live_enabled?: boolean
+          registration_number?: string | null
+          rejected_reason?: string | null
+          status?: string
+          tax_number?: string | null
+          trading_name?: string | null
+          updated_at?: string
+          user_id?: string
+          website_url?: string | null
+        }
+        Relationships: []
+      }
       payout_settings: {
         Row: {
           bank_linked: boolean
@@ -276,6 +545,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      generate_merchant_api_keys: {
+        Args: { p_environment: string; p_merchant_id: string }
+        Returns: undefined
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
