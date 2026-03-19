@@ -99,6 +99,7 @@ export default function BankPending() {
           </Button>
         </div>
       </div>
+      </div>
     </div>
   );
 }
