@@ -1,0 +1,80 @@
+<!--
+  iOS Info.plist permission entries for Patela.
+
+  USAGE:
+    Copy the <key>/<string> pairs below into:
+      ios/App/App/Info.plist
+
+    Paste them inside the root <dict> element.
+    Apple WILL reject your app if usage strings are missing for any
+    permission your app requests at runtime.
+-->
+
+<!-- ── Camera ──────────────────────────────────────────────────── -->
+<key>NSCameraUsageDescription</key>
+<string>Patela uses your camera to scan your bank card and to capture proof of payment documents.</string>
+
+<!-- ── Photo Library ───────────────────────────────────────────── -->
+<key>NSPhotoLibraryUsageDescription</key>
+<string>Patela needs access to your photo library to let you upload proof of payment.</string>
+
+<key>NSPhotoLibraryAddUsageDescription</key>
+<string>Patela saves payment receipts to your photo library.</string>
+
+<!-- ── Bluetooth ───────────────────────────────────────────────── -->
+<key>NSBluetoothAlwaysUsageDescription</key>
+<string>Patela uses Bluetooth to connect to your Patela card reader device.</string>
+
+<key>NSBluetoothPeripheralUsageDescription</key>
+<string>Patela uses Bluetooth to pair with your POS card reader.</string>
+
+<!-- ── Local Network (USB / mDNS device discovery) ─────────────── -->
+<key>NSLocalNetworkUsageDescription</key>
+<string>Patela uses your local network to detect Patela POS devices connected via USB or Wi-Fi.</string>
+
+<!-- ── Face ID / Touch ID (PIN protection) ─────────────────────── -->
+<key>NSFaceIDUsageDescription</key>
+<string>Patela uses Face ID as a faster alternative to your PIN.</string>
+
+<!-- ── Location (optional — remove if not used) ────────────────── -->
+<!-- 
+<key>NSLocationWhenInUseUsageDescription</key>
+<string>Patela uses your location to show your nearest support agents.</string>
+-->
+
+<!-- ── App Transport Security (allow Supabase HTTPS) ───────────── -->
+<key>NSAppTransportSecurity</key>
+<dict>
+  <key>NSAllowsArbitraryLoads</key>
+  <false/>
+  <key>NSExceptionDomains</key>
+  <dict>
+    <!-- Allow Supabase project domain -->
+    <key>supabase.co</key>
+    <dict>
+      <key>NSIncludesSubdomains</key>
+      <true/>
+      <key>NSThirdPartyExceptionAllowsInsecureHTTPLoads</key>
+      <false/>
+      <key>NSThirdPartyExceptionRequiresForwardSecrecy</key>
+      <false/>
+    </dict>
+  </dict>
+</dict>
+
+<!-- ── Orientation lock (portrait only for POS use) ────────────── -->
+<key>UISupportedInterfaceOrientations</key>
+<array>
+  <string>UIInterfaceOrientationPortrait</string>
+</array>
+<key>UISupportedInterfaceOrientations~ipad</key>
+<array>
+  <string>UIInterfaceOrientationPortrait</string>
+  <string>UIInterfaceOrientationPortraitUpsideDown</string>
+</array>
+
+<!-- ── Status bar ───────────────────────────────────────────────── -->
+<key>UIStatusBarStyle</key>
+<string>UIStatusBarStyleLightContent</string>
+<key>UIViewControllerBasedStatusBarAppearance</key>
+<false/>
