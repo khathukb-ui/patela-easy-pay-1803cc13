@@ -30,6 +30,7 @@ const CONNECT_TIMEOUT_MS = 45000;
 
 let isInitialized = false;
 let isScanning = false;
+let connectPromise: Promise<void> | null = null;
 
 const delay = (ms: number): Promise<void> => {
   return new Promise((resolve) => window.setTimeout(resolve, ms));
@@ -45,10 +46,6 @@ const initializeBle = async (): Promise<void> => {
 };
 
 const stopScanSafely = async (): Promise<void> => {
-  if (!isScanning) {
-    return;
-  }
-
   try {
     await BleClient.stopLEScan();
   } catch {
@@ -61,14 +58,14 @@ const stopScanSafely = async (): Promise<void> => {
 const getAllowedPrefixes = (): string[] => {
   const envPrefixes = import.meta.env.VITE_PATELA_BLE_NAME_PREFIXES;
 
-  if (!envPrefixes) {
-    return DEFAULT_PATELA_PREFIXES.map((prefix) => prefix.toUpperCase());
-  }
+  const prefixes = envPrefixes
+    ? envPrefixes
+        .split(",")
+        .map((prefix) => prefix.trim())
+        .filter(Boolean)
+    : DEFAULT_PATELA_PREFIXES;
 
-  return envPrefixes
-    .split(",")
-    .map((prefix) => prefix.trim().toUpperCase())
-    .filter(Boolean);
+  return prefixes.map((prefix) => prefix.toUpperCase());
 };
 
 const getDeviceName = (result: ScanResult): string => {
@@ -119,10 +116,31 @@ const toPatelaDevice = (result: ScanResult): PatelaBluetoothDevice => {
     deviceId,
     name,
     model: getDeviceModel(name),
-    battery: 0,
+    battery: -1,
     signal: getSignalStrength(result.rssi),
     rssi: result.rssi,
   };
+};
+
+const getErrorMessage = (error: unknown): string => {
+  if (error instanceof Error && error.message) {
+    return error.message;
+  }
+
+  if (typeof error === "object" && error !== null) {
+    const maybeError = error as {
+      message?: string;
+      errorMessage?: string;
+    };
+
+    return (
+      maybeError.errorMessage ||
+      maybeError.message ||
+      "Bluetooth operation failed."
+    );
+  }
+
+  return "Bluetooth operation failed.";
 };
 
 export const scanForPatelaDevices = async (
@@ -189,38 +207,51 @@ export const scanForPatelaDevices = async (
 
       console.error("PATELA BLE SCAN FAILED:", error);
 
-      reject(error);
+      reject(new Error(getErrorMessage(error)));
     });
   });
 };
 
 export const connectPatelaDevice = async (deviceId: string): Promise<void> => {
-  await BleClient.initialize();
-
-  try {
-    await BleClient.stopLEScan();
-  } catch {
-    // Ignore if scan is already stopped.
+  if (connectPromise) {
+    console.log("PATELA BLE CONNECT ALREADY IN PROGRESS");
+    return connectPromise;
   }
 
-  console.log("PATELA BLE CONNECTING:", deviceId);
+  connectPromise = (async () => {
+    await initializeBle();
 
-  await BleClient.connect(
-    deviceId,
-    (disconnectedDeviceId) => {
-      console.warn("PATELA BLE DISCONNECTED:", disconnectedDeviceId);
-    },
-    {
-      timeout: 45000,
-      skipDescriptorDiscovery: true,
-    },
-  );
+    await stopScanSafely();
 
-  console.log("PATELA BLE CONNECTED:", deviceId);
+    // Give CoreBluetooth a short moment after scanning before connecting.
+    await delay(1000);
 
-  const battery = await readPatelaBatteryLevel(deviceId);
+    console.log("PATELA BLE CONNECTING:", deviceId);
 
-  console.log("PATELA BATTERY AFTER CONNECT:", battery);
+    try {
+      await BleClient.connect(
+        deviceId,
+        (disconnectedDeviceId) => {
+          console.warn("PATELA BLE DISCONNECTED:", disconnectedDeviceId);
+        },
+        {
+          timeout: CONNECT_TIMEOUT_MS,
+          skipDescriptorDiscovery: true,
+        },
+      );
+
+      console.log("PATELA BLE CONNECTED:", deviceId);
+    } catch (error) {
+      console.error("PATELA BLE CONNECT FAILED:", error);
+      throw new Error(getErrorMessage(error));
+    }
+  })();
+
+  try {
+    await connectPromise;
+  } finally {
+    connectPromise = null;
+  }
 };
 
 export const readPatelaBatteryLevel = async (
@@ -254,6 +285,8 @@ export const disconnectPatelaDevice = async (
   } catch {
     // Ignore disconnect errors so the UI can recover gracefully.
   }
+
+  await delay(1200);
 };
 
 export const savePairedPatelaDevice = (
@@ -269,4 +302,8 @@ export const getPairedPatelaDevice = (): PatelaBluetoothDevice | null => {
   } catch {
     return null;
   }
+};
+
+export const clearPairedPatelaDevice = (): void => {
+  localStorage.removeItem("patela-paired-device");
 };

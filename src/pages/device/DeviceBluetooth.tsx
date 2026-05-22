@@ -15,9 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 
 import {
-  connectPatelaDevice,
   getPairedPatelaDevice,
-  savePairedPatelaDevice,
   scanForPatelaDevices,
   type PatelaBluetoothDevice,
   type PatelaSignalStrength,
@@ -34,20 +32,11 @@ const DeviceBluetooth = () => {
   const [pairedDevice, setPairedDevice] =
     useState<PatelaBluetoothDevice | null>(null);
 
-  const [isConnected, setIsConnected] = useState(false);
-  const [connectingDeviceId, setConnectingDeviceId] = useState<string | null>(
-    null,
-  );
-
   useEffect(() => {
     const savedDevice = getPairedPatelaDevice();
 
     if (savedDevice) {
       setPairedDevice(savedDevice);
-
-      // Important:
-      // Saved device does not mean Bluetooth is connected right now.
-      setIsConnected(false);
     }
   }, []);
 
@@ -86,32 +75,15 @@ const DeviceBluetooth = () => {
     }
   };
 
-  const handleSelectDevice = async (device: PatelaBluetoothDevice) => {
-    try {
-      setConnectingDeviceId(device.deviceId);
-      setScanError(null);
-
-      await connectPatelaDevice(device.deviceId);
-
-      savePairedPatelaDevice(device);
-      setPairedDevice(device);
-      setIsConnected(true);
-
-      // Keep this if your current flow moves to the next page after connect.
-      // Remove it if you want to stay on this screen.
-      // navigate("/device/found");
-    } catch (error) {
-      console.error("Patela Bluetooth pairing failed", error);
-
-      setIsConnected(false);
-      setScanError(
-        error instanceof Error
-          ? error.message
-          : "Unable to connect to this device.",
-      );
-    } finally {
-      setConnectingDeviceId(null);
-    }
+  const handleSelectDevice = (device: PatelaBluetoothDevice) => {
+    navigate("/device/confirm-bluetooth", {
+      state: {
+        deviceName: device.name,
+        deviceId: device.deviceId,
+        battery: device.battery,
+        device,
+      },
+    });
   };
 
   return (
@@ -161,52 +133,27 @@ const DeviceBluetooth = () => {
           </div>
         </div>
 
-        {/* Paired / Connected Device */}
+        {/* Previously Paired Device */}
         {pairedDevice && (
-          <div
-            className={`rounded-xl border p-4 mb-4 ${
-              isConnected
-                ? "border-green-200 bg-green-50"
-                : "border-yellow-200 bg-yellow-50"
-            }`}
-          >
-            <p
-              className={`text-sm font-semibold ${
-                isConnected ? "text-green-700" : "text-yellow-700"
-              }`}
-            >
-              {isConnected ? "Device Connected" : "Previously Paired Device"}
+          <div className="rounded-xl border border-yellow-200 bg-yellow-50 p-4 mb-4">
+            <p className="text-sm font-semibold text-yellow-700">
+              Previously Paired Device
             </p>
 
-            <p
-              className={`text-sm ${
-                isConnected ? "text-green-800" : "text-yellow-800"
-              }`}
-            >
-              {pairedDevice.name}
-            </p>
+            <p className="text-sm text-yellow-800">{pairedDevice.name}</p>
 
-            <p
-              className={`text-xs ${
-                isConnected ? "text-green-700" : "text-yellow-700"
-              }`}
-            >
+            <p className="text-xs text-yellow-700">
               {pairedDevice.model} • {pairedDevice.signal} signal
             </p>
 
-            {!isConnected && (
-              <Button
-                onClick={() => handleSelectDevice(pairedDevice)}
-                variant="outline"
-                size="sm"
-                className="mt-3 rounded-lg"
-                disabled={connectingDeviceId === pairedDevice.deviceId}
-              >
-                {connectingDeviceId === pairedDevice.deviceId
-                  ? "Reconnecting..."
-                  : "Reconnect Device"}
-              </Button>
-            )}
+            <Button
+              onClick={() => handleSelectDevice(pairedDevice)}
+              variant="outline"
+              size="sm"
+              className="mt-3 rounded-lg"
+            >
+              Reconnect Device
+            </Button>
           </div>
         )}
 
@@ -268,44 +215,33 @@ const DeviceBluetooth = () => {
               {devices.length} device{devices.length > 1 ? "s" : ""} found
             </p>
 
-            {devices.map((device) => {
-              const isConnecting = connectingDeviceId === device.deviceId;
+            {devices.map((device) => (
+              <button
+                key={device.id}
+                onClick={() => handleSelectDevice(device)}
+                className="w-full flex items-center gap-3 p-3 bg-card rounded-xl patela-shadow-sm hover:bg-muted/50 transition-colors border border-border"
+              >
+                <div className="w-12 h-12 rounded-xl patela-gradient-primary flex items-center justify-center">
+                  <Smartphone className="h-6 w-6 text-primary-foreground" />
+                </div>
 
-              return (
-                <button
-                  key={device.id}
-                  onClick={() => handleSelectDevice(device)}
-                  className="w-full flex items-center gap-3 p-3 bg-card rounded-xl patela-shadow-sm hover:bg-muted/50 transition-colors border border-border disabled:opacity-60"
-                  disabled={isConnecting || Boolean(connectingDeviceId)}
-                >
-                  <div className="w-12 h-12 rounded-xl patela-gradient-primary flex items-center justify-center">
-                    <Smartphone className="h-6 w-6 text-primary-foreground" />
+                <div className="flex-1 text-left">
+                  <p className="font-bold text-foreground">{device.name}</p>
+                  <p className="text-xs text-muted-foreground">{device.id}</p>
+                </div>
+
+                <div className="flex flex-col items-end gap-1">
+                  {getSignalBars(device.signal)}
+
+                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <Battery className="h-3 w-3" />
+                    <span>
+                      {device.battery >= 0 ? `${device.battery}%` : "Unknown"}
+                    </span>
                   </div>
-
-                  <div className="flex-1 text-left">
-                    <p className="font-bold text-foreground">
-                      {device.name}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {isConnecting ? "Connecting..." : device.id}
-                    </p>
-                  </div>
-
-                  <div className="flex flex-col items-end gap-1">
-                    {getSignalBars(device.signal)}
-
-                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                      <Battery className="h-3 w-3" />
-                      <span>
-                        {device.battery >= 0
-                          ? `${device.battery}%`
-                          : "Unknown"}
-                      </span>
-                    </div>
-                  </div>
-                </button>
-              );
-            })}
+                </div>
+              </button>
+            ))}
           </div>
         )}
 

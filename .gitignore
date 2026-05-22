@@ -77,7 +77,7 @@ ios/App/App.xcodeproj/project.xcworkspace/xcuserdata/
 *.perspectivev3
 
 # CocoaPods
-ios/App/Podfile.lock
+ios/App/Podfile.lockclea
 
 # Fastlane
 ios/fastlane/report.xml
@@ -102,3 +102,5 @@ android/.idea/
 tmp/
 temp/
 .cache/
+
+dist/

@@ -1,72 +1,90 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   ArrowLeft,
   Smartphone,
   Battery,
-  Wifi,
-  RefreshCw,
-  Unlink,
-  Share2,
-  AlertTriangle,
   Bluetooth,
+  CheckCircle2,
+  Loader2,
+  AlertCircle,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { useLanguage } from "@/contexts/LanguageContext";
 
 import {
-  getPairedPatelaDevice,
-  disconnectPatelaDevice,
+  connectPatelaDevice,
+  readPatelaBatteryLevel,
+  savePairedPatelaDevice,
   type PatelaBluetoothDevice,
 } from "@/services/patelaBluetooth";
 
-export default function DeviceManagement() {
+export default function DeviceConfirmBluetooth() {
   const navigate = useNavigate();
-  const { t } = useLanguage();
+  const location = useLocation();
 
-  const [device, setDevice] = useState<PatelaBluetoothDevice | null>(null);
-  const [isConnected, setIsConnected] = useState(false);
-  const [isDisconnecting, setIsDisconnecting] = useState(false);
+  const [isPairing, setIsPairing] = useState(false);
+  const [pairingError, setPairingError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const savedDevice = getPairedPatelaDevice();
+  const locationState = location.state as
+    | {
+        deviceName?: string;
+        deviceId?: string;
+        battery?: number;
+        device?: PatelaBluetoothDevice | null;
+      }
+    | undefined;
 
-    if (savedDevice) {
-      setDevice(savedDevice);
+  const deviceName = locationState?.deviceName || "Patela Device";
+  const deviceId = locationState?.deviceId || "";
+  const battery = locationState?.battery ?? -1;
+  const device = locationState?.device || null;
 
-      // Important:
-      // LocalStorage means previously paired, not currently connected.
-      setIsConnected(false);
-    }
-  }, []);
-
-  const handleReconnect = () => {
-    navigate("/device/bluetooth");
-  };
-
-  const handleUnpairLocalDevice = async () => {
-    if (!device) {
+  const handlePair = async () => {
+    if (!deviceId) {
+      setPairingError("Missing Bluetooth device ID. Please scan again.");
       return;
     }
 
+    setIsPairing(true);
+    setPairingError(null);
+
     try {
-      setIsDisconnecting(true);
+      await connectPatelaDevice(deviceId);
 
-      try {
-        await disconnectPatelaDevice(device.deviceId);
-      } catch {
-        // Ignore disconnect errors because the device may already be disconnected.
-      }
+      const batteryLevel = await readPatelaBatteryLevel(deviceId);
 
-      localStorage.removeItem("patela-paired-device");
+      const pairedDevice: PatelaBluetoothDevice = {
+        id: device?.id || deviceId,
+        deviceId,
+        name: device?.name || deviceName,
+        model: device?.model || deviceName,
+        battery: batteryLevel ?? device?.battery ?? battery,
+        signal: device?.signal || "medium",
+        rssi: device?.rssi,
+      };
 
-      setDevice(null);
-      setIsConnected(false);
+      savePairedPatelaDevice(pairedDevice);
 
-      navigate("/device/start");
+      navigate("/device/found", {
+        state: {
+          deviceName: pairedDevice.name,
+          deviceId: pairedDevice.deviceId,
+          battery: pairedDevice.battery,
+          method: "bluetooth",
+          device: pairedDevice,
+        },
+      });
+    } catch (error) {
+      console.error("Patela Bluetooth pairing failed", error);
+
+      setPairingError(
+        error instanceof Error && error.message
+          ? error.message
+          : "Could not connect to the Patela device. Please try again.",
+      );
     } finally {
-      setIsDisconnecting(false);
+      setIsPairing(false);
     }
   };
 
@@ -75,207 +93,112 @@ export default function DeviceManagement() {
       {/* Header */}
       <div className="p-4 pt-8 flex items-center">
         <button
-          onClick={() => navigate("/account")}
+          onClick={() => navigate(-1)}
           className="w-10 h-10 rounded-full bg-card flex items-center justify-center"
+          disabled={isPairing}
         >
           <ArrowLeft className="h-5 w-5 text-foreground" />
         </button>
 
         <h1 className="flex-1 text-center text-lg font-bold text-foreground pr-10">
-          {t("deviceManagement")}
+          Confirm Device
         </h1>
       </div>
 
-      {/* No Device State */}
-      {!device && (
-        <div className="flex-1 px-6 py-8">
-          <div className="bg-card rounded-3xl patela-shadow-md p-6 text-center">
-            <div className="w-20 h-20 rounded-full bg-accent/10 flex items-center justify-center mx-auto mb-4">
-              <Bluetooth className="h-10 w-10 text-accent" />
+      {/* Content */}
+      <div className="flex-1 flex flex-col items-center justify-center px-6">
+        {/* Device Card */}
+        <div className="w-full max-w-sm bg-card rounded-xl patela-shadow-md overflow-hidden mb-4">
+          <div className="patela-gradient-primary p-5 text-center">
+            <div className="w-20 h-20 bg-white/20 rounded-xl flex items-center justify-center mx-auto mb-3">
+              <Smartphone className="h-10 w-10 text-primary-foreground" />
             </div>
 
-            <h2 className="text-lg font-bold text-foreground mb-2">
-              No Device Paired
+            <h2 className="text-2xl font-bold text-primary-foreground mb-1">
+              {deviceName}
             </h2>
 
-            <p className="text-sm text-muted-foreground mb-5">
-              You do not have a Patela device saved on this phone yet.
-            </p>
+            <p className="text-primary-foreground/80 text-base">{deviceId}</p>
+          </div>
 
-            <Button
-              onClick={() => navigate("/device/bluetooth")}
-              variant="default"
-              className="rounded-xl"
-            >
-              <Bluetooth className="mr-2 h-4 w-4" />
-              Pair Device
-            </Button>
+          <div className="p-4 space-y-3">
+            <div className="flex items-center justify-between py-2 border-b border-border">
+              <div className="flex items-center gap-2">
+                <Battery className="h-4 w-4 text-muted-foreground" />
+                <span className="text-muted-foreground text-sm">Battery</span>
+              </div>
+
+              <span
+                className={`font-bold text-sm ${
+                  battery > 20 ? "text-success" : "text-muted-foreground"
+                }`}
+              >
+                {battery >= 0 ? `${battery}%` : "Unknown"}
+              </span>
+            </div>
+
+            <div className="flex items-center justify-between py-2">
+              <div className="flex items-center gap-2">
+                <Bluetooth className="h-4 w-4 text-muted-foreground" />
+                <span className="text-muted-foreground text-sm">
+                  Connection
+                </span>
+              </div>
+
+              <span className="text-accent font-bold text-sm">Bluetooth</span>
+            </div>
           </div>
         </div>
-      )}
 
-      {/* Device Card */}
-      {device && (
-        <>
-          <div className="px-6 py-4">
-            <div className="bg-card rounded-3xl patela-shadow-md overflow-hidden">
-              <div className="patela-gradient-primary p-6">
-                <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center">
-                    <Smartphone className="h-8 w-8 text-primary-foreground" />
-                  </div>
+        {/* Instructions */}
+        <div className="w-full max-w-sm bg-accent/10 border border-accent/20 rounded-xl p-3 mb-4">
+          <div className="flex items-start gap-3">
+            <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0">
+              <CheckCircle2 className="h-5 w-5 text-accent" />
+            </div>
 
-                  <div>
-                    <h2 className="text-xl font-bold text-primary-foreground">
-                      {device.name}
-                    </h2>
+            <div>
+              <p className="font-semibold text-foreground text-base mb-0.5">
+                Press the green button
+              </p>
 
-                    <p className="text-primary-foreground/80">
-                      {device.deviceId}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="p-5 space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <Battery className="h-5 w-5 text-muted-foreground" />
-                    <span className="text-muted-foreground">
-                      {t("battery")}
-                    </span>
-                  </div>
-
-                  <span
-                    className={`font-bold ${
-                      device.battery > 20 ? "text-success" : "text-muted-foreground"
-                    }`}
-                  >
-                    {device.battery >= 0 ? `${device.battery}%` : "Unknown"}
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <Wifi className="h-5 w-5 text-muted-foreground" />
-                    <span className="text-muted-foreground">
-                      {t("status")}
-                    </span>
-                  </div>
-
-                  <span
-                    className={`flex items-center gap-2 font-bold ${
-                      isConnected ? "text-success" : "text-yellow-600"
-                    }`}
-                  >
-                    <span
-                      className={`w-2 h-2 rounded-full ${
-                        isConnected ? "bg-success" : "bg-yellow-500"
-                      }`}
-                    />
-
-                    {isConnected ? t("connected") : "Previously Paired"}
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <RefreshCw className="h-5 w-5 text-muted-foreground" />
-                    <span className="text-muted-foreground">
-                      {t("lastSync")}
-                    </span>
-                  </div>
-
-                  <span className="font-medium text-foreground">
-                    Not synced yet
-                  </span>
-                </div>
-
-                {!isConnected && (
-                  <div className="pt-2">
-                    <Button
-                      onClick={handleReconnect}
-                      variant="default"
-                      className="w-full rounded-xl"
-                    >
-                      <Bluetooth className="mr-2 h-4 w-4" />
-                      Reconnect Device
-                    </Button>
-                  </div>
-                )}
-              </div>
+              <p className="text-sm text-muted-foreground">
+                On your Patela device to confirm pairing
+              </p>
             </div>
           </div>
+        </div>
 
-          {/* Actions */}
-          <div className="flex-1 px-6 py-4">
-            <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3">
-              Device Actions
-            </h3>
-
-            <div className="space-y-3">
-              {/* Transfer Device */}
-              <button
-                onClick={() => navigate("/device/transfer")}
-                className="w-full flex items-center gap-4 p-4 bg-card rounded-2xl border border-border hover:bg-muted/50 transition-colors"
-              >
-                <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center">
-                  <Share2 className="h-6 w-6 text-accent" />
-                </div>
-
-                <div className="flex-1 text-left">
-                  <p className="font-semibold text-foreground">
-                    {t("transferDevice")}
-                  </p>
-
-                  <p className="text-sm text-muted-foreground">
-                    {t("transferDesc")}
-                  </p>
-                </div>
-              </button>
-
-              {/* Unpair Device */}
-              <button
-                onClick={handleUnpairLocalDevice}
-                disabled={isDisconnecting}
-                className="w-full flex items-center gap-4 p-4 bg-card rounded-2xl border border-destructive/20 hover:bg-destructive/5 transition-colors disabled:opacity-60"
-              >
-                <div className="w-12 h-12 rounded-xl bg-destructive/10 flex items-center justify-center">
-                  <Unlink className="h-6 w-6 text-destructive" />
-                </div>
-
-                <div className="flex-1 text-left">
-                  <p className="font-semibold text-destructive">
-                    {isDisconnecting ? "Unpairing..." : t("unpairDevice")}
-                  </p>
-
-                  <p className="text-sm text-muted-foreground">
-                    {t("unpairDesc")}
-                  </p>
-                </div>
-              </button>
-            </div>
-
-            {/* Warning Note */}
-            <div className="mt-6 p-4 bg-accent/10 border border-accent/20 rounded-2xl">
-              <div className="flex items-start gap-3">
-                <AlertTriangle className="h-5 w-5 text-accent flex-shrink-0 mt-0.5" />
-
-                <div>
-                  <p className="font-semibold text-foreground text-sm">
-                    {t("warning")}:
-                  </p>
-
-                  <ul className="text-sm text-muted-foreground mt-1 space-y-1">
-                    <li>• Device is remembered on this phone</li>
-                    <li>• Reconnect to confirm the live Bluetooth connection</li>
-                  </ul>
-                </div>
-              </div>
+        {pairingError && (
+          <div className="w-full max-w-sm bg-destructive/10 border border-destructive/20 rounded-xl p-3 mb-4">
+            <div className="flex gap-2 items-start">
+              <AlertCircle className="h-4 w-4 text-destructive mt-0.5 flex-shrink-0" />
+              <p className="text-sm text-destructive">{pairingError}</p>
             </div>
           </div>
-        </>
-      )}
+        )}
+
+        {/* Action */}
+        <Button
+          variant="default"
+          size="xl"
+          className="w-[300px] shadow-md hover:shadow-lg transition-all duration-200 active:scale-95"
+          onClick={handlePair}
+          disabled={isPairing || !deviceId}
+        >
+          {isPairing ? (
+            <>
+              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+              Connecting...
+            </>
+          ) : (
+            <>
+              <Bluetooth className="mr-2 h-5 w-5" />
+              Pair This Device
+            </>
+          )}
+        </Button>
+      </div>
     </div>
   );
 }
