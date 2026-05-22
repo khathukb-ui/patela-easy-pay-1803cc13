@@ -8,7 +8,7 @@ export default function BankSuccess() {
   const { t } = useLanguage();
 
   return (
-    <div className="min-h-screen patela-app-bg flex flex-col items-center justify-center px-6">
+    <div className="min-h-screen patela-app-bg flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] items-center justify-center px-6">
       <div className="flex flex-col items-center text-center animate-fade-in">
         {/* Success Animation */}
         <div className="relative mb-4">

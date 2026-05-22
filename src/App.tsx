@@ -76,7 +76,14 @@ import PayoutPreferences from "./pages/settings/PayoutPreferences";
 import ChangePin from "./pages/settings/ChangePin";
 import ResetPin from "./pages/settings/ResetPin";
 
-// Documentation
+import { Capacitor } from "@capacitor/core";
+import { StatusBar, Style } from "@capacitor/status-bar";
+
+if (Capacitor.isNativePlatform()) {
+  StatusBar.setOverlaysWebView({ overlay: false });
+  StatusBar.setStyle({ style: Style.Light });
+}
+
 import CustomerJourneyMap from "./pages/CustomerJourneyMap";
 
 const queryClient = new QueryClient();

@@ -16,7 +16,7 @@ export default function OnboardingSuccess() {
   }, [clearData]);
 
   return (
-    <div className="min-h-screen patela-app-bg flex flex-col items-center justify-center px-6">
+    <div className="min-h-screen patela-app-bg flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] items-center justify-center px-6">
       <div className="flex flex-col items-center text-center max-w-md animate-patela-bounce-in">
         {/* Success Icon */}
         <div className="h-24 w-24 rounded-full patela-gradient-success flex items-center justify-center patela-shadow-success mb-4">

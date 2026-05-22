@@ -95,7 +95,7 @@ export default function ResetPassword() {
 
   if (!isRecovery) {
     return (
-      <div className="min-h-screen patela-app-bg flex flex-col items-center justify-center px-6">
+      <div className="min-h-screen patela-app-bg flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] items-center justify-center px-6">
         <div className="text-center space-y-4">
           <PatelaLogo size="xl" className="mx-auto" />
           <h2 className="text-xl font-bold text-foreground">Invalid Reset Link</h2>

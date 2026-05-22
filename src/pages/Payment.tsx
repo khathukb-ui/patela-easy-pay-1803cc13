@@ -96,7 +96,7 @@ export default function Payment() {
 
   if (step === "cash_confirm") {
     return (
-      <div className="min-h-screen patela-app-bg flex flex-col items-center justify-center px-6">
+      <div className="min-h-screen patela-app-bg flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] items-center justify-center px-6">
         <div className="flex flex-col items-center text-center space-y-8 animate-patela-fade-in">
           <div className="h-32 w-32 rounded-full bg-accent flex items-center justify-center patela-shadow-accent">
             <Banknote className="h-16 w-16 text-accent-foreground" />
@@ -136,7 +136,7 @@ export default function Payment() {
 
   if (step === "processing") {
     return (
-      <div className="min-h-screen patela-app-bg flex flex-col items-center justify-center px-6">
+      <div className="min-h-screen patela-app-bg flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] items-center justify-center px-6">
         <div className="flex flex-col items-center text-center space-y-8 animate-patela-fade-in">
           <div className="h-32 w-32 rounded-full bg-primary flex items-center justify-center animate-patela-pulse patela-shadow-primary">
             <CreditCard className="h-16 w-16 text-primary-foreground" />

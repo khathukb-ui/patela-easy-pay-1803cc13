@@ -47,7 +47,7 @@ export default function InstallApp() {
 
   if (isInstalled) {
     return (
-      <div className="min-h-screen patela-app-bg flex flex-col items-center justify-center px-6">
+      <div className="min-h-screen patela-app-bg flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] items-center justify-center px-6">
         <div className="flex flex-col items-center text-center animate-fade-in">
           <div className="w-24 h-24 rounded-full bg-success/10 flex items-center justify-center mb-4">
             <CheckCircle2 className="h-12 w-12 text-success" />

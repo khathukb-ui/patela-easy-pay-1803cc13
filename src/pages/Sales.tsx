@@ -147,7 +147,7 @@ export default function Sales() {
 
   if (error) {
     return (
-      <div className="min-h-screen patela-app-bg flex flex-col items-center justify-center px-6 text-center">
+      <div className="min-h-screen patela-app-bg flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] items-center justify-center px-6 text-center">
         <AlertCircle className="h-12 w-12 text-destructive mb-4" />
         <h2 className="text-lg font-bold text-foreground mb-2">Unable to load sales</h2>
         <p className="text-muted-foreground mb-4">{error}</p>

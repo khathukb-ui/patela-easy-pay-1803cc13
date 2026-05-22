@@ -36,7 +36,7 @@ export default function BankVerify() {
   };
 
   return (
-    <div className="min-h-screen patela-app-bg flex flex-col items-center justify-center px-6">
+    <div className="min-h-screen patela-app-bg flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] items-center justify-center px-6">
       {status === "verifying" && (
         <div className="flex flex-col items-center text-center animate-fade-in">
           <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center mb-4 relative">
