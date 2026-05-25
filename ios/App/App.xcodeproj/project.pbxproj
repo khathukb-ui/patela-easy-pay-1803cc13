@@ -15,6 +15,14 @@
 		504EC30F1FED79650016851F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 504EC30E1FED79650016851F /* Assets.xcassets */; };
 		504EC3121FED79650016851F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 504EC3101FED79650016851F /* LaunchScreen.storyboard */; };
 		50B271D11FEDC1A000F3C39B /* public in Resources */ = {isa = PBXBuildFile; fileRef = 50B271D01FEDC1A000F3C39B /* public */; };
+		9B932AE22FC3766F0096B159 /* libqpos-ios-release-sdk-v3.3.6.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B932ADE2FC3766F0096B159 /* libqpos-ios-release-sdk-v3.3.6.a */; };
+		9B932AE42FC377370096B159 /* PatelaQposPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B932AE32FC377290096B159 /* PatelaQposPlugin.swift */; };
+		9B932AEB2FC382D50096B159 /* PatelaQposManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B932AEA2FC3824E0096B159 /* PatelaQposManager.m */; };
+		9B932AED2FC38C400096B159 /* PatelaQposPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B932AEC2FC38C400096B159 /* PatelaQposPlugin.swift */; };
+		9B932AEF2FC3904B0096B159 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B932AEE2FC390470096B159 /* MainViewController.swift */; };
+		9B942D3C2FC34D79009BFC20 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B942D3B2FC34D79009BFC20 /* CoreBluetooth.framework */; };
+		9B942D3E2FC34D8B009BFC20 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B942D3D2FC34D8B009BFC20 /* AudioToolbox.framework */; };
+		9B942D402FC34D94009BFC20 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B942D3F2FC34D94009BFC20 /* MediaPlayer.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +36,20 @@
 		504EC3131FED79650016851F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		50B271D01FEDC1A000F3C39B /* public */ = {isa = PBXFileReference; lastKnownFileType = folder; path = public; sourceTree = "<group>"; };
 		958DCC722DB07C7200EA8C5F /* debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = debug.xcconfig; path = ../debug.xcconfig; sourceTree = SOURCE_ROOT; };
+		9B932ADD2FC3766F0096B159 /* BTDeviceFinder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BTDeviceFinder.h; sourceTree = "<group>"; };
+		9B932ADE2FC3766F0096B159 /* libqpos-ios-release-sdk-v3.3.6.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libqpos-ios-release-sdk-v3.3.6.a"; sourceTree = "<group>"; };
+		9B932ADF2FC3766F0096B159 /* QPOSService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QPOSService.h; sourceTree = "<group>"; };
+		9B932AE02FC3766F0096B159 /* QPOSUtil.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QPOSUtil.h; sourceTree = "<group>"; };
+		9B932AE32FC377290096B159 /* PatelaQposPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatelaQposPlugin.swift; sourceTree = "<group>"; };
+		9B932AE62FC377550096B159 /* File.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = File.txt; sourceTree = "<group>"; };
+		9B932AE92FC3781C0096B159 /* PatelaQposManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PatelaQposManager.h; sourceTree = "<group>"; };
+		9B932AEA2FC3824E0096B159 /* PatelaQposManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PatelaQposManager.m; sourceTree = "<group>"; };
+		9B932AEC2FC38C400096B159 /* PatelaQposPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatelaQposPlugin.swift; sourceTree = "<group>"; };
+		9B932AEE2FC390470096B159 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
+		9B942D3B2FC34D79009BFC20 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
+		9B942D3D2FC34D8B009BFC20 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		9B942D3F2FC34D94009BFC20 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
+		9B942D432FC35567009BFC20 /* App-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "App-Bridging-Header.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -35,6 +57,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9B942D402FC34D94009BFC20 /* MediaPlayer.framework in Frameworks */,
+				9B942D3E2FC34D8B009BFC20 /* AudioToolbox.framework in Frameworks */,
+				9B942D3C2FC34D79009BFC20 /* CoreBluetooth.framework in Frameworks */,
+				9B932AE22FC3766F0096B159 /* libqpos-ios-release-sdk-v3.3.6.a in Frameworks */,
 				4D22ABE92AF431CB00220026 /* CapApp-SPM in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -47,7 +73,9 @@
 			children = (
 				958DCC722DB07C7200EA8C5F /* debug.xcconfig */,
 				504EC3061FED79650016851F /* App */,
+				9B942D3A2FC34D79009BFC20 /* Frameworks */,
 				504EC3051FED79650016851F /* Products */,
+				9B932AE62FC377550096B159 /* File.txt */,
 			);
 			sourceTree = "<group>";
 		};
@@ -62,6 +90,11 @@
 		504EC3061FED79650016851F /* App */ = {
 			isa = PBXGroup;
 			children = (
+				9B932AEE2FC390470096B159 /* MainViewController.swift */,
+				9B932AEC2FC38C400096B159 /* PatelaQposPlugin.swift */,
+				9B932AEA2FC3824E0096B159 /* PatelaQposManager.m */,
+				9B932AE92FC3781C0096B159 /* PatelaQposManager.h */,
+				9B932AE32FC377290096B159 /* PatelaQposPlugin.swift */,
 				50379B222058CBB4000EE86E /* capacitor.config.json */,
 				504EC3071FED79650016851F /* AppDelegate.swift */,
 				504EC30B1FED79650016851F /* Main.storyboard */,
@@ -70,8 +103,31 @@
 				504EC3131FED79650016851F /* Info.plist */,
 				2FAD9762203C412B000D30F8 /* config.xml */,
 				50B271D01FEDC1A000F3C39B /* public */,
+				9B942D432FC35567009BFC20 /* App-Bridging-Header.h */,
+				9B932AE12FC3766F0096B159 /* PatelaQposSDK */,
 			);
 			path = App;
+			sourceTree = "<group>";
+		};
+		9B932AE12FC3766F0096B159 /* PatelaQposSDK */ = {
+			isa = PBXGroup;
+			children = (
+				9B932ADD2FC3766F0096B159 /* BTDeviceFinder.h */,
+				9B932ADE2FC3766F0096B159 /* libqpos-ios-release-sdk-v3.3.6.a */,
+				9B932ADF2FC3766F0096B159 /* QPOSService.h */,
+				9B932AE02FC3766F0096B159 /* QPOSUtil.h */,
+			);
+			path = PatelaQposSDK;
+			sourceTree = "<group>";
+		};
+		9B942D3A2FC34D79009BFC20 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				9B942D3F2FC34D94009BFC20 /* MediaPlayer.framework */,
+				9B942D3D2FC34D8B009BFC20 /* AudioToolbox.framework */,
+				9B942D3B2FC34D79009BFC20 /* CoreBluetooth.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -108,7 +164,7 @@
 				TargetAttributes = {
 					504EC3031FED79650016851F = {
 						CreatedOnToolsVersion = 9.2;
-						LastSwiftMigration = 1100;
+						LastSwiftMigration = 2630;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -155,7 +211,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9B932AE42FC377370096B159 /* PatelaQposPlugin.swift in Sources */,
+				9B932AEB2FC382D50096B159 /* PatelaQposManager.m in Sources */,
+				9B932AED2FC38C400096B159 /* PatelaQposPlugin.swift in Sources */,
 				504EC3081FED79650016851F /* AppDelegate.swift in Sources */,
+				9B932AEF2FC3904B0096B159 /* MainViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -295,6 +355,7 @@
 			baseConfigurationReference = 958DCC722DB07C7200EA8C5F /* debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = TUH83Y5SBE;
@@ -304,11 +365,17 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/App/PatelaQposSDK",
+				);
 				MARKETING_VERSION = 1.0;
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" \"-DDEBUG\"";
 				PRODUCT_BUNDLE_IDENTIFIER = com.patela.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OBJC_BRIDGING_HEADER = "App/App-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -318,6 +385,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = TUH83Y5SBE;
@@ -327,10 +395,15 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/App/PatelaQposSDK",
+				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.patela.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "App/App-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

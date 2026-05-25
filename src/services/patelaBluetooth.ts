@@ -12,6 +12,33 @@ export interface PatelaBluetoothDevice {
   rssi?: number;
 }
 
+export type PatelaPaymentStatus =
+  | "sent"
+  | "pending"
+  | "approved"
+  | "declined"
+  | "failed"
+  | "unknown";
+
+export interface PatelaPaymentRequest {
+  amount: number;
+  currency?: string;
+  reference?: string;
+}
+
+export interface PatelaPaymentResult {
+  status: PatelaPaymentStatus;
+  message: string;
+  rawResponse?: unknown;
+}
+
+interface PatelaPaymentTransport {
+  serviceUuid: string;
+  writeCharacteristicUuid: string;
+  notifyCharacteristicUuid?: string;
+  writeWithoutResponse?: boolean;
+}
+
 const DEFAULT_PATELA_PREFIXES = [
   "FP9310",
   "POS",
@@ -27,6 +54,8 @@ const DEFAULT_PATELA_PREFIXES = [
 ];
 
 const CONNECT_TIMEOUT_MS = 45000;
+const PAYMENT_RESPONSE_TIMEOUT_MS = 90000;
+const BLE_CHUNK_SIZE = 180;
 
 let isInitialized = false;
 let isScanning = false;
@@ -143,6 +172,225 @@ const getErrorMessage = (error: unknown): string => {
   return "Bluetooth operation failed.";
 };
 
+const amountToCents = (amount: number): number => {
+  if (!Number.isFinite(amount) || amount <= 0) {
+    throw new Error("Payment amount must be greater than 0.");
+  }
+
+  return Math.round(amount * 100);
+};
+
+const numberToBcdBytes = (numericString: string): number[] => {
+  const evenString =
+    numericString.length % 2 === 0 ? numericString : `0${numericString}`;
+
+  const bytes: number[] = [];
+
+  for (let i = 0; i < evenString.length; i += 2) {
+    bytes.push(parseInt(evenString.slice(i, i + 2), 16));
+  }
+
+  return bytes;
+};
+
+const amountToAuthorisedAmountBcd = (amount: number): number[] => {
+  const cents = amountToCents(amount);
+  const twelveDigitAmount = cents.toString().padStart(12, "0");
+
+  return numberToBcdBytes(twelveDigitAmount);
+};
+
+const bytesToDataView = (bytes: number[]): DataView => {
+  const uint8Array = new Uint8Array(bytes);
+  return new DataView(uint8Array.buffer);
+};
+
+const bytesToHex = (bytes: number[]): string => {
+  return bytes
+    .map((byte) => byte.toString(16).padStart(2, "0").toUpperCase())
+    .join(" ");
+};
+
+const dataViewToText = (value: DataView): string => {
+  try {
+    return new TextDecoder().decode(value.buffer);
+  } catch {
+    return "";
+  }
+};
+
+const dataViewToHex = (value: DataView): string => {
+  const bytes = new Uint8Array(value.buffer);
+  return bytesToHex(Array.from(bytes));
+};
+
+const dataViewToChunks = (
+  dataView: DataView,
+  chunkSize = BLE_CHUNK_SIZE,
+): DataView[] => {
+  const bytes = new Uint8Array(dataView.buffer);
+  const chunks: DataView[] = [];
+
+  for (let index = 0; index < bytes.length; index += chunkSize) {
+    const chunk = bytes.slice(index, index + chunkSize);
+    chunks.push(new DataView(chunk.buffer));
+  }
+
+  return chunks;
+};
+
+const getBooleanEnv = (value: string | undefined, defaultValue: boolean) => {
+  if (!value) {
+    return defaultValue;
+  }
+
+  return value.toLowerCase() === "true";
+};
+
+const getEnvPaymentTransport = (): PatelaPaymentTransport | null => {
+  const serviceUuid = import.meta.env.VITE_PATELA_PAYMENT_SERVICE_UUID;
+  const writeCharacteristicUuid =
+    import.meta.env.VITE_PATELA_PAYMENT_WRITE_CHARACTERISTIC_UUID;
+  const notifyCharacteristicUuid =
+    import.meta.env.VITE_PATELA_PAYMENT_NOTIFY_CHARACTERISTIC_UUID;
+
+  if (!serviceUuid || !writeCharacteristicUuid) {
+    return null;
+  }
+
+  return {
+    serviceUuid,
+    writeCharacteristicUuid,
+    notifyCharacteristicUuid: notifyCharacteristicUuid || undefined,
+
+    // Default to confirmed write for payment commands.
+    // You can set VITE_PATELA_PAYMENT_WRITE_WITHOUT_RESPONSE=true if needed.
+    writeWithoutResponse: getBooleanEnv(
+      import.meta.env.VITE_PATELA_PAYMENT_WRITE_WITHOUT_RESPONSE,
+      false,
+    ),
+  };
+};
+
+const getTransactionDateBcd = (): number[] => {
+  const now = new Date();
+
+  const year = now.getFullYear().toString().slice(-2);
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+
+  return numberToBcdBytes(`${year}${month}${day}`);
+};
+
+const getTransactionTimeBcd = (): number[] => {
+  const now = new Date();
+
+  const hours = String(now.getHours()).padStart(2, "0");
+  const minutes = String(now.getMinutes()).padStart(2, "0");
+  const seconds = String(now.getSeconds()).padStart(2, "0");
+
+  return numberToBcdBytes(`${hours}${minutes}${seconds}`);
+};
+
+const buildTriggerPaymentPayload = (
+  request: PatelaPaymentRequest,
+): DataView => {
+  const amountBytes = amountToAuthorisedAmountBcd(request.amount);
+
+  const includeDateTime = getBooleanEnv(
+    import.meta.env.VITE_PATELA_PAYMENT_INCLUDE_DATE_TIME,
+    false,
+  );
+
+  const include6AWrapper = getBooleanEnv(
+    import.meta.env.VITE_PATELA_PAYMENT_INCLUDE_6A_WRAPPER,
+    true,
+  );
+
+  /**
+   * Dspread/QPOS-style trigger payment attempt.
+   *
+   * 21      command code
+   * 16 30   command ID
+   * 9C      transaction type
+   * 9F02    authorised amount
+   * 5F2A    currency code, ZAR = 0710
+   *
+   * South Africa:
+   * 9F1A = 0710
+   * 5F2A = 0710
+   *
+   * NOTE:
+   * This is based on the docs discovered, but if the device still stays quiet,
+   * the vendor SDK/proprietary framing is still required.
+   */
+  const body: number[] = [
+    0x21,
+    0x16,
+    0x30,
+
+    // 9C transaction type: 01 purchase/goods
+    0x9c,
+    0x01,
+    0x01,
+
+    // 9F02 authorised amount, 6 bytes BCD
+    0x9f,
+    0x02,
+    0x06,
+    ...amountBytes,
+
+    // 5F2A transaction currency code: South African Rand = 0710
+    0x5f,
+    0x2a,
+    0x02,
+    0x07,
+    0x10,
+  ];
+
+  if (includeDateTime) {
+    body.push(
+      // 9A transaction date YYMMDD
+      0x9a,
+      0x03,
+      ...getTransactionDateBcd(),
+
+      // 9F21 transaction time HHMMSS
+      0x9f,
+      0x21,
+      0x03,
+      ...getTransactionTimeBcd(),
+    );
+  }
+
+  const bodyLength = body.length;
+
+  const payload = include6AWrapper
+    ? [
+        0x6a,
+        (bodyLength >> 8) & 0xff,
+        bodyLength & 0xff,
+        ...body,
+      ]
+    : [
+        (bodyLength >> 8) & 0xff,
+        bodyLength & 0xff,
+        ...body,
+      ];
+
+  console.log("PATELA 6A TRIGGER PAYMENT PAYLOAD:", {
+    amount: request.amount,
+    amountInCents: amountToCents(request.amount),
+    amountBytes: bytesToHex(amountBytes),
+    include6AWrapper,
+    includeDateTime,
+    bodyLength,
+    hex: bytesToHex(payload),
+  });
+
+  return bytesToDataView(payload);
+};
+
 export const scanForPatelaDevices = async (
   scanDurationMs = 8000,
 ): Promise<PatelaBluetoothDevice[]> => {
@@ -220,10 +468,8 @@ export const connectPatelaDevice = async (deviceId: string): Promise<void> => {
 
   connectPromise = (async () => {
     await initializeBle();
-
     await stopScanSafely();
 
-    // Give CoreBluetooth a short moment after scanning before connecting.
     await delay(1000);
 
     console.log("PATELA BLE CONNECTING:", deviceId);
@@ -236,7 +482,9 @@ export const connectPatelaDevice = async (deviceId: string): Promise<void> => {
         },
         {
           timeout: CONNECT_TIMEOUT_MS,
-          skipDescriptorDiscovery: true,
+
+          // Keep this false for payment because we need services/characteristics.
+          skipDescriptorDiscovery: false,
         },
       );
 
@@ -274,6 +522,256 @@ export const readPatelaBatteryLevel = async (
     console.warn("PATELA BLE BATTERY READ FAILED:", error);
     return null;
   }
+};
+
+export const discoverPatelaPaymentTransport = async (
+  deviceId: string,
+): Promise<PatelaPaymentTransport> => {
+  const envTransport = getEnvPaymentTransport();
+
+  if (envTransport) {
+    console.log("PATELA PAYMENT USING ENV UUIDS:", envTransport);
+    return envTransport;
+  }
+
+  await connectPatelaDevice(deviceId);
+
+  console.log("PATELA PAYMENT UUIDS NOT FOUND IN ENV. DISCOVERING SERVICES...");
+
+  const services = await BleClient.getServices(deviceId);
+
+  let writeCandidate: PatelaPaymentTransport | null = null;
+  let notifyCandidate:
+    | {
+        serviceUuid: string;
+        notifyCharacteristicUuid: string;
+      }
+    | null = null;
+
+  for (const service of services) {
+    for (const characteristic of service.characteristics) {
+      const properties = characteristic.properties;
+
+      console.log("PATELA BLE CHARACTERISTIC:", {
+        serviceUuid: service.uuid,
+        characteristicUuid: characteristic.uuid,
+        properties,
+      });
+
+      if (!notifyCandidate && (properties.notify || properties.indicate)) {
+        notifyCandidate = {
+          serviceUuid: service.uuid,
+          notifyCharacteristicUuid: characteristic.uuid,
+        };
+      }
+
+      if (
+        !writeCandidate &&
+        (properties.write || properties.writeWithoutResponse)
+      ) {
+        writeCandidate = {
+          serviceUuid: service.uuid,
+          writeCharacteristicUuid: characteristic.uuid,
+
+          // Confirmed write by default. Use env if you need without response.
+          writeWithoutResponse: false,
+        };
+      }
+    }
+  }
+
+  if (!writeCandidate) {
+    throw new Error("No writable BLE characteristic found on the Patela device.");
+  }
+
+  const sameServiceNotify = services
+    .find((service) => service.uuid === writeCandidate?.serviceUuid)
+    ?.characteristics.find(
+      (characteristic) =>
+        characteristic.properties.notify || characteristic.properties.indicate,
+    );
+
+  if (sameServiceNotify) {
+    writeCandidate.notifyCharacteristicUuid = sameServiceNotify.uuid;
+  } else if (notifyCandidate) {
+    writeCandidate.notifyCharacteristicUuid =
+      notifyCandidate.notifyCharacteristicUuid;
+  }
+
+  console.log("PATELA BLE SELECTED PAYMENT TRANSPORT:", writeCandidate);
+
+  return writeCandidate;
+};
+
+const startPaymentNotifications = async (
+  deviceId: string,
+  transport: PatelaPaymentTransport,
+): Promise<PatelaPaymentResult> => {
+  if (!transport.notifyCharacteristicUuid) {
+    return {
+      status: "sent",
+      message:
+        "Payment request was sent to the device. No notify characteristic was configured.",
+    };
+  }
+
+  return new Promise<PatelaPaymentResult>((resolve) => {
+    let settled = false;
+
+    const finish = (result: PatelaPaymentResult) => {
+      if (settled) {
+        return;
+      }
+
+      settled = true;
+      resolve(result);
+    };
+
+    const timeout = window.setTimeout(() => {
+      finish({
+        status: "pending",
+        message:
+          "Payment was sent to the device, but no approved/declined response was received yet.",
+      });
+    }, PAYMENT_RESPONSE_TIMEOUT_MS);
+
+    BleClient.startNotifications(
+      deviceId,
+      transport.serviceUuid,
+      transport.notifyCharacteristicUuid,
+      (value) => {
+        const responseText = dataViewToText(value);
+        const responseHex = dataViewToHex(value);
+        const upperResponse = responseText.toUpperCase();
+
+        console.log("PATELA PAYMENT RESPONSE RECEIVED:", {
+          raw: value,
+          text: responseText,
+          hex: responseHex,
+        });
+
+        window.clearTimeout(timeout);
+
+        if (
+          upperResponse.includes("APPROVED") ||
+          upperResponse.includes("SUCCESS")
+        ) {
+          finish({
+            status: "approved",
+            message: "Payment approved.",
+            rawResponse: responseText || responseHex,
+          });
+          return;
+        }
+
+        if (
+          upperResponse.includes("DECLINED") ||
+          upperResponse.includes("FAILED")
+        ) {
+          finish({
+            status: "declined",
+            message: "Payment declined.",
+            rawResponse: responseText || responseHex,
+          });
+          return;
+        }
+
+        finish({
+          status: "unknown",
+          message: "Payment response received from device.",
+          rawResponse: responseText || responseHex,
+        });
+      },
+    ).catch((error) => {
+      window.clearTimeout(timeout);
+
+      finish({
+        status: "sent",
+        message: `Payment was sent, but notifications could not be started: ${getErrorMessage(
+          error,
+        )}`,
+      });
+    });
+  });
+};
+
+const writePaymentPayload = async (
+  deviceId: string,
+  transport: PatelaPaymentTransport,
+  payload: DataView,
+): Promise<void> => {
+  const chunks = dataViewToChunks(payload);
+
+  console.log("PATELA PAYMENT WRITING CHUNKS:", {
+    chunkCount: chunks.length,
+    serviceUuid: transport.serviceUuid,
+    writeCharacteristicUuid: transport.writeCharacteristicUuid,
+    writeWithoutResponse: transport.writeWithoutResponse,
+    payloadHex: dataViewToHex(payload),
+  });
+
+  for (const chunk of chunks) {
+    console.log("PATELA PAYMENT WRITING CHUNK:", dataViewToHex(chunk));
+
+    if (transport.writeWithoutResponse) {
+      await BleClient.writeWithoutResponse(
+        deviceId,
+        transport.serviceUuid,
+        transport.writeCharacteristicUuid,
+        chunk,
+      );
+    } else {
+      await BleClient.write(
+        deviceId,
+        transport.serviceUuid,
+        transport.writeCharacteristicUuid,
+        chunk,
+      );
+    }
+
+    await delay(80);
+  }
+};
+
+export const sendPatelaPaymentRequest = async (
+  deviceId: string,
+  request: PatelaPaymentRequest,
+): Promise<PatelaPaymentResult> => {
+  await connectPatelaDevice(deviceId);
+
+  const transport = await discoverPatelaPaymentTransport(deviceId);
+
+  const paymentPayload = buildTriggerPaymentPayload(request);
+
+  const responsePromise = startPaymentNotifications(deviceId, transport);
+
+  console.log("PATELA PAYMENT SENDING TO DEVICE:", {
+    deviceId,
+    serviceUuid: transport.serviceUuid,
+    writeCharacteristicUuid: transport.writeCharacteristicUuid,
+    notifyCharacteristicUuid: transport.notifyCharacteristicUuid,
+    amount: request.amount,
+    currency: request.currency || "ZAR",
+    reference: request.reference,
+  });
+
+  await writePaymentPayload(deviceId, transport, paymentPayload);
+
+  console.log("PATELA PAYMENT WRITE COMPLETE");
+
+  return responsePromise;
+};
+
+export const startPatelaPayment = async (
+  request: PatelaPaymentRequest,
+): Promise<PatelaPaymentResult> => {
+  const pairedDevice = getPairedPatelaDevice();
+
+  if (!pairedDevice) {
+    throw new Error("No Patela device is paired. Please pair a device first.");
+  }
+
+  return sendPatelaPaymentRequest(pairedDevice.deviceId, request);
 };
 
 export const disconnectPatelaDevice = async (

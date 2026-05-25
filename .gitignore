@@ -104,3 +104,26 @@ temp/
 .cache/
 
 dist/
+
+# Dependencies
+node_modules/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# iOS / Capacitor build files
+ios/App/build/
+ios/App/Pods/
+ios/App/output/
+ios/App/App/public/
+ios/DerivedData/
+ios/App/App/capacitor.config.json
+ios/App/App/config.xml
+ios/App/capacitor-cordova-ios-plugins/
+
+# Xcode user files
+*.xcuserstate
+xcuserdata/
+DerivedData/
