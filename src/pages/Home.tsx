@@ -26,6 +26,7 @@ import {
   Store,
   Banknote,
   Gift,
+  ScanBarcode,
   Loader2
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -165,10 +166,10 @@ export default function Home() {
           <Button
             variant="outline"
             className="h-20 flex-col gap-2 border-primary/20 hover:border-accent/50 hover:bg-accent/5"
-            onClick={() => navigate("/sales")}
+            onClick={() => navigate("/inventory-scanner")}
           >
-            <CreditCard className="h-6 w-6 text-accent" />
-            <span className="text-sm font-medium">{t("salesHistory")}</span>
+            <ScanBarcode className="h-6 w-6 text-accent" />
+            <span className="text-sm font-medium">IMS Scan</span>
           </Button>
         </div>
 

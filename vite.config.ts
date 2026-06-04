@@ -8,7 +8,15 @@ import { VitePWA } from "vite-plugin-pwa";
 export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
-    port: 8080,
+    port: 3000,
+      proxy: {
+        "/ims-api": {
+          target: "http://107.21.32.197:3000",
+          changeOrigin: true,
+          secure: false,
+          rewrite: (path) => path.replace(/^\/ims-api/, ""),
+        },
+      },
   },
   plugins: [
     react(),

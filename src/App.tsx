@@ -26,6 +26,7 @@ import Sales from "./pages/Sales";
 import Account from "./pages/Account";
 import Help from "./pages/Help";
 import Items from "./pages/Items";
+import InventoryScanner from "./pages/InventoryScanner";
 import Auth from "./pages/Auth";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
@@ -201,6 +202,7 @@ function AppContent() {
           <Route path="/payment/failed" element={<PaymentFailed />} />
           <Route path="/sales" element={<Sales />} />
           <Route path="/items" element={<Items />} />
+          <Route path="/inventory-scanner" element={<InventoryScanner />} />
           <Route path="/account" element={<Account />} />
           <Route path="/help" element={<Help />} />
 

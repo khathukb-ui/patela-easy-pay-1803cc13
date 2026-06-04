@@ -1,16 +1,62 @@
-import { Home, History, User, HelpCircle, Package } from "lucide-react";
-import { NavLink } from "react-router-dom";
+import { useState } from "react";
+import { Home, History, User, Package, ScanBarcode } from "lucide-react";
+import { NavLink, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { hapticLight } from "@/hooks/useNative";
+import { loginToIMS } from "@/lib/ims-api";
+import { toast } from "sonner";
 
 const navItems = [
-  { icon: Home,    label: "Home",    path: "/home"    },
-  { icon: Package, label: "Items",   path: "/items"   },
-  { icon: History, label: "Sales",   path: "/sales"   },
-  { icon: User,    label: "Account", path: "/account" },
+  { icon: Home, label: "Home", path: "/home" },
+  { icon: Package, label: "Items", path: "/items" },
+  { icon: ScanBarcode, label: "Scan", path: "/inventory-scanner", requiresIMSLogin: true },
+  { icon: History, label: "Sales", path: "/sales" },
+  { icon: User, label: "Account", path: "/account" },
 ];
 
 export function BottomNav() {
+  const navigate = useNavigate();
+  const [isLoggingIntoIMS, setIsLoggingIntoIMS] = useState(false);
+
+  const handleNavClick = async (
+    event: React.MouseEvent<HTMLAnchorElement>,
+    item: (typeof navItems)[number]
+  ) => {
+    hapticLight();
+
+    if (!item.requiresIMSLogin) {
+      return;
+    }
+
+    event.preventDefault();
+
+    if (isLoggingIntoIMS) {
+      return;
+    }
+
+    setIsLoggingIntoIMS(true);
+    const toastId = toast.loading("Signing in to IMS...");
+
+    try {
+      const result = await loginToIMS(true);
+      toast.dismiss(toastId);
+
+      if (result.success) {
+        toast.success("IMS login ready");
+      } else {
+        toast.error(result.message);
+      }
+
+      navigate(item.path);
+    } catch (error) {
+      toast.dismiss(toastId);
+      toast.error(error instanceof Error ? error.message : "IMS login failed");
+      navigate(item.path);
+    } finally {
+      setIsLoggingIntoIMS(false);
+    }
+  };
+
   return (
     /**
      * patela-bottom-nav class is defined in mobile.css and adds
@@ -23,18 +69,19 @@ export function BottomNav() {
           <NavLink
             key={item.path}
             to={item.path}
-            onClick={() => hapticLight()}
+            onClick={(event) => handleNavClick(event, item)}
             className={({ isActive }) =>
               cn(
-                "flex flex-col items-center justify-center gap-1 py-2 px-4 rounded-xl transition-all duration-200",
+                "flex flex-col items-center justify-center gap-1 py-2 px-3 rounded-xl transition-all duration-200",
                 isActive
                   ? "text-accent bg-primary-foreground/10"
-                  : "text-primary-foreground/60 hover:text-primary-foreground hover:bg-primary-foreground/10"
+                  : "text-primary-foreground/60 hover:text-primary-foreground hover:bg-primary-foreground/10",
+                item.requiresIMSLogin && isLoggingIntoIMS && "opacity-70 pointer-events-none"
               )
             }
           >
-            <item.icon className="h-6 w-6" />
-            <span className="text-xs font-medium">{item.label}</span>
+            <item.icon className={cn("h-6 w-6", item.requiresIMSLogin && isLoggingIntoIMS && "animate-pulse")} />
+            <span className="text-xs font-medium">{isLoggingIntoIMS && item.requiresIMSLogin ? "Login..." : item.label}</span>
           </NavLink>
         ))}
       </div>
