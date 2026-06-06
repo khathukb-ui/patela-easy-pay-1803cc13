@@ -744,7 +744,7 @@ export default function InventoryScanner() {
                                                     <InfoTile label="Line total" value={formatCurrency(lineTotal)} />
                                                 </div>
 
-                                                <div className="flex items-center justify-between mt-3">
+                                                {/* <div className="flex items-center justify-between mt-3">
                                                     <div className="flex items-center gap-2">
                                                         <Button variant="outline" size="sm" onClick={() => reduceQuantity(scannedItem.barcode)} disabled={isProcessingBarcode}>
                                                             -
@@ -760,7 +760,7 @@ export default function InventoryScanner() {
                                                             {scannedItem.status}
                                                         </span>
                                                     )}
-                                                </div>
+                                                </div> */}
                                             </div>
                                         );
                                     })}
