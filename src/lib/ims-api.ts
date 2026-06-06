@@ -4,8 +4,10 @@ const IMS_API_BASE_URL = (
   "http://107.21.32.197:3000"
 ).replace(/\/$/, "");
 
-const IMS_AUTH_EMAIL = import.meta.env.VITE_IMS_LOGIN_EMAIL || "lesiba7@gmail.com";
-const IMS_AUTH_PASSWORD = import.meta.env.VITE_IMS_LOGIN_PASSWORD || "password";
+const IMS_BEARER_TOKEN =
+  import.meta.env.VITE_IMS_BEARER_TOKEN;
+
+const IMS_AUTH_CHECK_PATH = import.meta.env.VITE_IMS_AUTH_CHECK_PATH || "/api/barcodes/items?page=1&limit=10";
 
 export type IMSLookupStatus = "found" | "not_found" | "unauthorized" | "error";
 export type IMSAuthStatus = "authenticated" | "unauthorized" | "error";
@@ -24,6 +26,8 @@ export interface IMSProductSummary {
   name?: string;
   description?: string | null;
   unitPrice?: number;
+  price?: number;
+  sellingPrice?: number;
   imageUrl?: string | null;
   category?: {
     id?: string;
@@ -57,6 +61,9 @@ export interface IMSBarcodeItem {
   color?: string;
   size?: string;
   status?: string;
+  price?: number;
+  unitPrice?: number;
+  sellingPrice?: number;
   warehouseId?: string | null;
   boxId?: string | null;
   createdAt?: string;
@@ -117,8 +124,27 @@ export interface IMSPickingTasksResult {
   raw?: unknown;
 }
 
-let imsAuthPromise: Promise<IMSAuthResult> | null = null;
+export interface IMSBarcodeItemsPagination {
+  total?: number;
+  page?: number;
+  limit?: number;
+  totalPages?: number;
+}
+
+export interface IMSBarcodeItemsResult {
+  success: boolean;
+  message: string;
+  items: IMSBarcodeItem[];
+  pagination?: IMSBarcodeItemsPagination;
+  raw?: unknown;
+}
+
 let lastIMSAuthResult: IMSAuthResult | null = null;
+
+const getIMSHeaders = (): HeadersInit => ({
+  "Accept": "application/json",
+  "X-API-Key": `${IMS_BEARER_TOKEN}`
+});
 
 const safeJson = async (response: Response) => {
   try {
@@ -145,114 +171,95 @@ const extractFirstItem = (payload: any): IMSBarcodeItem | null => {
   return null;
 };
 
-const hasIMSSession = async (): Promise<boolean> => {
-  try {
-    const response = await fetch(`/ims-api/api/auth/session`, {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        Accept: "application/json",
-      },
-    });
+const extractTaskList = (payload: any): IMSPickingTask[] => {
+  if (!payload) return [];
+  if (Array.isArray(payload)) return payload;
+  if (Array.isArray(payload.tasks)) return payload.tasks;
+  if (Array.isArray(payload.items)) return payload.items;
+  if (Array.isArray(payload.data)) return payload.data;
+  return [];
+};
 
-    if (!response.ok) return false;
-
-    const payload = await response.json().catch(() => null);
-    return Boolean(payload?.user || payload?.expires);
-  } catch {
-    return false;
+const getErrorMessage = (payload: unknown, fallback: string) => {
+  if (typeof payload === "object" && payload !== null) {
+    return (payload as any)?.error || (payload as any)?.message || fallback;
   }
+
+  if (typeof payload === "string" && payload.trim()) {
+    return payload;
+  }
+
+  return fallback;
 };
 
 const performIMSLogin = async (): Promise<IMSAuthResult> => {
-  if (await hasIMSSession()) {
+  if (!IMS_BEARER_TOKEN) {
     return {
-      status: "authenticated",
-      success: true,
-      message: "Already signed in to IMS.",
+      status: "unauthorized",
+      success: false,
+      message: "IMS bearer token is missing.",
     };
   }
 
+  const url = `${IMS_API_BASE_URL}${IMS_AUTH_CHECK_PATH}`;
+
   try {
-    const csrfResponse = await fetch(`/ims-api/api/auth/csrf`, {
+    console.log("[IMS] Authenticating with IMS using barcode items:", url);
+
+    const response = await fetch(url, {
       method: "GET",
-      credentials: "include",
-      headers: {
-        Accept: "application/json",
-      },
+      headers: getIMSHeaders(),
     });
 
-    const csrfPayload = await safeJson(csrfResponse);
-    const csrfToken = typeof csrfPayload === "object" && csrfPayload !== null ? (csrfPayload as any).csrfToken : null;
+    const payload = await safeJson(response);
 
-    if (!csrfResponse.ok || !csrfToken) {
-      return {
-        status: csrfResponse.status === 401 || csrfResponse.status === 403 ? "unauthorized" : "error",
-        success: false,
-        message: "Could not get IMS CSRF token. IMS may be blocking cross-app authentication.",
-        raw: csrfPayload,
-      };
-    }
-
-    const loginResponse = await fetch(`/ims-api/api/auth/callback/credentials`, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams({
-        email: IMS_AUTH_EMAIL,
-        password: IMS_AUTH_PASSWORD,
-        csrfToken,
-        callbackUrl: `/ims-api/`,
-        json: "true",
-        redirect: "false",
-      }),
+    console.log("[IMS] Barcode items authentication response:", {
+      status: response.status,
+      ok: response.ok,
+      payload,
     });
 
-    const loginPayload = await safeJson(loginResponse);
-    const errorFromUrl =
-      typeof (loginPayload as any)?.url === "string"
-        ? new URL((loginPayload as any).url, IMS_API_BASE_URL).searchParams.get("error")
-        : null;
+    if (response.status === 401 || response.status === 403) {
+      lastIMSAuthResult = null;
 
-    if (!loginResponse.ok || errorFromUrl) {
-      return {
-        status: loginResponse.status === 401 || loginResponse.status === 403 ? "unauthorized" : "error",
-        success: false,
-        message: errorFromUrl ? `IMS login failed: ${errorFromUrl}` : "IMS login failed. Please confirm the IMS username/password.",
-        raw: loginPayload,
-      };
-    }
-
-    const sessionReady = await hasIMSSession();
-
-    if (!sessionReady) {
       return {
         status: "unauthorized",
         success: false,
-        message: "IMS login completed, but the browser did not keep the IMS session cookie. This is usually a CORS/cookie setting issue.",
-        raw: loginPayload,
+        message: "IMS authentication failed. Please confirm the bearer token is valid.",
+        raw: payload,
+      };
+    }
+
+    if (!response.ok) {
+      lastIMSAuthResult = null;
+
+      return {
+        status: "error",
+        success: false,
+        message: getErrorMessage(payload, "IMS authentication failed."),
+        raw: payload,
       };
     }
 
     return {
       status: "authenticated",
       success: true,
-      message: "Signed in to IMS successfully.",
-      raw: loginPayload,
+      message: "IMS authentication successful using barcode items.",
+      raw: payload,
     };
   } catch (error) {
+    console.error("[IMS] Authentication failed:", error);
+    lastIMSAuthResult = null;
+
     return {
       status: "error",
       success: false,
       message:
         error instanceof TypeError
-          ? "Could not sign in to IMS from the browser. This is likely a CORS/network issue between Patela and IMS."
+          ? "Could not authenticate with IMS. Please confirm the API URL is reachable from this device."
           : error instanceof Error
           ? error.message
-          : "IMS login failed.",
+          : "IMS authentication failed.",
     };
   }
 };
@@ -262,13 +269,7 @@ export const loginToIMS = async (force = false): Promise<IMSAuthResult> => {
     return lastIMSAuthResult;
   }
 
-  if (!force && imsAuthPromise) {
-    return imsAuthPromise;
-  }
-
-  imsAuthPromise = performIMSLogin();
-  lastIMSAuthResult = await imsAuthPromise;
-  imsAuthPromise = null;
+  lastIMSAuthResult = await performIMSLogin();
 
   return lastIMSAuthResult;
 };
@@ -295,15 +296,12 @@ export const lookupIMSBarcodeItem = async (barcode: string): Promise<IMSLookupRe
     };
   }
 
-  const url = `/ims-api/api/barcodes/items?search=${encodeURIComponent(cleanBarcode)}&limit=1`;
+  const url = `${IMS_API_BASE_URL}/api/barcodes/items?page=1&limit=1&search=${encodeURIComponent(cleanBarcode)}`;
 
   try {
     const response = await fetch(url, {
       method: "GET",
-      credentials: "include",
-      headers: {
-        Accept: "application/json",
-      },
+      headers: getIMSHeaders(),
     });
 
     const payload = await safeJson(response);
@@ -313,7 +311,7 @@ export const lookupIMSBarcodeItem = async (barcode: string): Promise<IMSLookupRe
 
       return {
         status: "unauthorized",
-        message: "IMS blocked the lookup even after login. Please confirm CORS/cookie settings or login to IMS in this browser.",
+        message: "IMS blocked the lookup. Please confirm the bearer token is valid.",
         item: null,
         raw: payload,
       };
@@ -322,10 +320,7 @@ export const lookupIMSBarcodeItem = async (barcode: string): Promise<IMSLookupRe
     if (!response.ok) {
       return {
         status: "error",
-        message:
-          typeof payload === "object" && payload !== null
-            ? (payload as any)?.error || (payload as any)?.message || "IMS lookup failed. Please try again."
-            : "IMS lookup failed. Please try again.",
+        message: getErrorMessage(payload, "IMS lookup failed. Please try again."),
         item: null,
         raw: payload,
       };
@@ -353,7 +348,7 @@ export const lookupIMSBarcodeItem = async (barcode: string): Promise<IMSLookupRe
       status: "error",
       message:
         error instanceof TypeError
-          ? "Could not reach IMS from the browser. This may be a network or CORS issue."
+          ? "Could not reach IMS. Please confirm the API URL is reachable from this device."
           : error instanceof Error
           ? error.message
           : "IMS lookup failed.",
@@ -363,14 +358,102 @@ export const lookupIMSBarcodeItem = async (barcode: string): Promise<IMSLookupRe
 };
 
 
-const extractTaskList = (payload: any): IMSPickingTask[] => {
-  if (!payload) return [];
-  if (Array.isArray(payload)) return payload;
-  if (Array.isArray(payload.tasks)) return payload.tasks;
-  if (Array.isArray(payload.items)) return payload.items;
-  if (Array.isArray(payload.data)) return payload.data;
-  return [];
+export const fetchIMSBarcodeItems = async (
+  page = 1,
+  limit = 10,
+  search?: string
+): Promise<IMSBarcodeItemsResult> => {
+  if (!IMS_BEARER_TOKEN) {
+    return {
+      success: false,
+      message: "IMS bearer token is missing.",
+      items: [],
+    };
+  }
+
+  const params = new URLSearchParams({
+    page: String(page),
+    limit: String(limit),
+  });
+
+  if (search?.trim()) {
+    params.set("search", search.trim());
+  }
+
+  const url = `${IMS_API_BASE_URL}/api/barcodes/items?${params.toString()}`;
+
+  try {
+    console.log("[IMS] Loading barcode items:", url);
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: getIMSHeaders(),
+    });
+
+    const payload = await safeJson(response);
+
+    console.log("[IMS] Barcode items response:", {
+      status: response.status,
+      ok: response.ok,
+      payload,
+    });
+
+    if (response.status === 401 || response.status === 403) {
+      lastIMSAuthResult = null;
+
+      return {
+        success: false,
+        message: "IMS blocked the barcode items request. Please confirm the bearer token is valid.",
+        items: [],
+        raw: payload,
+      };
+    }
+
+    if (!response.ok) {
+      return {
+        success: false,
+        message: getErrorMessage(payload, "Failed to fetch IMS barcode items."),
+        items: [],
+        raw: payload,
+      };
+    }
+
+    const items = Array.isArray((payload as any)?.items)
+      ? (payload as any).items
+      : Array.isArray((payload as any)?.data)
+      ? (payload as any).data
+      : Array.isArray(payload)
+      ? payload
+      : [];
+
+    lastIMSAuthResult = {
+      status: "authenticated",
+      success: true,
+      message: "IMS authentication successful using barcode items.",
+      raw: payload,
+    };
+
+    return {
+      success: true,
+      message: items.length ? "IMS barcode items loaded." : "No IMS barcode items returned.",
+      items,
+      pagination: (payload as any)?.pagination,
+      raw: payload,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message:
+        error instanceof TypeError
+          ? "Could not reach IMS barcode items. Please confirm the API URL is reachable from this device."
+          : error instanceof Error
+          ? error.message
+          : "Failed to fetch IMS barcode items.",
+      items: [],
+    };
+  }
 };
+
 
 export const fetchIMSPickingTasks = async (status?: string): Promise<IMSPickingTasksResult> => {
   const authResult = await loginToIMS();
@@ -385,15 +468,12 @@ export const fetchIMSPickingTasks = async (status?: string): Promise<IMSPickingT
   }
 
   const query = status ? `?status=${encodeURIComponent(status)}` : "";
-  const url = `/ims-api/api/picking/tasks${query}`;
+  const url = `${IMS_API_BASE_URL}/api/picking/tasks${query}`;
 
   try {
     const response = await fetch(url, {
       method: "GET",
-      credentials: "include",
-      headers: {
-        Accept: "application/json",
-      },
+      headers: getIMSHeaders(),
     });
 
     const payload = await safeJson(response);
@@ -403,7 +483,7 @@ export const fetchIMSPickingTasks = async (status?: string): Promise<IMSPickingT
 
       return {
         success: false,
-        message: "IMS blocked the picking tasks request. Please refresh IMS login and try again.",
+        message: "IMS blocked the picking tasks request. Please confirm the bearer token is valid.",
         tasks: [],
         raw: payload,
       };
@@ -412,10 +492,7 @@ export const fetchIMSPickingTasks = async (status?: string): Promise<IMSPickingT
     if (!response.ok) {
       return {
         success: false,
-        message:
-          typeof payload === "object" && payload !== null
-            ? (payload as any)?.error || (payload as any)?.message || "Failed to fetch IMS picking tasks."
-            : "Failed to fetch IMS picking tasks.",
+        message: getErrorMessage(payload, "Failed to fetch IMS picking tasks."),
         tasks: [],
         raw: payload,
       };
@@ -434,7 +511,7 @@ export const fetchIMSPickingTasks = async (status?: string): Promise<IMSPickingT
       success: false,
       message:
         error instanceof TypeError
-          ? "Could not reach IMS picking tasks from the browser. This may be a network or CORS issue."
+          ? "Could not reach IMS picking tasks. Please confirm the API URL is reachable from this device."
           : error instanceof Error
           ? error.message
           : "Failed to fetch IMS picking tasks.",
@@ -444,4 +521,4 @@ export const fetchIMSPickingTasks = async (status?: string): Promise<IMSPickingT
 };
 
 export const getIMSApiBaseUrl = () => IMS_API_BASE_URL;
-export const getIMSLoginEmail = () => IMS_AUTH_EMAIL;
+export const getIMSLoginEmail = () => "Bearer token";

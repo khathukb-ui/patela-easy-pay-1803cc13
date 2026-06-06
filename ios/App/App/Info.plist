@@ -32,6 +32,11 @@
 	<string>Patela uses Bluetooth to pair with your Patela payment device.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Patela uses the camera to scan IMS barcodes.</string>
+    <key>NSAppTransportSecurity</key>
+	<dict>
+        <key>NSAllowsArbitraryLoads</key>
+        <true/>
+    </dict>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

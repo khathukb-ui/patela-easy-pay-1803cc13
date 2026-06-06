@@ -81,6 +81,7 @@ export const translations = {
     totalSales: "Total Sales",
     numberOfSales: "Number of Sales",
     takePayment: "Take Payment",
+    startPicking: "Start Picking",
     offlineMode: "Offline Mode",
     willSyncWhenConnected: "Will sync when connected",
     queued: "Queued",

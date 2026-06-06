@@ -153,6 +153,18 @@ export default function Home() {
           </Button>
         </div>
 
+        <div className="animate-patela-slide-up">
+          <Button
+            variant="hero"
+            size="xl"
+            className="w-full h-24 text-2xl animate-patela-pulse"
+            onClick={() => navigate("/inventory-scanner")}
+          >
+            <ScanBarcode className="h-8 w-8 mr-3" />
+            {t("startPicking")}
+          </Button>
+        </div>
+
         {/* Quick Actions */}
         <div className="grid grid-cols-2 gap-4 animate-patela-slide-up" style={{ animationDelay: "0.1s" }}>
           <Button

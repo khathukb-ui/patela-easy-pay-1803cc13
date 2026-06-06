@@ -1,16 +1,14 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BottomNav } from "@/components/patela/BottomNav";
 import { PatelaLogo } from "@/components/patela/PatelaLogo";
+import { PaymentResultSuccess } from "@/components/patela/PaymentResultSuccess";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/AuthContext";
 import {
-    fetchIMSPickingTasks,
     getIMSApiBaseUrl,
-    getIMSLoginEmail,
     IMSBarcodeItem,
-    IMSPickingTask,
     loginToIMS,
     lookupIMSBarcodeItem,
 } from "@/lib/ims-api";
@@ -28,7 +26,7 @@ import {
     ScanBarcode,
     Search,
     ShieldAlert,
-    Warehouse,
+    Trash2,
     XCircle,
 } from "lucide-react";
 import { Capacitor } from "@capacitor/core";
@@ -40,8 +38,7 @@ const barcodeScannerModules = import.meta.glob<BarcodeScannerModule>(
 );
 
 const loadBarcodeScannerModule = async (): Promise<BarcodeScannerModule> => {
-    const loader =
-        barcodeScannerModules["/node_modules/@capacitor/barcode-scanner/dist/esm/index.js"];
+    const loader = barcodeScannerModules["/node_modules/@capacitor/barcode-scanner/dist/esm/index.js"];
 
     if (!loader) {
         throw new Error("Barcode scanner module was not found in the Vite bundle.");
@@ -50,18 +47,59 @@ const loadBarcodeScannerModule = async (): Promise<BarcodeScannerModule> => {
     return await loader();
 };
 
+type PickingStep = "ready" | "active" | "completed" | "rejected";
 
-type ScanStep = "scan" | "pending" | "inProgress" | "completed";
-
-type LocalScanItem = {
+type ScannedPickingItem = {
     barcode: string;
     productName: string;
+    sku?: string;
     status?: string;
-    movedAt: string;
+    price: number | null;
+    quantity: number;
+    scannedAt: string;
+    item: IMSBarcodeItem | null;
 };
 
-const getProductName = (item: IMSBarcodeItem | null) =>
-    item?.product?.name || item?.sku || item?.barcode || "IMS Item";
+const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const getProductName = (item: IMSBarcodeItem | null, barcode: string) =>
+    item?.product?.name || item?.sku || item?.barcode || barcode || "IMS Item";
+
+const getSku = (item: IMSBarcodeItem | null) => item?.sku || item?.product?.sku || undefined;
+
+const toNumberOrNull = (value: unknown): number | null => {
+    if (value === null || value === undefined || value === "") return null;
+
+    const numberValue = typeof value === "number" ? value : Number(String(value).replace(/[^0-9.-]/g, ""));
+    return Number.isFinite(numberValue) ? numberValue : null;
+};
+
+const getItemPrice = (item: IMSBarcodeItem | null): number | null => {
+    if (!item) return null;
+
+    const itemAny = item as any;
+    const productAny = item.product as any;
+
+    return (
+        toNumberOrNull(itemAny.price) ??
+        toNumberOrNull(itemAny.unitPrice) ??
+        toNumberOrNull(itemAny.sellingPrice) ??
+        toNumberOrNull(itemAny.retailPrice) ??
+        toNumberOrNull(productAny?.unitPrice) ??
+        toNumberOrNull(productAny?.price) ??
+        toNumberOrNull(productAny?.sellingPrice) ??
+        toNumberOrNull(productAny?.retailPrice)
+    );
+};
+
+const formatCurrency = (amount: number | null) => {
+    if (amount === null) return "Price not available";
+
+    return new Intl.NumberFormat("en-ZA", {
+        style: "currency",
+        currency: "ZAR",
+    }).format(amount);
+};
 
 const getStatusClass = (status?: string) => {
     const value = status?.toUpperCase();
@@ -75,121 +113,250 @@ const getStatusClass = (status?: string) => {
     return "bg-secondary text-muted-foreground border-border";
 };
 
+const orderRejectionReasons = [
+    { value: "card_declined", label: "Card declined" },
+    { value: "insufficient_funds", label: "Insufficient funds" },
+    { value: "payment_timeout", label: "Payment timeout" },
+    { value: "customer_cancelled", label: "Customer cancelled" },
+    { value: "stock_unavailable", label: "Stock unavailable" },
+    { value: "incorrect_items", label: "Incorrect items picked" },
+    { value: "price_mismatch", label: "Price mismatch" },
+    { value: "duplicate_order", label: "Duplicate order" },
+    { value: "other", label: "Other" },
+];
+
+const getRejectReasonText = (reason: string, otherReason: string) => {
+    if (reason === "other") return otherReason.trim();
+
+    return orderRejectionReasons.find((item) => item.value === reason)?.label || "Order rejected";
+};
+
+const IMS_ACCESS_STORAGE_KEY = "patela-ims-access-ready";
+
+const getStoredIMSAccessReady = () => {
+    if (typeof window === "undefined") return false;
+
+    try {
+        return window.localStorage.getItem(IMS_ACCESS_STORAGE_KEY) === "true";
+    } catch {
+        return false;
+    }
+};
+
+const setStoredIMSAccessReady = (isReady: boolean) => {
+    if (typeof window === "undefined") return;
+
+    try {
+        if (isReady) {
+            window.localStorage.setItem(IMS_ACCESS_STORAGE_KEY, "true");
+        } else {
+            window.localStorage.removeItem(IMS_ACCESS_STORAGE_KEY);
+        }
+    } catch {
+        // Ignore storage errors.
+    }
+};
+
 export default function InventoryScanner() {
     const navigate = useNavigate();
     const { user } = useAuth();
 
-    const [step, setStep] = useState<ScanStep>("scan");
+    const [step, setStep] = useState<PickingStep>("ready");
     const [manualBarcode, setManualBarcode] = useState("");
-    const [scannedBarcode, setScannedBarcode] = useState("");
     const [isCameraActive, setIsCameraActive] = useState(false);
     const [cameraError, setCameraError] = useState<string | null>(null);
-    const [lookupLoading, setLookupLoading] = useState(false);
+    const [isProcessingBarcode, setIsProcessingBarcode] = useState(false);
+    const [processingMessage, setProcessingMessage] = useState<string | null>(null);
     const [imsAuthLoading, setImsAuthLoading] = useState(false);
-    const [imsAuthMessage, setImsAuthMessage] = useState<string | null>(null);
-    const [imsAuthReady, setImsAuthReady] = useState(false);
-    const [lookupMessage, setLookupMessage] = useState<string | null>(null);
-    const [lookupStatus, setLookupStatus] = useState<"idle" | "found" | "not_found" | "unauthorized" | "error">("idle");
-    const [item, setItem] = useState<IMSBarcodeItem | null>(null);
-    const [imsTasksLoading, setImsTasksLoading] = useState(false);
-    const [imsTasksMessage, setImsTasksMessage] = useState<string | null>(null);
-    const [imsPendingTasks, setImsPendingTasks] = useState<IMSPickingTask[]>([]);
-    const [imsInProgressTasks, setImsInProgressTasks] = useState<IMSPickingTask[]>([]);
-    const [imsCompletedTasks, setImsCompletedTasks] = useState<IMSPickingTask[]>([]);
+    const storedIMSAccessReady = getStoredIMSAccessReady();
+    const imsAccessCheckedOnViewRef = useRef(false);
+    const [imsAuthMessage, setImsAuthMessage] = useState<string | null>(
+        storedIMSAccessReady ? "IMS access ready." : null
+    );
+    const [imsAuthReady, setImsAuthReady] = useState(storedIMSAccessReady);
+    const [scanMessage, setScanMessage] = useState<string | null>(null);
+    const [scanStatus, setScanStatus] = useState<"idle" | "success" | "warning" | "error">("idle");
+    const [scannedItems, setScannedItems] = useState<ScannedPickingItem[]>([]);
+    const [completedAt, setCompletedAt] = useState<string | null>(null);
+    const [showRejectOptions, setShowRejectOptions] = useState(false);
+    const [rejectReason, setRejectReason] = useState("");
+    const [rejectOtherReason, setRejectOtherReason] = useState("");
+    const [rejectedAt, setRejectedAt] = useState<string | null>(null);
 
-    const [inProgressItems, setInProgressItems] = useState<LocalScanItem[]>(() => {
-        try {
-            return JSON.parse(localStorage.getItem("patela-ims-in-progress") || "[]");
-        } catch {
-            return [];
-        }
-    });
+    const itemCount = useMemo(
+        () => scannedItems.reduce((sum, item) => sum + item.quantity, 0),
+        [scannedItems]
+    );
 
-    const [queuedItems, setQueuedItems] = useState<LocalScanItem[]>(() => {
-        try {
-            return JSON.parse(localStorage.getItem("patela-ims-removal-queue") || "[]");
-        } catch {
-            return [];
-        }
-    });
+    const totalAmount = useMemo(
+        () => scannedItems.reduce((sum, item) => sum + (item.price ?? 0) * item.quantity, 0),
+        [scannedItems]
+    );
 
     const ensureIMSAuth = useCallback(async (force = false) => {
         setImsAuthLoading(true);
-        setImsAuthMessage("Signing in to IMS...");
+        setImsAuthMessage("Checking IMS access...");
 
-        const result = await loginToIMS(force);
+        try {
+            console.log("[IMS] Calling loginToIMS/access check...");
+            const result = await loginToIMS(force);
+            console.log("[IMS] loginToIMS/access check result:", result);
 
-        setImsAuthLoading(false);
-        setImsAuthReady(result.success);
-        setImsAuthMessage(result.message);
+            setImsAuthReady(result.success);
+            setStoredIMSAccessReady(result.success);
+            setImsAuthMessage(result.success ? "IMS access ready." : result.message);
 
-        if (result.success) toast.success("IMS login ready");
-        else toast.error(result.message);
+            if (result.success) {
+                toast.success("IMS access ready");
+            } else {
+                toast.error(result.message);
+            }
 
-        return result;
+            return result;
+        } finally {
+            setImsAuthLoading(false);
+        }
     }, []);
 
-    const loadIMSPickingTasks = useCallback(async () => {
-        setImsTasksLoading(true);
-        setImsTasksMessage("Loading IMS picking tasks...");
+    const resetMessages = () => {
+        setCameraError(null);
+        setScanMessage(null);
+        setScanStatus("idle");
+        setProcessingMessage(null);
+    };
 
-        const result = await fetchIMSPickingTasks();
-        const tasks = result.tasks || [];
+    const startPicking = async () => {
+        resetMessages();
 
-        setImsPendingTasks(tasks.filter((task) => String(task.status).toUpperCase() === "PENDING"));
-        setImsInProgressTasks(tasks.filter((task) => String(task.status).toUpperCase() === "IN_PROGRESS"));
-        setImsCompletedTasks(tasks.filter((task) => String(task.status).toUpperCase() === "COMPLETED"));
+        setScannedItems([]);
+        setManualBarcode("");
+        setCompletedAt(null);
+        setShowRejectOptions(false);
+        setRejectReason("");
+        setRejectOtherReason("");
+        setRejectedAt(null);
 
-        setImsTasksMessage(
-            !result.success
-                ? result.message
-                : tasks.length > 0
-                    ? `${tasks.length} IMS picking task${tasks.length === 1 ? "" : "s"} loaded.`
-                    : "No IMS picking tasks returned."
-        );
+        if (!imsAuthReady) {
+            const result = await ensureIMSAuth();
 
-        setImsTasksLoading(false);
-    }, []);
-
-    const lookupBarcode = useCallback(async (barcode: string) => {
-        const cleanBarcode = barcode.trim();
-
-        if (!cleanBarcode) {
-            toast.error("Please scan or enter a barcode first");
-            return;
+            if (!result.success) {
+                return;
+            }
         }
 
-        setLookupLoading(true);
-        setLookupStatus("idle");
-        setLookupMessage(null);
-        setItem(null);
-        setScannedBarcode(cleanBarcode);
+        setStep("active");
+    };
 
-        const result = await lookupIMSBarcodeItem(cleanBarcode);
+    const startNewPicking = () => {
+        setScannedItems([]);
+        setManualBarcode("");
+        setCompletedAt(null);
+        setShowRejectOptions(false);
+        setRejectReason("");
+        setRejectOtherReason("");
+        setRejectedAt(null);
+        resetMessages();
+        setStep("ready");
+    };
 
-        setLookupLoading(false);
-        setLookupStatus(result.status);
-        setLookupMessage(result.message);
-        setItem(result.item);
-        setStep("pending");
+    const addScannedItem = (barcode: string, item: IMSBarcodeItem | null) => {
+        const cleanBarcode = barcode.trim();
+        const price = getItemPrice(item);
 
-        if (result.status === "found") toast.success("IMS item found");
-        else if (result.status === "not_found") toast.warning("Barcode not found in IMS");
-        else if (result.status === "unauthorized") toast.error("IMS authorization required");
-        else toast.error(result.message);
-    }, []);
+        setScannedItems((currentItems) => {
+            const existingItem = currentItems.find((scanItem) => scanItem.barcode === cleanBarcode);
+
+            if (existingItem) {
+                return currentItems.map((scanItem) =>
+                    scanItem.barcode === cleanBarcode
+                        ? {
+                              ...scanItem,
+                              quantity: scanItem.quantity + 1,
+                              scannedAt: new Date().toISOString(),
+                          }
+                        : scanItem
+                );
+            }
+
+            const nextItem: ScannedPickingItem = {
+                barcode: cleanBarcode,
+                productName: getProductName(item, cleanBarcode),
+                sku: getSku(item),
+                status: item?.status,
+                price,
+                quantity: 1,
+                scannedAt: new Date().toISOString(),
+                item,
+            };
+
+            return [nextItem, ...currentItems];
+        });
+    };
+
+    const processBarcode = useCallback(
+        async (barcode: string) => {
+            const cleanBarcode = barcode.trim();
+
+            if (!cleanBarcode) {
+                toast.error("Please scan or enter a barcode first");
+                return;
+            }
+
+            if (isProcessingBarcode) return;
+
+            setIsProcessingBarcode(true);
+            setProcessingMessage("Processing barcode...");
+            setScanMessage(null);
+            setScanStatus("idle");
+            setCameraError(null);
+
+            try {
+                await wait(1100);
+
+                setProcessingMessage("Checking item in IMS...");
+                const result = await lookupIMSBarcodeItem(cleanBarcode);
+
+                if (result.status === "found") {
+                    addScannedItem(cleanBarcode, result.item);
+                    setManualBarcode("");
+                    setScanStatus("success");
+                    setScanMessage(`${getProductName(result.item, cleanBarcode)} added to the picking list.`);
+                    toast.success("Item added to picking list");
+                    return;
+                }
+
+                if (result.status === "not_found") {
+                    setScanStatus("warning");
+                    setScanMessage("Barcode not found in IMS. Please check the barcode and try again.");
+                    toast.warning("Barcode not found in IMS");
+                    return;
+                }
+
+                setScanStatus("error");
+                setScanMessage(result.message || "IMS lookup failed. Please try again.");
+                toast.error(result.message || "IMS lookup failed");
+            } catch (error) {
+                const message = error instanceof Error ? error.message : "Unable to process barcode.";
+                setScanStatus("error");
+                setScanMessage(message);
+                toast.error(message);
+            } finally {
+                setProcessingMessage(null);
+                setIsProcessingBarcode(false);
+            }
+        },
+        [isProcessingBarcode]
+    );
 
     const startCamera = async () => {
-        setCameraError(null);
-        setLookupMessage(null);
-        setLookupStatus("idle");
+        resetMessages();
 
         console.log("[Scanner] Start scan clicked");
         console.log("[Scanner] Platform:", Capacitor.getPlatform());
         console.log("[Scanner] Is native:", Capacitor.isNativePlatform());
 
         if (!Capacitor.isNativePlatform()) {
-            const message = "Camera scanning only works inside the installed iOS app, not Safari.";
+            const message = "Camera scanning only works inside the installed mobile app. Please enter the barcode manually for now.";
             console.error("[Scanner] Not native platform:", message);
             setCameraError(message);
             return;
@@ -219,7 +386,19 @@ export default function InventoryScanner() {
 
             console.log("[Scanner] Raw scan result:", result);
 
-            const detected = result.ScanResult?.trim?.() || "";
+            const scanResult = result as unknown as {
+                ScanResult?: string;
+                value?: string;
+                content?: string;
+                text?: string;
+            };
+
+            const detected =
+                scanResult.ScanResult?.trim?.() ||
+                scanResult.value?.trim?.() ||
+                scanResult.content?.trim?.() ||
+                scanResult.text?.trim?.() ||
+                "";
 
             console.log("[Scanner] Detected barcode:", detected);
 
@@ -229,7 +408,7 @@ export default function InventoryScanner() {
             }
 
             setManualBarcode(detected);
-            await lookupBarcode(detected);
+            await processBarcode(detected);
         } catch (error) {
             console.error("[Scanner] Failed to scan:", error);
 
@@ -248,83 +427,100 @@ export default function InventoryScanner() {
         }
     };
 
-    const resetFlow = () => {
-        setStep("scan");
-        setManualBarcode("");
-        setScannedBarcode("");
-        setItem(null);
-        setLookupStatus("idle");
-        setLookupMessage(null);
-        setCameraError(null);
+    const removeScannedItem = (barcode: string) => {
+        setScannedItems((currentItems) => currentItems.filter((item) => item.barcode !== barcode));
+        toast.success("Item removed");
     };
 
-    const movePendingToInProgress = () => {
-        if (!scannedBarcode) return;
-
-        const nextItem: LocalScanItem = {
-            barcode: scannedBarcode,
-            productName: getProductName(item),
-            status: item?.status,
-            movedAt: new Date().toISOString(),
-        };
-
-        const alreadyExists = inProgressItems.some((progressItem) => progressItem.barcode === nextItem.barcode);
-        const nextInProgress = alreadyExists ? inProgressItems : [nextItem, ...inProgressItems].slice(0, 25);
-
-        setInProgressItems(nextInProgress);
-        localStorage.setItem("patela-ims-in-progress", JSON.stringify(nextInProgress));
-
-        setItem(null);
-        setScannedBarcode("");
-        setManualBarcode("");
-        setLookupStatus("idle");
-        setLookupMessage(null);
-        setStep("inProgress");
-
-        toast.success("Item moved to In-Progress");
+    const reduceQuantity = (barcode: string) => {
+        setScannedItems((currentItems) =>
+            currentItems
+                .map((item) =>
+                    item.barcode === barcode
+                        ? {
+                              ...item,
+                              quantity: Math.max(0, item.quantity - 1),
+                          }
+                        : item
+                )
+                .filter((item) => item.quantity > 0)
+        );
     };
 
-    const markCompleted = (progressItem: LocalScanItem) => {
-        const completedItem: LocalScanItem = {
-            ...progressItem,
-            movedAt: new Date().toISOString(),
-        };
+    const increaseQuantity = (barcode: string) => {
+        setScannedItems((currentItems) =>
+            currentItems.map((item) =>
+                item.barcode === barcode
+                    ? {
+                          ...item,
+                          quantity: item.quantity + 1,
+                          scannedAt: new Date().toISOString(),
+                      }
+                    : item
+            )
+        );
+    };
 
-        const nextInProgress = inProgressItems.filter((item) => item.barcode !== progressItem.barcode);
-        const nextQueue = [completedItem, ...queuedItems].slice(0, 25);
+    const completeOrder = () => {
+        if (scannedItems.length === 0) {
+            toast.error("Scan at least one item before completing the order");
+            return;
+        }
 
-        setInProgressItems(nextInProgress);
-        setQueuedItems(nextQueue);
-
-        localStorage.setItem("patela-ims-in-progress", JSON.stringify(nextInProgress));
-        localStorage.setItem("patela-ims-removal-queue", JSON.stringify(nextQueue));
-
+        setCompletedAt(new Date().toISOString());
+        setShowRejectOptions(false);
+        setRejectReason("");
+        setRejectOtherReason("");
+        setRejectedAt(null);
         setStep("completed");
-        toast.success("Item moved to Completed");
+        toast.success("Picking completed successfully");
+    };
+
+    const rejectOrder = () => {
+        if (scannedItems.length === 0) {
+            toast.error("Scan at least one item before rejecting the order");
+            return;
+        }
+
+        if (!rejectReason) {
+            toast.error("Please select a rejection reason");
+            return;
+        }
+
+        if (rejectReason === "other" && !rejectOtherReason.trim()) {
+            toast.error("Please type the rejection reason");
+            return;
+        }
+
+        setRejectedAt(new Date().toISOString());
+        setCompletedAt(null);
+        setStep("rejected");
+        toast.error(`Order rejected: ${getRejectReasonText(rejectReason, rejectOtherReason)}`);
     };
 
     useEffect(() => {
-        ensureIMSAuth().then((result) => {
-            if (result.success) loadIMSPickingTasks();
-        });
-    }, [ensureIMSAuth, loadIMSPickingTasks]);
+        if (imsAccessCheckedOnViewRef.current || imsAuthReady) return;
+
+        imsAccessCheckedOnViewRef.current = true;
+        ensureIMSAuth();
+    }, [ensureIMSAuth, imsAuthReady]);
 
     useEffect(() => {
-      const handleError = (event: ErrorEvent) => {
-          console.error("[App Runtime Error]", event.message, event.error);
-      };
+        const handleError = (event: ErrorEvent) => {
+            console.error("[App Runtime Error]", event.message, event.error);
+        };
 
-      const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
-          console.error("[App Promise Error]", event.reason);
-      };
+        const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
+            console.error("[App Promise Error]", event.reason);
+        };
 
-      window.addEventListener("error", handleError);
-      window.addEventListener("unhandledrejection", handleUnhandledRejection);
+        window.addEventListener("error", handleError);
+        window.addEventListener("unhandledrejection", handleUnhandledRejection);
 
-      return () => {
-          window.removeEventListener("error", handleError);
-          window.removeEventListener("unhandledrejection", handleUnhandledRejection);
-      };
+        return () => {
+            window.removeEventListener("error", handleError);
+            window.removeEventListener("unhandledrejection", handleUnhandledRejection);
+        };
     }, []);
 
     return (
@@ -340,7 +536,7 @@ export default function InventoryScanner() {
 
                     <div className="text-center">
                         <p className="text-xs text-primary-foreground/70">IMS Inventory</p>
-                        <h1 className="text-lg font-bold text-primary-foreground">Barcode Scanner</h1>
+                        <h1 className="text-lg font-bold text-primary-foreground">Start Picking</h1>
                     </div>
 
                     <PatelaLogo size="sm" variant="icon" />
@@ -348,102 +544,75 @@ export default function InventoryScanner() {
             </header>
 
             <main className="px-5 py-5 space-y-5">
-                <section className="bg-card rounded-2xl border border-primary/10 p-4 patela-shadow-sm">
-                    <div className="flex items-start gap-3">
-                        <div className="h-11 w-11 rounded-xl bg-accent/10 flex items-center justify-center flex-shrink-0">
-                            <ScanBarcode className="h-6 w-6 text-accent" />
-                        </div>
-                        <div>
-                            <h2 className="font-bold text-foreground">Scan IMS barcode</h2>
-                            <p className="text-sm text-muted-foreground mt-1">
-                                Patela signs in to IMS, scans a barcode, shows the item under Pending, then moves it to In-Progress and Completed after you confirm each step. No IMS stock is removed yet.
-                            </p>
-                        </div>
-                    </div>
-                </section>
-
                 <section className={cn("rounded-2xl border p-4 patela-shadow-sm", imsAuthReady ? "bg-success/10 border-success/25" : "bg-card border-primary/10")}>
                     <div className="flex items-start justify-between gap-3">
                         <div>
-                            <p className="text-xs text-muted-foreground uppercase tracking-wide">IMS session</p>
+                            <p className="text-xs text-muted-foreground uppercase tracking-wide">IMS access</p>
                             <h2 className="font-bold text-foreground mt-1">
-                                {imsAuthReady ? "Signed in to IMS" : imsAuthLoading ? "Signing in to IMS" : "IMS login required"}
+                                {imsAuthReady
+                                    ? "IMS access ready"
+                                    : imsAuthLoading
+                                        ? "Checking IMS access"
+                                        : "IMS access not checked"}
                             </h2>
-                            <p className="text-xs text-muted-foreground mt-1">Using IMS user: {getIMSLoginEmail()}</p>
+                            <p className="text-xs text-muted-foreground mt-1">Using secure IMS bearer access</p>
                             {imsAuthMessage && <p className="text-sm text-muted-foreground mt-2">{imsAuthMessage}</p>}
                         </div>
 
                         <Button
                             variant={imsAuthReady ? "outline" : "hero"}
                             size="sm"
-                            onClick={() => ensureIMSAuth(true).then((result) => result.success && loadIMSPickingTasks())}
+                            onClick={() => ensureIMSAuth(true)}
                             disabled={imsAuthLoading}
                         >
                             {imsAuthLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ShieldAlert className="h-4 w-4" />}
-                            {imsAuthReady ? "Refresh" : "Login"}
+                            {imsAuthReady ? "Refresh" : "Check Access"}
                         </Button>
                     </div>
                 </section>
 
-                <section className="rounded-2xl border border-primary/10 bg-card p-4 patela-shadow-sm space-y-3">
-                    <div className="flex items-center justify-between gap-3">
-                        <div>
-                            <p className="text-xs text-muted-foreground uppercase tracking-wide">Current view</p>
-                            <h2 className="font-bold text-foreground">
-                                {step === "scan" ? "Scan" : step === "pending" ? "Pending" : step === "inProgress" ? "In-Progress" : "Completed"}
-                            </h2>
+                {step === "ready" && (
+                    <section className="space-y-4">
+                        <div className="bg-card rounded-2xl border border-primary/10 p-6 text-center patela-shadow-sm">
+                            <div className="h-20 w-20 rounded-3xl bg-accent/10 flex items-center justify-center mx-auto mb-4">
+                                <ClipboardCheck className="h-10 w-10 text-accent" />
+                            </div>
+                            <h2 className="text-2xl font-bold text-foreground">Ready to start picking</h2>
+                            <p className="text-sm text-muted-foreground mt-2">
+                                Start a picking session, scan one or more IMS barcodes, review the item list, then complete the order.
+                            </p>
+
+                            <Button variant="hero" size="xl" onClick={startPicking} className="w-full mt-6">
+                                <ScanBarcode className="h-6 w-6" />
+                                Start Picking
+                            </Button>
                         </div>
 
-                        <span className="text-xs rounded-full bg-accent/10 text-accent px-2 py-1 font-bold">
-                            {step === "pending"
-                                ? (item ? 1 : 0) + imsPendingTasks.length
-                                : step === "inProgress"
-                                    ? inProgressItems.length + imsInProgressTasks.length
-                                    : step === "completed"
-                                        ? queuedItems.length + imsCompletedTasks.length
-                                        : ""}
-                        </span>
-                    </div>
+                        <div className="rounded-2xl border border-primary/10 bg-card p-4">
+                            <p className="text-xs text-muted-foreground">
+                                IMS API: <span className="font-semibold text-foreground">{getIMSApiBaseUrl()}</span>
+                            </p>
+                        </div>
+                    </section>
+                )}
 
-                    <select
-                        value={step}
-                        onChange={(event) => setStep(event.target.value as ScanStep)}
-                        className="h-12 w-full rounded-xl border border-border bg-background px-3 text-sm font-semibold text-foreground outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
-                    >
-                        <option value="scan">Scan</option>
-                        <option value="pending">Pending ({(item ? 1 : 0) + imsPendingTasks.length})</option>
-                        <option value="inProgress">In-Progress ({inProgressItems.length + imsInProgressTasks.length})</option>
-                        <option value="completed">Completed ({queuedItems.length + imsCompletedTasks.length})</option>
-                    </select>
-                </section>
-
-                <section className="rounded-2xl border border-primary/10 bg-card p-4 flex items-center justify-between gap-3">
-                    <div>
-                        <p className="text-xs text-muted-foreground uppercase tracking-wide">IMS picking tasks</p>
-                        <p className="text-sm text-muted-foreground mt-1">
-                            {imsTasksMessage || "Pending, In-Progress and Completed tasks will load from IMS."}
-                        </p>
-                    </div>
-
-                    <Button variant="outline" size="sm" onClick={loadIMSPickingTasks} disabled={imsTasksLoading || !imsAuthReady}>
-                        {imsTasksLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCcw className="h-4 w-4" />}
-                        Refresh
-                    </Button>
-                </section>
-
-                {step === "scan" && (
+                {step === "active" && (
                     <section className="space-y-4">
                         <div className="bg-card rounded-2xl border border-primary/10 overflow-hidden patela-shadow-sm">
                             <div className="relative aspect-[4/5] bg-primary/95 flex items-center justify-center overflow-hidden">
                                 <div className="text-center px-8">
                                     <div className="h-20 w-20 rounded-3xl bg-primary-foreground/10 flex items-center justify-center mx-auto mb-4">
-                                        <Camera className="h-10 w-10 text-accent" />
+                                        {isProcessingBarcode ? (
+                                            <Loader2 className="h-10 w-10 text-accent animate-spin" />
+                                        ) : (
+                                            <Camera className="h-10 w-10 text-accent" />
+                                        )}
                                     </div>
                                     <h3 className="text-xl font-bold text-primary-foreground">
-                                        {isCameraActive ? "Opening scanner..." : "Ready to scan"}
+                                        {isProcessingBarcode ? processingMessage || "Processing barcode..." : "Active picking"}
                                     </h3>
                                     <p className="text-sm text-primary-foreground/70 mt-2">
-                                        Tap Start Scan to open the native iPhone barcode scanner. You can also enter the barcode manually.
+                                        Scan multiple barcodes. Items will appear below with prices and total when IMS returns a price.
                                     </p>
                                 </div>
                             </div>
@@ -456,13 +625,33 @@ export default function InventoryScanner() {
                             </div>
                         )}
 
+                        {scanMessage && (
+                            <div
+                                className={cn(
+                                    "rounded-xl border p-3 flex gap-3",
+                                    scanStatus === "success" && "border-success/30 bg-success/10",
+                                    scanStatus === "warning" && "border-warning/30 bg-warning/10",
+                                    scanStatus === "error" && "border-destructive/30 bg-destructive/10"
+                                )}
+                            >
+                                {scanStatus === "success" ? (
+                                    <CheckCircle2 className="h-5 w-5 text-success flex-shrink-0 mt-0.5" />
+                                ) : scanStatus === "warning" ? (
+                                    <AlertCircle className="h-5 w-5 text-warning flex-shrink-0 mt-0.5" />
+                                ) : (
+                                    <XCircle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
+                                )}
+                                <p className="text-sm text-muted-foreground">{scanMessage}</p>
+                            </div>
+                        )}
+
                         <div className="grid grid-cols-2 gap-3">
-                            <Button variant="hero" onClick={startCamera} disabled={isCameraActive}>
-                                {isCameraActive ? <Loader2 className="h-5 w-5 animate-spin" /> : <Camera className="h-5 w-5" />}
-                                {isCameraActive ? "Opening..." : "Start Scan"}
+                            <Button variant="hero" onClick={startCamera} disabled={isCameraActive || isProcessingBarcode}>
+                                {isCameraActive || isProcessingBarcode ? <Loader2 className="h-5 w-5 animate-spin" /> : <Camera className="h-5 w-5" />}
+                                {isProcessingBarcode ? "Processing..." : isCameraActive ? "Opening..." : "Scan Item"}
                             </Button>
 
-                            <Button variant="outline" onClick={resetFlow}>
+                            <Button variant="outline" onClick={startNewPicking} disabled={isProcessingBarcode}>
                                 <RefreshCcw className="h-5 w-5" />
                                 Reset
                             </Button>
@@ -477,280 +666,220 @@ export default function InventoryScanner() {
                                     onChange={(event) => setManualBarcode(event.target.value)}
                                     placeholder="Enter or paste barcode"
                                     className="h-12"
+                                    disabled={isProcessingBarcode}
                                     onKeyDown={(event) => {
-                                        if (event.key === "Enter") lookupBarcode(manualBarcode);
+                                        if (event.key === "Enter") processBarcode(manualBarcode);
                                     }}
                                 />
 
-                                <Button size="icon" onClick={() => lookupBarcode(manualBarcode)} disabled={lookupLoading}>
-                                    {lookupLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Search className="h-5 w-5" />}
+                                <Button size="icon" onClick={() => processBarcode(manualBarcode)} disabled={isProcessingBarcode}>
+                                    {isProcessingBarcode ? <Loader2 className="h-5 w-5 animate-spin" /> : <Search className="h-5 w-5" />}
+                                </Button>
+                            </div>
+                        </div>
+
+                        <div className="bg-card rounded-2xl border border-primary/10 p-4 patela-shadow-sm">
+                            <div className="flex items-center justify-between gap-3 mb-4">
+                                <div>
+                                    <p className="text-xs text-muted-foreground uppercase tracking-wide">Picking list</p>
+                                    <h2 className="font-bold text-foreground">Scanned items</h2>
+                                </div>
+                                <span className="text-xs bg-accent/10 text-accent px-2 py-1 rounded-full font-bold">
+                                    {itemCount} item{itemCount === 1 ? "" : "s"}
+                                </span>
+                            </div>
+
+                            {scannedItems.length === 0 ? (
+                                <div className="rounded-xl bg-secondary p-5 text-center">
+                                    <Package className="h-10 w-10 text-muted-foreground mx-auto mb-2" />
+                                    <p className="font-semibold text-foreground">No items scanned yet</p>
+                                    <p className="text-sm text-muted-foreground mt-1">Tap Scan Item to add the first barcode.</p>
+                                </div>
+                            ) : (
+                                <div className="space-y-3 max-h-[420px] overflow-y-auto pr-1">
+                                    {scannedItems.map((scannedItem) => {
+                                        const lineTotal = scannedItem.price === null ? null : scannedItem.price * scannedItem.quantity;
+
+                                        return (
+                                            <div key={scannedItem.barcode} className="rounded-xl bg-secondary p-3 border border-border/50">
+                                                <div className="flex items-start justify-between gap-3">
+                                                    <div className="min-w-0">
+                                                        <p className="font-bold text-foreground truncate">{scannedItem.productName}</p>
+                                                        <p className="font-mono text-xs text-muted-foreground truncate">{scannedItem.barcode}</p>
+                                                        {scannedItem.sku && <p className="text-[11px] text-muted-foreground mt-1">SKU: {scannedItem.sku}</p>}
+                                                    </div>
+
+                                                    <button
+                                                        onClick={() => removeScannedItem(scannedItem.barcode)}
+                                                        className="h-9 w-9 rounded-lg bg-background flex items-center justify-center text-destructive hover:bg-destructive/10 transition-colors"
+                                                        disabled={isProcessingBarcode}
+                                                    >
+                                                        <Trash2 className="h-4 w-4" />
+                                                    </button>
+                                                </div>
+
+                                                <div className="grid grid-cols-2 gap-2 mt-3">
+                                                    <InfoTile label="Price" value={formatCurrency(scannedItem.price)} />
+                                                    <InfoTile label="Line total" value={formatCurrency(lineTotal)} />
+                                                </div>
+
+                                                <div className="flex items-center justify-between mt-3">
+                                                    <div className="flex items-center gap-2">
+                                                        <Button variant="outline" size="sm" onClick={() => reduceQuantity(scannedItem.barcode)} disabled={isProcessingBarcode}>
+                                                            -
+                                                        </Button>
+                                                        <span className="min-w-8 text-center font-bold">{scannedItem.quantity}</span>
+                                                        <Button variant="outline" size="sm" onClick={() => increaseQuantity(scannedItem.barcode)} disabled={isProcessingBarcode}>
+                                                            +
+                                                        </Button>
+                                                    </div>
+
+                                                    {scannedItem.status && (
+                                                        <span className={cn("inline-flex items-center px-3 py-1 rounded-full border text-xs font-bold", getStatusClass(scannedItem.status))}>
+                                                            {scannedItem.status}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="bg-card rounded-2xl border border-success/20 p-4 patela-shadow-sm">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-xs text-muted-foreground uppercase tracking-wide">Order total</p>
+                                    <h2 className="text-2xl font-bold text-foreground mt-1">{formatCurrency(totalAmount)}</h2>
+                                    <p className="text-xs text-muted-foreground mt-1">
+                                        {itemCount} scanned item{itemCount === 1 ? "" : "s"}. Items without price are counted as R0.00.
+                                    </p>
+                                </div>
+                                <CheckCircle2 className="h-10 w-10 text-success" />
+                            </div>
+
+                            <div className="grid grid-cols-1 gap-3 mt-4">
+                                <Button variant="success" className="w-full" onClick={completeOrder} disabled={isProcessingBarcode || scannedItems.length === 0}>
+                                    Complete Order
+                                </Button>
+
+                                <Button
+                                    variant="outline"
+                                    className="w-full border-destructive/30 text-destructive hover:bg-destructive/10"
+                                    onClick={() => setShowRejectOptions((currentValue) => !currentValue)}
+                                    disabled={isProcessingBarcode || scannedItems.length === 0}
+                                >
+                                    <XCircle className="h-5 w-5" />
+                                    Reject Order
                                 </Button>
                             </div>
 
-                            <p className="text-xs text-muted-foreground">IMS API: {getIMSApiBaseUrl()}</p>
+                            {showRejectOptions && (
+                                <div className="mt-4 rounded-2xl border border-destructive/20 bg-destructive/5 p-4 space-y-3">
+                                    <div>
+                                        <p className="text-xs text-destructive uppercase tracking-wide font-bold">Order rejected</p>
+                                        <h3 className="font-bold text-foreground mt-1">Select rejection reason</h3>
+                                        <p className="text-xs text-muted-foreground mt-1">This is local only for now. No endpoint is called.</p>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 gap-2">
+                                        {orderRejectionReasons.map((reason) => {
+                                            const isSelected = rejectReason === reason.value;
+
+                                            return (
+                                                <button
+                                                    key={reason.value}
+                                                    type="button"
+                                                    onClick={() => setRejectReason(reason.value)}
+                                                    className={cn(
+                                                        "w-full rounded-xl border px-3 py-3 text-left text-sm font-semibold transition-colors",
+                                                        isSelected
+                                                            ? "border-destructive bg-destructive/10 text-destructive"
+                                                            : "border-border bg-background text-foreground hover:bg-secondary"
+                                                    )}
+                                                >
+                                                    {reason.label}
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+
+                                    {rejectReason === "other" && (
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-semibold text-foreground">Other reason</label>
+                                            <Input
+                                                value={rejectOtherReason}
+                                                onChange={(event) => setRejectOtherReason(event.target.value)}
+                                                placeholder="Type rejection reason"
+                                                className="h-12"
+                                            />
+                                        </div>
+                                    )}
+
+                                    <Button variant="destructive" className="w-full" onClick={rejectOrder}>
+                                        Confirm Rejection
+                                    </Button>
+                                </div>
+                            )}
                         </div>
                     </section>
                 )}
 
-                {step === "pending" && (
-                    <section className="space-y-4">
-                        {!lookupLoading && !item && lookupStatus === "idle" && imsPendingTasks.length === 0 && (
-                            <div className="bg-card rounded-2xl border border-primary/10 p-6 text-center patela-shadow-sm">
-                                <ClipboardCheck className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
-                                <h2 className="text-lg font-bold text-foreground">No pending item yet</h2>
-                                <p className="text-sm text-muted-foreground mt-2">
-                                    Scan an IMS barcode first. Once the item is found, it will appear here as Pending.
-                                </p>
-                                <Button variant="hero" onClick={() => setStep("scan")} className="w-full mt-5">
-                                    <ScanBarcode className="h-5 w-5" />
-                                    Go to Scan
-                                </Button>
-                            </div>
-                        )}
-
-                        {imsPendingTasks.length > 0 && (
-                            <TaskList
-                                title="IMS Pending tasks"
-                                description="These pending items are coming directly from IMS."
-                                tasks={imsPendingTasks}
-                                emptyMessage="No pending IMS tasks returned."
-                            />
-                        )}
-
-                        {lookupLoading && (
-                            <div className="bg-card rounded-2xl border border-primary/10 p-8 text-center">
-                                <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mb-3" />
-                                <p className="font-semibold">Checking IMS...</p>
-                            </div>
-                        )}
-
-                        {!lookupLoading && lookupStatus === "found" && item && (
-                            <div className="bg-card rounded-2xl border border-success/30 overflow-hidden patela-shadow-sm">
-                                <div className="bg-success/10 p-4 flex items-center gap-3">
-                                    <CheckCircle2 className="h-6 w-6 text-success" />
-                                    <div>
-                                        <p className="font-bold text-foreground">Item found in IMS</p>
-                                        <p className="text-sm text-muted-foreground">This item is pending confirmation before it moves to In-Progress.</p>
-                                    </div>
-                                </div>
-
-                                <div className="p-5 space-y-4">
-                                    <div>
-                                        <p className="text-xs text-muted-foreground uppercase tracking-wide">Product</p>
-                                        <h2 className="text-xl font-bold text-foreground mt-1">{getProductName(item)}</h2>
-                                        {item.product?.description && <p className="text-sm text-muted-foreground mt-1">{item.product.description}</p>}
-                                    </div>
-
-                                    <div className="grid grid-cols-2 gap-3">
-                                        <InfoTile label="Barcode" value={item.barcode} />
-                                        <InfoTile label="SKU" value={item.sku || item.product?.sku} />
-                                        <InfoTile label="Colour" value={item.color} />
-                                        <InfoTile label="Size" value={item.size} />
-                                    </div>
-
-                                    <div className="flex flex-wrap gap-2">
-                                        <span className={cn("inline-flex items-center px-3 py-1 rounded-full border text-xs font-bold", getStatusClass(item.status))}>
-                                            {item.status || "UNKNOWN"}
-                                        </span>
-
-                                        {item.warehouse?.name && (
-                                            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-secondary text-xs font-medium text-muted-foreground">
-                                                <Warehouse className="h-3 w-3" />
-                                                {item.warehouse.name}
-                                            </span>
-                                        )}
-
-                                        {item.box?.barcode && (
-                                            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-secondary text-xs font-medium text-muted-foreground">
-                                                <Package className="h-3 w-3" />
-                                                Box {item.box.barcode}
-                                            </span>
-                                        )}
-                                    </div>
-
-                                    <div className="rounded-xl bg-accent/10 border border-accent/20 p-3">
-                                        <p className="text-sm text-accent font-semibold">Test mode</p>
-                                        <p className="text-xs text-muted-foreground mt-1">
-                                            This button will move the item from Pending to In-Progress in Patela for testing. It will not change IMS stock yet.
-                                        </p>
-                                    </div>
-
-                                    <div className="grid grid-cols-2 gap-3">
-                                        <Button variant="outline" onClick={resetFlow}>Scan Again</Button>
-                                        <Button variant="success" onClick={movePendingToInProgress}>Move to In-Progress</Button>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-
-                        {!lookupLoading && lookupStatus !== "idle" && lookupStatus !== "found" && (
-                            <div className="bg-card rounded-2xl border border-destructive/20 p-5 text-center">
-                                {lookupStatus === "unauthorized" ? (
-                                    <ShieldAlert className="h-12 w-12 text-warning mx-auto mb-3" />
-                                ) : (
-                                    <XCircle className="h-12 w-12 text-destructive mx-auto mb-3" />
-                                )}
-
-                                <h2 className="text-lg font-bold text-foreground mb-2">
-                                    {lookupStatus === "not_found" ? "No IMS item found" : lookupStatus === "unauthorized" ? "IMS authorization needed" : "No IMS item returned"}
-                                </h2>
-
-                                <p className="text-sm text-muted-foreground mb-4">{lookupMessage || "IMS did not return an item for this barcode."}</p>
-
-                                <div className="rounded-xl bg-secondary p-3 mb-4 text-left">
-                                    <p className="text-xs text-muted-foreground">Scanned barcode</p>
-                                    <p className="font-mono font-bold break-all">{scannedBarcode}</p>
-                                </div>
-
-                                <Button onClick={resetFlow} className="w-full">
-                                    <ScanBarcode className="h-5 w-5" />
-                                    Scan Another Item
-                                </Button>
-                            </div>
-                        )}
-                    </section>
-                )}
-
-                {step === "inProgress" && (
-                    <section className="space-y-4">
-                        {inProgressItems.length > 0 || imsInProgressTasks.length > 0 ? (
-                            <>
-                                <div className="bg-card rounded-2xl border border-accent/30 p-5 text-center patela-shadow-sm">
-                                    <Package className="h-14 w-14 text-accent mx-auto mb-3" />
-                                    <h2 className="text-xl font-bold text-foreground">In-Progress items</h2>
-                                    <p className="text-sm text-muted-foreground mt-2">
-                                        These items have been reviewed and are waiting to be completed locally in Patela. IMS inventory is not updated yet.
-                                    </p>
-                                    <Button variant="hero" onClick={() => setStep("scan")} className="w-full mt-5">
-                                        <ScanBarcode className="h-5 w-5" />
-                                        Scan Another Item
-                                    </Button>
-                                </div>
-
-                                {imsInProgressTasks.length > 0 && (
-                                    <TaskList
-                                        title="IMS In-Progress tasks"
-                                        description="These are live IMS picking tasks with status IN_PROGRESS."
-                                        tasks={imsInProgressTasks}
-                                        emptyMessage="No IMS In-Progress tasks returned."
-                                    />
-                                )}
-
-                                <div className="bg-card rounded-2xl border border-primary/10 p-4">
-                                    <div className="flex items-center justify-between mb-3">
-                                        <h2 className="font-bold text-foreground">Local In-Progress list</h2>
-                                        <span className="text-xs bg-accent/10 text-accent px-2 py-1 rounded-full font-bold">{inProgressItems.length}</span>
-                                    </div>
-
-                                    <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
-                                        {inProgressItems.map((progressItem, index) => (
-                                            <div key={`${progressItem.barcode}-${progressItem.movedAt}-${index}`} className="rounded-xl bg-secondary p-3">
-                                                <div className="flex items-center justify-between gap-3">
-                                                    <div className="min-w-0">
-                                                        <p className="font-semibold truncate">{progressItem.productName}</p>
-                                                        <p className="font-mono text-xs text-muted-foreground truncate">{progressItem.barcode}</p>
-                                                        {progressItem.status && <p className="text-[10px] text-muted-foreground mt-1">IMS status: {progressItem.status}</p>}
-                                                    </div>
-
-                                                    <Button size="sm" variant="success" onClick={() => markCompleted(progressItem)}>
-                                                        Complete
-                                                    </Button>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </>
-                        ) : (
-                            <div className="bg-card rounded-2xl border border-primary/10 p-6 text-center patela-shadow-sm">
-                                <Package className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
-                                <h2 className="text-lg font-bold text-foreground">No items in progress</h2>
-                                <p className="text-sm text-muted-foreground mt-2">
-                                    Items will appear here after you scan an IMS barcode and move it from Pending.
-                                </p>
-                                <Button variant="hero" onClick={() => setStep("scan")} className="w-full mt-5">
-                                    <ScanBarcode className="h-5 w-5" />
-                                    Start Scanning
-                                </Button>
-                            </div>
-                        )}
-                    </section>
-                )}
-
                 {step === "completed" && (
-                    <section className="space-y-4">
-                        {queuedItems.length > 0 || imsCompletedTasks.length > 0 ? (
-                            <>
-                                <div className="bg-card rounded-2xl border border-success/30 p-5 text-center patela-shadow-sm">
-                                    <CheckCircle2 className="h-14 w-14 text-success mx-auto mb-3" />
-                                    <h2 className="text-xl font-bold text-foreground">Completed items</h2>
-                                    <p className="text-sm text-muted-foreground mt-2">
-                                        These items were completed locally in Patela for testing. IMS inventory was not updated.
-                                    </p>
+                    <PaymentResultSuccess
+                        amount={totalAmount}
+                        title="Picking Completed"
+                        subtitle="Order completed successfully."
+                        amountLabel="Order Total"
+                        note={`${itemCount} scanned item${itemCount === 1 ? "" : "s"}${completedAt ? ` • Completed at ${new Date(completedAt).toLocaleTimeString("en-ZA", { hour: "2-digit", minute: "2-digit" })}` : ""}`}
+                        showReceiptOptions={false}
+                        showBottomNav
+                        secondaryActionLabel="View Inventory"
+                        primaryActionLabel="Start New Picking"
+                        onSecondaryAction={() => navigate("/items")}
+                        onDone={startNewPicking}
+                    />
+                )}
 
-                                    {queuedItems[0] && (
-                                        <div className="rounded-xl bg-secondary p-3 my-5 text-left">
-                                            <p className="text-xs text-muted-foreground">Latest completed local item</p>
-                                            <p className="font-bold">{queuedItems[0]?.productName}</p>
-                                            <p className="font-mono text-sm text-muted-foreground break-all">{queuedItems[0]?.barcode}</p>
-                                        </div>
-                                    )}
+                {step === "rejected" && (
+                    <section className="bg-card rounded-2xl border border-destructive/20 p-6 text-center patela-shadow-sm">
+                        <div className="h-20 w-20 rounded-3xl bg-destructive/10 flex items-center justify-center mx-auto mb-4">
+                            <XCircle className="h-10 w-10 text-destructive" />
+                        </div>
 
-                                    <Button variant="hero" onClick={resetFlow} className="w-full">
-                                        <ScanBarcode className="h-5 w-5" />
-                                        Scan Next Item
-                                    </Button>
-                                </div>
+                        <p className="text-xs text-destructive uppercase tracking-wide font-bold">Order rejected</p>
+                        <h2 className="text-2xl font-bold text-foreground mt-1">Picking Rejected</h2>
+                        <p className="text-sm text-muted-foreground mt-2">
+                            This order was rejected locally. No endpoint has been called yet.
+                        </p>
 
-                                {imsCompletedTasks.length > 0 && (
-                                    <TaskList
-                                        title="IMS Completed tasks"
-                                        description="These are completed picking tasks returned by IMS."
-                                        tasks={imsCompletedTasks}
-                                        emptyMessage="No completed IMS tasks returned."
-                                    />
-                                )}
+                        <div className="grid grid-cols-1 gap-3 mt-5 text-left">
+                            <InfoTile label="Reason" value={getRejectReasonText(rejectReason, rejectOtherReason)} />
+                            <InfoTile label="Order total" value={formatCurrency(totalAmount)} />
+                            <InfoTile label="Items scanned" value={itemCount} />
+                            <InfoTile
+                                label="Rejected at"
+                                value={
+                                    rejectedAt
+                                        ? new Date(rejectedAt).toLocaleTimeString("en-ZA", {
+                                              hour: "2-digit",
+                                              minute: "2-digit",
+                                          })
+                                        : "—"
+                                }
+                            />
+                        </div>
 
-                                <div className="bg-card rounded-2xl border border-primary/10 p-4">
-                                    <div className="flex items-center justify-between mb-3">
-                                        <h2 className="font-bold text-foreground">Local completed scan history</h2>
-                                        <span className="text-xs bg-accent/10 text-accent px-2 py-1 rounded-full font-bold">{queuedItems.length}</span>
-                                    </div>
+                        <div className="grid grid-cols-1 gap-3 mt-6">
+                            <Button variant="hero" className="w-full" onClick={startNewPicking}>
+                                Start New Picking
+                            </Button>
 
-                                    <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
-                                        {queuedItems.map((queuedItem, index) => (
-                                            <div key={`${queuedItem.barcode}-${queuedItem.movedAt}-${index}`} className="rounded-xl bg-secondary p-3">
-                                                <div className="flex items-center justify-between gap-3">
-                                                    <div className="min-w-0">
-                                                        <p className="font-semibold truncate">{queuedItem.productName}</p>
-                                                        <p className="font-mono text-xs text-muted-foreground truncate">{queuedItem.barcode}</p>
-                                                    </div>
-
-                                                    <span className="text-[10px] text-muted-foreground whitespace-nowrap">
-                                                        {new Date(queuedItem.movedAt).toLocaleTimeString("en-ZA", {
-                                                            hour: "2-digit",
-                                                            minute: "2-digit",
-                                                        })}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </>
-                        ) : (
-                            <div className="bg-card rounded-2xl border border-primary/10 p-6 text-center patela-shadow-sm">
-                                <CheckCircle2 className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
-                                <h2 className="text-lg font-bold text-foreground">No completed items yet</h2>
-                                <p className="text-sm text-muted-foreground mt-2">
-                                    Completed items will appear here after you scan and confirm an IMS item.
-                                </p>
-                                <Button variant="hero" onClick={() => setStep("scan")} className="w-full mt-5">
-                                    <ScanBarcode className="h-5 w-5" />
-                                    Start Scanning
-                                </Button>
-                            </div>
-                        )}
+                            <Button variant="outline" className="w-full" onClick={() => navigate("/items")}>
+                                View Inventory
+                            </Button>
+                        </div>
                     </section>
                 )}
 
@@ -760,103 +889,12 @@ export default function InventoryScanner() {
                         <span className="font-semibold text-foreground">
                             {user?.full_name || user?.email || "Patela user"}
                         </span>
-                        . Pending shows the scanned IMS item before confirmation. In-Progress shows locally reviewed items. Completed shows locally completed test removals. Later, when IMS removal endpoint is ready, we will send this Patela user as audit data.
+                        . Start Picking opens the barcode flow, scanned items appear in the picking list, and Complete Order or Reject Order finalizes the local picking session.
                     </p>
                 </section>
             </main>
 
             <BottomNav />
-        </div>
-    );
-}
-
-function TaskList({
-    title,
-    description,
-    tasks,
-    emptyMessage,
-}: {
-    title: string;
-    description: string;
-    tasks: IMSPickingTask[];
-    emptyMessage: string;
-}) {
-    return (
-        <div className="bg-card rounded-2xl border border-primary/10 p-4 patela-shadow-sm">
-            <div className="flex items-start justify-between gap-3 mb-3">
-                <div>
-                    <h2 className="font-bold text-foreground">{title}</h2>
-                    <p className="text-xs text-muted-foreground mt-1">{description}</p>
-                </div>
-                <span className="text-xs bg-accent/10 text-accent px-2 py-1 rounded-full font-bold">{tasks.length}</span>
-            </div>
-
-            {tasks.length === 0 ? (
-                <p className="text-sm text-muted-foreground">{emptyMessage}</p>
-            ) : (
-                <div className="space-y-3 max-h-96 overflow-y-auto pr-1">
-                    {tasks.map((task) => {
-                        const orderNumber = task.fulfillment?.salesOrder?.orderNumber || "No order number";
-                        const customerName = task.fulfillment?.salesOrder?.customer?.name || "No customer";
-                        const warehouseName = task.fulfillment?.warehouse?.name || "No warehouse";
-                        const items = task.items || [];
-                        const totalRequired = items.reduce((sum, item) => sum + Number(item.quantityRequired || 0), 0);
-                        const totalPicked = items.reduce((sum, item) => sum + Number(item.quantityPicked || 0), 0);
-                        const firstItems = items.slice(0, 3);
-
-                        return (
-                            <div key={task.id} className="rounded-xl bg-secondary p-3 border border-border/50">
-                                <div className="flex items-start justify-between gap-3">
-                                    <div className="min-w-0">
-                                        <p className="font-bold text-foreground truncate">{orderNumber}</p>
-                                        <p className="text-xs text-muted-foreground truncate">{customerName}</p>
-                                    </div>
-
-                                    <span className={cn("text-[10px] rounded-full border px-2 py-1 font-bold whitespace-nowrap", getStatusClass(task.status))}>
-                                        {task.status}
-                                    </span>
-                                </div>
-
-                                <div className="grid grid-cols-2 gap-2 mt-3">
-                                    <InfoTile label="Warehouse" value={warehouseName} />
-                                    <InfoTile label="Picked" value={`${totalPicked}/${totalRequired}`} />
-                                    <InfoTile label="Zone" value={task.zone || "—"} />
-                                    <InfoTile label="Aisle" value={task.aisle || "—"} />
-                                </div>
-
-                                {firstItems.length > 0 && (
-                                    <div className="mt-3 space-y-2">
-                                        {firstItems.map((taskItem) => (
-                                            <div key={taskItem.id} className="rounded-lg bg-background/70 p-2">
-                                                <div className="flex items-center justify-between gap-2">
-                                                    <div className="min-w-0">
-                                                        <p className="text-sm font-semibold truncate">
-                                                            {taskItem.product?.name || taskItem.product?.sku || "IMS item"}
-                                                        </p>
-                                                        <p className="text-[10px] text-muted-foreground truncate">
-                                                            SKU: {taskItem.product?.sku || "—"}
-                                                        </p>
-                                                    </div>
-
-                                                    <span className="text-xs font-bold text-muted-foreground whitespace-nowrap">
-                                                        {taskItem.quantityPicked || 0}/{taskItem.quantityRequired || 0}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        ))}
-
-                                        {items.length > firstItems.length && (
-                                            <p className="text-[11px] text-muted-foreground">
-                                                +{items.length - firstItems.length} more item{items.length - firstItems.length === 1 ? "" : "s"}
-                                            </p>
-                                        )}
-                                    </div>
-                                )}
-                            </div>
-                        );
-                    })}
-                </div>
-            )}
         </div>
     );
 }
