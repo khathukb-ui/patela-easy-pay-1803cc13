@@ -30,6 +30,7 @@ import {
     XCircle,
 } from "lucide-react";
 import { Capacitor } from "@capacitor/core";
+import { StatusBar, Style } from "@capacitor/status-bar";
 
 type BarcodeScannerModule = typeof import("@capacitor/barcode-scanner");
 
@@ -154,6 +155,19 @@ const setStoredIMSAccessReady = (isReady: boolean) => {
         }
     } catch {
         // Ignore storage errors.
+    }
+};
+
+const restoreIOSStatusBar = async () => {
+    if (!Capacitor.isNativePlatform() || Capacitor.getPlatform() !== "ios") return;
+
+    try {
+        await StatusBar.setOverlaysWebView({ overlay: false });
+        await StatusBar.setStyle({ style: Style.Light });
+        await StatusBar.setBackgroundColor({ color: "#6D28D9" });
+        await StatusBar.show();
+    } catch (error) {
+        console.warn("[StatusBar] Failed to restore status bar:", error);
     }
 };
 
@@ -422,8 +436,15 @@ export default function InventoryScanner() {
 
             setCameraError(message);
         } finally {
-            console.log("[Scanner] Scan finished");
-            setIsCameraActive(false);
+          console.log("[Scanner] Scan finished");
+
+          await restoreIOSStatusBar();
+
+          setTimeout(() => {
+              restoreIOSStatusBar();
+          }, 300);
+
+          setIsCameraActive(false);
         }
     };
 
