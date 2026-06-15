@@ -3,16 +3,22 @@ import { useNavigate } from "react-router-dom";
 import { BottomNav } from "@/components/patela/BottomNav";
 import { PatelaLogo } from "@/components/patela/PatelaLogo";
 import { PaymentResultSuccess } from "@/components/patela/PaymentResultSuccess";
+import { StaffPinScreen } from "@/components/patela/StaffPinScreen";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/AuthContext";
 import {
+    confirmIMSCheckout,
     getIMSApiBaseUrl,
+    getIMSStoreId,
     IMSBarcodeItem,
+    IMSPaymentMethod,
     loginToIMS,
     lookupIMSBarcodeItem,
+    startIMSCheckout,
 } from "@/lib/ims-api";
 import { cn } from "@/lib/utils";
+import { StaffUser } from "@/services/staff-pin-service";
 import { toast } from "sonner";
 import {
     AlertCircle,
@@ -48,7 +54,7 @@ const loadBarcodeScannerModule = async (): Promise<BarcodeScannerModule> => {
     return await loader();
 };
 
-type PickingStep = "ready" | "active" | "completed" | "rejected";
+type PickingStep = "ready" | "staff-pin" | "active" | "completed" | "rejected";
 
 type ScannedPickingItem = {
     barcode: string;
@@ -59,6 +65,14 @@ type ScannedPickingItem = {
     quantity: number;
     scannedAt: string;
     item: IMSBarcodeItem | null;
+};
+
+type CompletedSaleSummary = {
+    orderNumber?: string;
+    transactionId?: string;
+    staffName?: string;
+    paymentMethod: IMSPaymentMethod;
+    completedAt: string;
 };
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -196,6 +210,11 @@ export default function InventoryScanner() {
     const [rejectReason, setRejectReason] = useState("");
     const [rejectOtherReason, setRejectOtherReason] = useState("");
     const [rejectedAt, setRejectedAt] = useState<string | null>(null);
+    const [verifiedStaff, setVerifiedStaff] = useState<StaffUser | null>(null);
+    const [paymentMethod, setPaymentMethod] = useState<IMSPaymentMethod>("CARD");
+    const [isCompletingOrder, setIsCompletingOrder] = useState(false);
+    const [checkoutMessage, setCheckoutMessage] = useState<string | null>(null);
+    const [completedSale, setCompletedSale] = useState<CompletedSaleSummary | null>(null);
 
     const itemCount = useMemo(
         () => scannedItems.reduce((sum, item) => sum + item.quantity, 0),
@@ -249,6 +268,9 @@ export default function InventoryScanner() {
         setRejectReason("");
         setRejectOtherReason("");
         setRejectedAt(null);
+        setCompletedSale(null);
+        setCheckoutMessage(null);
+        setVerifiedStaff(null);
 
         if (!imsAuthReady) {
             const result = await ensureIMSAuth();
@@ -258,7 +280,19 @@ export default function InventoryScanner() {
             }
         }
 
+        setStep("staff-pin");
+    };
+
+    const handleStaffVerified = (staffUser: StaffUser) => {
+        setVerifiedStaff(staffUser);
+        setCheckoutMessage(null);
         setStep("active");
+        toast.success(`${staffUser.name || "Staff member"} verified`);
+    };
+
+    const logOutStaffSession = () => {
+        setVerifiedStaff(null);
+        setCheckoutMessage(null);
     };
 
     const startNewPicking = () => {
@@ -269,6 +303,9 @@ export default function InventoryScanner() {
         setRejectReason("");
         setRejectOtherReason("");
         setRejectedAt(null);
+        setCompletedSale(null);
+        setCheckoutMessage(null);
+        logOutStaffSession();
         resetMessages();
         setStep("ready");
     };
@@ -482,19 +519,81 @@ export default function InventoryScanner() {
         );
     };
 
-    const completeOrder = () => {
+    const completeOrder = async () => {
         if (scannedItems.length === 0) {
             toast.error("Scan at least one item before completing the order");
             return;
         }
 
-        setCompletedAt(new Date().toISOString());
-        setShowRejectOptions(false);
-        setRejectReason("");
-        setRejectOtherReason("");
-        setRejectedAt(null);
-        setStep("completed");
-        toast.success("Picking completed successfully");
+        if (!verifiedStaff?.id) {
+            toast.error("Please verify the staff PIN before completing this order");
+            setStep("staff-pin");
+            return;
+        }
+
+        if (isCompletingOrder) return;
+
+        setIsCompletingOrder(true);
+        setCheckoutMessage("Locking stock in IMS...");
+
+        try {
+            const checkoutItems = scannedItems.map((item) => ({
+                barcode: item.barcode,
+                quantity: item.quantity,
+            }));
+
+            const checkoutStoreId = getIMSStoreId();
+
+            const startResult = await startIMSCheckout({
+                staffId: verifiedStaff.id,
+                items: checkoutItems,
+                storeId: checkoutStoreId,
+            });
+
+            if (!startResult.success || !startResult.transactionId) {
+                setCheckoutMessage(startResult.message);
+                toast.error(startResult.message);
+                return;
+            }
+
+            setCheckoutMessage("Stock locked. Completing IMS order...");
+
+            const confirmResult = await confirmIMSCheckout({
+                transactionId: startResult.transactionId,
+                staffId: verifiedStaff.id,
+                paymentMethod,
+                customerName: "Walk-in Customer",
+                notes: `Patela shared counter checkout by ${verifiedStaff.name || verifiedStaff.email || verifiedStaff.id}`,
+                storeId: checkoutStoreId,
+            });
+
+            if (!confirmResult.success) {
+                setCheckoutMessage(confirmResult.message);
+                toast.error(confirmResult.message);
+                return;
+            }
+
+            const completedTime = new Date().toISOString();
+
+            setCompletedAt(completedTime);
+            setCompletedSale({
+                orderNumber: confirmResult.orderNumber || confirmResult.receipt?.orderNumber,
+                transactionId: confirmResult.transactionId || startResult.transactionId,
+                staffName: verifiedStaff.name || verifiedStaff.email || "Staff member",
+                paymentMethod,
+                completedAt: completedTime,
+            });
+            setShowRejectOptions(false);
+            setRejectReason("");
+            setRejectOtherReason("");
+            setRejectedAt(null);
+            logOutStaffSession();
+            setStep("completed");
+            toast.success("Order completed in IMS. Staff session logged out.");
+        } finally {
+            setIsCompletingOrder(false);
+            setCheckoutMessage(null);
+        }
     };
 
     const rejectOrder = () => {
@@ -515,8 +614,9 @@ export default function InventoryScanner() {
 
         setRejectedAt(new Date().toISOString());
         setCompletedAt(null);
+        logOutStaffSession();
         setStep("rejected");
-        toast.error(`Order rejected: ${getRejectReasonText(rejectReason, rejectOtherReason)}`);
+        toast.error(`Order rejected: ${getRejectReasonText(rejectReason, rejectOtherReason)}. Staff session logged out.`);
     };
 
     useEffect(() => {
@@ -600,27 +700,56 @@ export default function InventoryScanner() {
                             </div>
                             <h2 className="text-2xl font-bold text-foreground">Ready to start picking</h2>
                             <p className="text-sm text-muted-foreground mt-2">
-                                Start a picking session, scan one or more IMS barcodes, review the item list, then complete the order.
+                                Start a new counter session. The staff member will enter their IMS PIN before scanning starts.
                             </p>
 
                             <Button variant="hero" size="xl" onClick={startPicking} className="w-full mt-6">
                                 <ScanBarcode className="h-6 w-6" />
-                                Start Picking
+                                Verify Staff & Start
                             </Button>
                         </div>
 
                         <div className="rounded-2xl border border-primary/10 bg-card p-4">
                             <p className="text-xs text-muted-foreground">
                                 IMS API: <span className="font-semibold text-foreground">{getIMSApiBaseUrl()}</span>
+                                {getIMSStoreId() && (
+                                    <>
+                                        <br />
+                                        Store: <span className="font-semibold text-foreground">{getIMSStoreId()}</span>
+                                    </>
+                                )}
                             </p>
                         </div>
                     </section>
                 )}
 
+                {step === "staff-pin" && (
+                    <StaffPinScreen
+                        onVerified={handleStaffVerified}
+                        onCancel={() => {
+                            logOutStaffSession();
+                            setStep("ready");
+                        }}
+                    />
+                )}
+
                 {step === "active" && (
                     <section className="space-y-4">
+                        {verifiedStaff && (
+                            <div className="rounded-2xl border border-success/20 bg-success/10 p-4 flex items-center justify-between gap-3">
+                                <div>
+                                    <p className="text-xs uppercase tracking-wide text-success font-bold">Staff verified</p>
+                                    <h2 className="font-bold text-foreground">{verifiedStaff.name || verifiedStaff.email || "Staff member"}</h2>
+                                    <p className="text-xs text-muted-foreground">This session will log out after completion.</p>
+                                </div>
+                                <Button variant="outline" size="sm" onClick={() => setStep("staff-pin")} disabled={isProcessingBarcode || isCompletingOrder}>
+                                    Change
+                                </Button>
+                            </div>
+                        )}
+
                         <div className="bg-card rounded-2xl border border-primary/10 overflow-hidden patela-shadow-sm">
-                            <div className="relative aspect-[4/5] bg-primary/95 flex items-center justify-center overflow-hidden">
+                            <div className="relative bg-primary/95 flex items-center justify-center overflow-hidden p-6">
                                 <div className="text-center px-8">
                                     <div className="h-20 w-20 rounded-3xl bg-primary-foreground/10 flex items-center justify-center mx-auto mb-4">
                                         {isProcessingBarcode ? (
@@ -780,16 +909,45 @@ export default function InventoryScanner() {
                                 <CheckCircle2 className="h-10 w-10 text-success" />
                             </div>
 
+                            <div className="mt-4 space-y-2">
+                                <p className="text-xs text-muted-foreground uppercase tracking-wide font-bold">Payment method</p>
+                                <div className="grid grid-cols-4 gap-2">
+                                    {(["CARD", "CASH", "EFT", "VOUCHER"] as IMSPaymentMethod[]).map((method) => (
+                                        <button
+                                            key={method}
+                                            type="button"
+                                            onClick={() => setPaymentMethod(method)}
+                                            disabled={isProcessingBarcode || isCompletingOrder}
+                                            className={cn(
+                                                "rounded-xl border px-2 py-3 text-xs font-black transition-colors disabled:opacity-60",
+                                                paymentMethod === method
+                                                    ? "border-accent bg-accent text-accent-foreground"
+                                                    : "border-border bg-background text-foreground hover:bg-secondary"
+                                            )}
+                                        >
+                                            {method}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {checkoutMessage && (
+                                <div className="mt-4 rounded-xl border border-accent/25 bg-accent/10 p-3 text-sm font-semibold text-accent">
+                                    {checkoutMessage}
+                                </div>
+                            )}
+
                             <div className="grid grid-cols-1 gap-3 mt-4">
-                                <Button variant="success" className="w-full" onClick={completeOrder} disabled={isProcessingBarcode || scannedItems.length === 0}>
-                                    Complete Order
+                                <Button variant="success" className="w-full" onClick={completeOrder} disabled={isProcessingBarcode || isCompletingOrder || scannedItems.length === 0}>
+                                    {isCompletingOrder ? <Loader2 className="h-5 w-5 animate-spin" /> : <CheckCircle2 className="h-5 w-5" />}
+                                    {isCompletingOrder ? "Completing in IMS..." : "Complete Order"}
                                 </Button>
 
                                 <Button
                                     variant="outline"
                                     className="w-full border-destructive/30 text-destructive hover:bg-destructive/10"
                                     onClick={() => setShowRejectOptions((currentValue) => !currentValue)}
-                                    disabled={isProcessingBarcode || scannedItems.length === 0}
+                                    disabled={isProcessingBarcode || isCompletingOrder || scannedItems.length === 0}
                                 >
                                     <XCircle className="h-5 w-5" />
                                     Reject Order
@@ -850,14 +1008,14 @@ export default function InventoryScanner() {
                 {step === "completed" && (
                     <PaymentResultSuccess
                         amount={totalAmount}
-                        title="Picking Completed"
-                        subtitle="Order completed successfully."
+                        title="Order Done"
+                        subtitle="IMS order completed. The staff member has been logged out so the next attendant can use this device."
                         amountLabel="Order Total"
-                        note={`${itemCount} scanned item${itemCount === 1 ? "" : "s"}${completedAt ? ` • Completed at ${new Date(completedAt).toLocaleTimeString("en-ZA", { hour: "2-digit", minute: "2-digit" })}` : ""}`}
+                        note={`${itemCount} scanned item${itemCount === 1 ? "" : "s"}${completedSale?.orderNumber ? ` • ${completedSale.orderNumber}` : ""}${completedAt ? ` • Completed at ${new Date(completedAt).toLocaleTimeString("en-ZA", { hour: "2-digit", minute: "2-digit" })}` : ""}`}
                         showReceiptOptions={false}
                         showBottomNav
                         secondaryActionLabel="View Inventory"
-                        primaryActionLabel="Start New Picking"
+                        primaryActionLabel="Next Staff"
                         onSecondaryAction={() => navigate("/items")}
                         onDone={startNewPicking}
                     />
@@ -910,7 +1068,7 @@ export default function InventoryScanner() {
                         <span className="font-semibold text-foreground">
                             {user?.full_name || user?.email || "Patela user"}
                         </span>
-                        . Start Picking opens the barcode flow, scanned items appear in the picking list, and Complete Order or Reject Order finalizes the local picking session.
+                        . Start Picking verifies the IMS staff PIN first, scans unique item barcodes, completes the IMS order, and logs the staff session out for the next attendant.
                     </p>
                 </section>
             </main>
