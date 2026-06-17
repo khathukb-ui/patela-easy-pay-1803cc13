@@ -560,11 +560,11 @@ export default function InventoryScanner() {
 
             const confirmResult = await confirmIMSCheckout({
                 transactionId: startResult.transactionId,
-                staffId: verifiedStaff.id,
-                paymentMethod,
-                customerName: "Walk-in Customer",
-                notes: `Patela shared counter checkout by ${verifiedStaff.name || verifiedStaff.email || verifiedStaff.id}`,
                 storeId: checkoutStoreId,
+                paymentMethod,
+                amountPaid: totalAmount,
+                staffId: verifiedStaff.id,
+                notes: `Patela shared counter checkout by ${verifiedStaff.name || verifiedStaff.email || verifiedStaff.id}`,
             });
 
             if (!confirmResult.success) {
@@ -911,8 +911,8 @@ export default function InventoryScanner() {
 
                             <div className="mt-4 space-y-2">
                                 <p className="text-xs text-muted-foreground uppercase tracking-wide font-bold">Payment method</p>
-                                <div className="grid grid-cols-4 gap-2">
-                                    {(["CARD", "CASH", "EFT", "VOUCHER"] as IMSPaymentMethod[]).map((method) => (
+                                <div className="grid grid-cols-5 gap-2">
+                                    {(["CARD", "CASH", "EFT", "VOUCHER", "SPLIT"] as IMSPaymentMethod[]).map((method) => (
                                         <button
                                             key={method}
                                             type="button"

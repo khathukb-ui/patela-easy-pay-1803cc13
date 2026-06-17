@@ -146,7 +146,7 @@ export interface IMSBarcodeItemsResult {
   raw?: unknown;
 }
 
-export type IMSPaymentMethod = "CARD" | "CASH" | "EFT" | "VOUCHER";
+export type IMSPaymentMethod = "CASH" | "CARD" | "EFT" | "VOUCHER" | "SPLIT";
 
 export interface IMSCheckoutItemInput {
   barcode: string;
@@ -177,6 +177,8 @@ export interface IMSCheckoutConfirmResult {
   orderId?: string;
   orderNumber?: string;
   total?: number;
+  amountPaid?: number;
+  itemsSold?: number;
   itemCount?: number;
   receipt?: {
     orderNumber?: string;
@@ -647,25 +649,23 @@ export const startIMSCheckout = async ({
 
 export const confirmIMSCheckout = async ({
   transactionId,
-  staffId,
-  paymentMethod = "CARD",
-  customerName = "Walk-in Customer",
-  notes,
   storeId,
+  paymentMethod = "CARD",
+  amountPaid,
+  customerId,
+  staffId,
+  notes,
 }: {
   transactionId: string;
-  staffId: string;
-  paymentMethod?: IMSPaymentMethod;
-  customerName?: string;
-  notes?: string;
   storeId?: string;
+  paymentMethod?: IMSPaymentMethod;
+  amountPaid: number;
+  customerId?: string;
+  staffId?: string;
+  notes?: string;
 }): Promise<IMSCheckoutConfirmResult> => {
   if (!transactionId) {
     return { success: false, message: "Missing IMS transaction ID." };
-  }
-
-  if (!staffId) {
-    return { success: false, message: "Staff verification is required before confirming checkout." };
   }
 
   const checkoutStoreId = storeId || IMS_STORE_ID;
@@ -674,29 +674,35 @@ export const confirmIMSCheckout = async ({
     return { success: false, message: "IMS store ID is missing. Please set VITE_PATELA_STORE_ID." };
   }
 
+  if (!Number.isFinite(amountPaid) || amountPaid < 0) {
+    return { success: false, message: "Valid amount paid is required before confirming checkout." };
+  }
+
+  const requestBody = {
+    transactionId,
+    storeId: checkoutStoreId,
+    paymentMethod,
+    amountPaid,
+    ...(customerId ? { customerId } : {}),
+    ...(staffId ? { staffId } : {}),
+    ...(notes ? { notes } : {}),
+  };
+
   try {
     const response = await fetch(`${IMS_API_BASE_URL}/api/pos/checkout/confirm`, {
       method: "POST",
       headers: getIMSHeaders(true),
-      body: JSON.stringify({
-        transactionId,
-        storeId: checkoutStoreId,
-        staffId,
-        paymentMethod,
-        customerName,
-        discount: 0,
-        tax: 0,
-        notes,
-      }),
+      body: JSON.stringify(requestBody),
     });
 
     const payload = await safeJson(response);
+    const payloadAny = payload as any;
 
     if (response.status === 401 || response.status === 403) {
       lastIMSAuthResult = null;
     }
 
-    if (!response.ok || !(payload as any)?.success) {
+    if (!response.ok || payloadAny?.confirmed === false || payloadAny?.success === false) {
       return {
         success: false,
         message: getErrorMessage(payload, "Could not confirm IMS checkout."),
@@ -706,14 +712,16 @@ export const confirmIMSCheckout = async ({
     }
 
     return {
-      success: true,
-      message: "IMS order completed successfully.",
-      transactionId: (payload as any)?.transactionId || transactionId,
-      orderId: (payload as any)?.orderId,
-      orderNumber: (payload as any)?.orderNumber,
-      total: (payload as any)?.total,
-      itemCount: (payload as any)?.itemCount,
-      receipt: (payload as any)?.receipt,
+      success: Boolean(payloadAny?.confirmed ?? payloadAny?.success ?? response.ok),
+      message: payloadAny?.message || "IMS order completed successfully.",
+      transactionId: payloadAny?.transactionId || transactionId,
+      orderId: payloadAny?.orderId,
+      orderNumber: payloadAny?.orderNumber,
+      total: payloadAny?.total,
+      amountPaid: payloadAny?.amountPaid ?? amountPaid,
+      itemsSold: payloadAny?.itemsSold,
+      itemCount: payloadAny?.itemCount ?? payloadAny?.itemsSold,
+      receipt: payloadAny?.receipt,
       raw: payload,
     };
   } catch (error) {
