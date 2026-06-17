@@ -84,6 +84,7 @@ export interface IMSLookupResult {
   message: string;
   item: IMSBarcodeItem | null;
   raw?: unknown;
+  error?: string;
 }
 
 export type IMSPickingTaskStatus = "PENDING" | "IN_PROGRESS" | "COMPLETED" | string;

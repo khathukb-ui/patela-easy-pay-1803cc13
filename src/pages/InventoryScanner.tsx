@@ -376,10 +376,10 @@ export default function InventoryScanner() {
                     return;
                 }
 
-                if (result.status === "not_found") {
+                if (result.message !== "") {
                     setScanStatus("warning");
                     setScanMessage("Barcode not found in IMS. Please check the barcode and try again.");
-                    toast.warning("Barcode not found in IMS");
+                    toast.warning(result.message);
                     return;
                 }
 
