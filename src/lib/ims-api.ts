@@ -1,7 +1,7 @@
 const IMS_API_BASE_URL = (
   import.meta.env.VITE_IMS_API_URL ||
   import.meta.env.VITE_NEXT_PUBLIC_API_URL ||
-  "http://107.21.32.197:3000"
+  "http://98.91.226.115:3000"
 ).replace(/\/$/, "");
 
 const IMS_BEARER_TOKEN =

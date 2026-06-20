@@ -11,7 +11,7 @@ export default defineConfig(({ mode }) => ({
     port: 3000,
       proxy: {
         "/ims-api": {
-          target: "http://107.21.32.197:3000",
+          target: "http://98.91.226.115:3000",
           changeOrigin: true,
           secure: false,
           rewrite: (path) => path.replace(/^\/ims-api/, ""),
